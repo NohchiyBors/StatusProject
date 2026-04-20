@@ -1,0 +1,9 @@
+# Local StatusProject session state
+TODO-*.md
+MEMORY-*.md
+PROJECT-RESUME-*.md
+STATUS-LOG-*.md
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
