@@ -2,7 +2,9 @@
 
 Файл оставлен для совместимости. Каноника:
 
-Ссылки проекта и источники обновлений: см. `PROMPT-RU.md` или `README-RU.md`.
+Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`.
+Источник обновлений: сравнивай развернутую `StatusProject/` с `D:\Data\OneDrive\source\StatusProject` и при необходимости с https://github.com/NohchiyBors/StatusProject/releases/latest.
+Остальные ссылки проекта: см. `PROMPT-RU.md` или `README-RU.md`.
 
 - `PROMPT.md` / `PROMPT-RU.md` — режим работы
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт

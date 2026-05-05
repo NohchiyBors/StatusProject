@@ -8,6 +8,11 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.5 - 2026-05-05
+
+### Changed
+- Restored direct template and update source paths in AI instruction/settings files while keeping full link blocks in README and PROMPT files.
+
 ## v0.1.4 - 2026-05-05
 
 ### Changed

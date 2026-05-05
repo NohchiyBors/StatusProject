@@ -2,7 +2,9 @@
 
 This file is kept as a compact compatibility entry.
 
-Project links and update sources: see `PROMPT.md` or `README.md`.
+Template source: `D:\Data\OneDrive\source\StatusProject\templates`.
+Update source: compare deployed `StatusProject/` against `D:\Data\OneDrive\source\StatusProject` and, when needed, https://github.com/NohchiyBors/StatusProject/releases/latest.
+Other project links: see `PROMPT.md` or `README.md`.
 
 Canonical files:
 - `PROMPT.md` / `PROMPT-RU.md` — operating mode
