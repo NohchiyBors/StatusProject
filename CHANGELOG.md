@@ -8,6 +8,11 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.7 - 2026-05-05
+
+### Changed
+- Made `LINKS.md` and `templates/LINKS.template.md` more visual with an ASCII tree plus clickable file links.
+
 ## v0.1.6 - 2026-05-05
 
 ### Added
