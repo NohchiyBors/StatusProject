@@ -2,6 +2,13 @@
 
 Maintain long-running work through project-state files, not only chat.
 
+## Links
+- Local folder: `D:\Data\OneDrive\source\StatusProject`
+- GitHub repo: https://github.com/NohchiyBors/StatusProject
+- Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
+- Template source: `D:\Data\OneDrive\source\StatusProject\templates`
+- Update source: compare the target project's deployed `StatusProject/` files with the local template source and, when needed, the GitHub latest release.
+
 ## Enable When
 - many steps or sessions
 - blockers, dependencies, rules, formulas, or critical files exist
@@ -24,7 +31,7 @@ Keep `templates/` in English.
 ## Session Start
 1. Read saved context: `PLAN*`, `TODO*`, `MEMORY*`, `PROJECT-RESUME*`, then optional `STATUS-LOG*`, `STATE-HISTORY*`.
 2. Identify current goal, next concrete step, and blockers.
-3. Check `StatusProject` updates at most once per 7 days per project. Record the check date in `MEMORY` or `PROJECT-RESUME`.
+3. Check `StatusProject` updates at most once per 7 days per project. Compare against `D:\Data\OneDrive\source\StatusProject` and/or the GitHub latest release. Record the check date in `MEMORY` or `PROJECT-RESUME`.
 4. If the template is newer, list affected files and propose an update. Do not overwrite local state files without approval.
 
 ## Work Rules

@@ -2,6 +2,13 @@
 
 Файл оставлен для совместимости. Каноника:
 
+Ссылки проекта:
+- Локальная папка: `D:\Data\OneDrive\source\StatusProject`
+- GitHub: https://github.com/NohchiyBors/StatusProject
+- Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
+- Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`
+- Источник обновлений: сравнивай развернутую `StatusProject/` с локальной папкой и при необходимости с последним GitHub release.
+
 - `PROMPT.md` / `PROMPT-RU.md` — режим работы
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт
 - `README.md` / `README-RU.md` — справка

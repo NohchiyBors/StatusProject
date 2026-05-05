@@ -2,6 +2,13 @@
 
 Веди долгую работу через project-state файлы, а не только через чат.
 
+## Ссылки
+- Локальная папка: `D:\Data\OneDrive\source\StatusProject`
+- GitHub: https://github.com/NohchiyBors/StatusProject
+- Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
+- Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`
+- Источник обновлений: сравнивай развернутую в проекте папку `StatusProject/` с локальным источником шаблонов и при необходимости с последним GitHub release.
+
 ## Включать
 - много шагов или сессий
 - есть блокеры, зависимости, правила, формулы, критичные файлы
@@ -24,7 +31,7 @@
 ## Старт сессии
 1. Прочитай сохраненный контекст: `PLAN*`, `TODO*`, `MEMORY*`, `PROJECT-RESUME*`, затем при необходимости `STATUS-LOG*`, `STATE-HISTORY*`.
 2. Определи текущую цель, следующий практический шаг и блокеры.
-3. Проверяй обновления `StatusProject` не чаще 1 раза в 7 дней на проект. Дату проверки фиксируй в `MEMORY` или `PROJECT-RESUME`.
+3. Проверяй обновления `StatusProject` не чаще 1 раза в 7 дней на проект. Сравнивай с `D:\Data\OneDrive\source\StatusProject` и/или последним GitHub release. Дату проверки фиксируй в `MEMORY` или `PROJECT-RESUME`.
 4. Если шаблон новее, перечисли затронутые файлы и предложи обновление. Не перезаписывай локальные state-файлы без согласия.
 
 ## Работа

@@ -4,6 +4,14 @@
 
 Английская версия: `README.md`.
 
+## Ссылки
+
+- Локальная папка: `D:\Data\OneDrive\source\StatusProject`
+- GitHub: https://github.com/NohchiyBors/StatusProject
+- Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
+- Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`
+- Источник обновлений: сравнивай развернутую `StatusProject/` с локальной папкой и при необходимости с последним GitHub release.
+
 ## Основные файлы
 - `AI-INSTRUCTION.md` / `AI-INSTRUCTION-RU.md` — совместимый вход для ИИ
 - `AI-SETTINGS-INSTRUCTION.md` / `AI-SETTINGS-INSTRUCTION-RU.md` — текст для настроек ИИ

@@ -8,6 +8,12 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.3 - 2026-05-05
+
+### Added
+- Project links in README, prompts, quick-start files, and AI settings instructions.
+- Explicit template source and update-check source in README, prompts, quick-start files, and AI settings instructions.
+
 ## v0.1.2 - 2026-05-05
 
 ### Added

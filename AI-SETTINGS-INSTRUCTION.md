@@ -2,6 +2,13 @@
 
 Primary rules: `PROMPT.md` / `PROMPT-RU.md`.
 
+Project links:
+- Local folder: `D:\Data\OneDrive\source\StatusProject`
+- GitHub repo: https://github.com/NohchiyBors/StatusProject
+- Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
+- Template source: `D:\Data\OneDrive\source\StatusProject\templates`
+- Update source: compare deployed `StatusProject/` against the local folder and, when needed, the GitHub latest release.
+
 Also use:
 - `START-HERE.md` / `START-HERE-RU.md`
 - `README.md` / `README-RU.md`

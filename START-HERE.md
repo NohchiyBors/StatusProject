@@ -1,6 +1,11 @@
 # Quick Start: StatusProject
 
 Template folder: `D:\Data\OneDrive\source\StatusProject`
+Templates: `D:\Data\OneDrive\source\StatusProject\templates`
+
+GitHub repo: https://github.com/NohchiyBors/StatusProject
+Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
+Update check source: compare deployed `StatusProject/` against the local template folder and, when needed, the GitHub latest release.
 
 ## Layout
 - project root: short `AGENTS.md` / `CLAUDE.md`
@@ -26,6 +31,7 @@ Do not use for short one-off tasks.
 
 ## Updates
 - Check at most once per 7 days per project.
+- Compare against `D:\Data\OneDrive\source\StatusProject` and/or the GitHub latest release.
 - Record check date in `MEMORY` or `PROJECT-RESUME`.
 - If template is newer, propose update and list files.
 - Do not overwrite local state files without approval.
