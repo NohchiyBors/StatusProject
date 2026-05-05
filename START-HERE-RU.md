@@ -27,8 +27,9 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 2. В корне оставь короткий `AGENTS.md` / `CLAUDE.md` со ссылкой на `StatusProject/`.
 3. Создай state-файлы из `templates/` на английском.
 4. Проверь или создай `.gitignore` по `templates/GITIGNORE.template`.
-5. В сессии читай: `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, затем при необходимости `STATUS-LOG`, `STATE-HISTORY`.
-6. После заметного шага обновляй state-файлы.
+5. Создай `LICENSE` из `templates/LICENSE.template` перед публикацией на GitHub.
+6. В сессии читай: `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, затем при необходимости `STATUS-LOG`, `STATE-HISTORY`.
+7. После заметного шага обновляй state-файлы.
 
 ## Обновления
 - Проверять не чаще 1 раза в 7 дней на проект.

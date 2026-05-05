@@ -6,7 +6,8 @@ This project uses semantic version tags for public releases.
 
 ## Unreleased
 
-No unreleased changes yet.
+### Added
+- `templates/LICENSE.template` for GitHub publication.
 
 ## v0.1.8 - 2026-05-05
 

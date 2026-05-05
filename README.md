@@ -54,6 +54,7 @@ Core state files:
 - `templates/LINKS.template.md`
 - `templates/VERSIONING.template.md`
 - `templates/GITIGNORE.template`
+- `templates/LICENSE.template`
 
 ## Workflow
 
@@ -62,9 +63,10 @@ Core state files:
 3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
 4. Create project state files from `templates/`.
 5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
-6. Check template updates at most once per week per project; ask before applying.
-7. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
-8. Update state files after meaningful progress.
+6. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
+7. Check template updates at most once per week per project; ask before applying.
+8. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
+9. Update state files after meaningful progress.
 
 ## Rules
 

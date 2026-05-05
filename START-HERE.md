@@ -25,8 +25,9 @@ Do not use for short one-off tasks.
 2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
 3. Create state files from English templates.
 4. Check/create `.gitignore` using `templates/GITIGNORE.template`.
-5. In each session read: `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional `STATUS-LOG`, `STATE-HISTORY`.
-6. Update state files after meaningful progress.
+5. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
+6. In each session read: `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional `STATUS-LOG`, `STATE-HISTORY`.
+7. Update state files after meaningful progress.
 
 ## Updates
 - Check at most once per 7 days per project.

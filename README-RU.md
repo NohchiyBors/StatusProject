@@ -23,6 +23,7 @@
 - `CHANGELOG.md` — история версий GitHub
 - `VERSIONING.md` — правила версий и релизов
 - `templates/` — англоязычные шаблоны
+- `templates/LICENSE.template` — шаблон лицензии для публикации на GitHub
 - `IMPORT-SOP-RU.md` — русская справка для импортов
 
 ## State-файлы
@@ -41,9 +42,10 @@
 3. В корне оставь короткие `AGENTS.md` / `CLAUDE.md`.
 4. Создай state-файлы из `templates/`.
 5. Проверь `.gitignore` по `templates/GITIGNORE.template`.
-6. Проверяй обновления шаблонов не чаще 1 раза в 7 дней.
-7. В начале сессии читай `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`.
-8. После значимых действий обновляй state-файлы.
+6. Создай `LICENSE` из `templates/LICENSE.template` перед публикацией на GitHub.
+7. Проверяй обновления шаблонов не чаще 1 раза в 7 дней.
+8. В начале сессии читай `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`.
+9. После значимых действий обновляй state-файлы.
 
 Шаблоны ведутся на английском для экономии токенов и единообразия.
 
