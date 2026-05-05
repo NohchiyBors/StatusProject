@@ -2,12 +2,7 @@
 
 Основной источник правил: `PROMPT.md` / `PROMPT-RU.md`.
 
-Ссылки проекта:
-- Локальная папка: `D:\Data\OneDrive\source\StatusProject`
-- GitHub: https://github.com/NohchiyBors/StatusProject
-- Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`
-- Источник обновлений: сравнивай развернутую `StatusProject/` с локальной папкой и при необходимости с последним GitHub release.
+Ссылки проекта и источники обновлений: см. `PROMPT-RU.md` или `README-RU.md`.
 
 Дополнительно:
 - `START-HERE.md` / `START-HERE-RU.md`

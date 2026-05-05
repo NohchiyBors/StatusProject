@@ -8,6 +8,11 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.4 - 2026-05-05
+
+### Changed
+- Reduced duplicated project link blocks in AI instruction and quick-start files.
+
 ## v0.1.3 - 2026-05-05
 
 ### Added

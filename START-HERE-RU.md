@@ -1,11 +1,10 @@
 # Быстрый старт: StatusProject
 
 Папка шаблона: `D:\Data\OneDrive\source\StatusProject`
-Шаблоны: `D:\Data\OneDrive\source\StatusProject\templates`
 
 GitHub: https://github.com/NohchiyBors/StatusProject
 Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
-Источник проверки обновлений: сравнивай развернутую `StatusProject/` с локальной папкой шаблонов и при необходимости с последним GitHub release.
+Источники шаблонов и обновлений: см. `PROMPT-RU.md`.
 
 Английская версия: `START-HERE.md`.
 
@@ -33,7 +32,6 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 
 ## Обновления
 - Проверять не чаще 1 раза в 7 дней на проект.
-- Сравнивать с `D:\Data\OneDrive\source\StatusProject` и/или последним GitHub release.
 - Дату проверки писать в `MEMORY` или `PROJECT-RESUME`.
 - Если шаблон новее, предложить пользователю обновление и список файлов.
 - Не перезаписывать локальные state-файлы без согласия.
