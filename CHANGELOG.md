@@ -8,6 +8,11 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.1 - 2026-05-05
+
+### Added
+- Personal Use Only license.
+
 ## v0.1.0 - 2026-05-05
 
 ### Added

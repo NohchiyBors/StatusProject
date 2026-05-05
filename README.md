@@ -56,3 +56,7 @@ Core state files:
 - Put durable facts in `MEMORY`, current work in `TODO`, restart context in `PROJECT-RESUME`.
 - Move old details to `STATE-HISTORY`.
 - Do not overwrite local state or commit secrets, tokens, sensitive logs, private exports, or local tool state.
+
+## License
+
+Personal non-commercial use only. See [`LICENSE`](LICENSE).
