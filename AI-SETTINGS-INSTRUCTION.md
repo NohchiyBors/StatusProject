@@ -17,4 +17,4 @@ Also use:
 
 Target layout: short `AGENTS.md` / `CLAUDE.md` in the repository root, state files inside `StatusProject/`.
 
-Do not duplicate full instructions. Link to canonical files. For imports, use `templates/IMPORT-SOP.template.md`; Russian reference: `IMPORT-SOP-RU.md`.
+Do not duplicate full instructions. Link to canonical files. Enable `StatusProject` when the task is complex and one answer is not enough. Minimum enabled state is `TODO`, `MEMORY`, and `PROJECT-RESUME`; use `STATUS-LOG` for long/batch work, `IMPORT-SOP.template.md` for imports/migrations/syncs, `VERSIONING.template.md` for releases, and `GITIGNORE.template` plus `LICENSE.template` for GitHub publication. Russian import reference: `IMPORT-SOP-RU.md`.

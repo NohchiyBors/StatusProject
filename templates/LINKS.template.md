@@ -40,7 +40,8 @@
 │   ├── templates/MEMORY.template.md
 │   ├── templates/PROJECT-RESUME.template.md
 │   ├── templates/STATUS-LOG.template.md
-│   └── templates/STATE-HISTORY.template.md
+│   ├── templates/STATE-HISTORY.template.md
+│   └── templates/LICENSE.template
 │
 └── Update Check
     ├── Local source of truth
@@ -59,3 +60,4 @@
 - [START-HERE.md](START-HERE.md)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
+- [templates/LICENSE.template](templates/LICENSE.template)

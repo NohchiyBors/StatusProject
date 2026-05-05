@@ -39,6 +39,20 @@ Core state files:
 - `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
 - optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
 
+## When To Apply Templates
+
+- Enable `StatusProject` and apply the minimum templates when the task is complex and one answer is not enough.
+- `TODO`, `MEMORY`, `PROJECT-RESUME`: every enabled `StatusProject` workflow.
+- `PLAN`: multi-phase work, parallel workstreams, or strategy decisions.
+- `STATUS-LOG`: long, batch, repeated, migration, import, sync, or rollout work.
+- `IMPORT-SOP`: imports, migrations, syncs, bulk processing, or data movement.
+- `STATE-HISTORY`: archive completed phases out of active files.
+- `INFRASTRUCTURE`, `SOFTWARE`, `MCP`: only for relevant domain context.
+- `LINKS`: compact map of repo paths, docs, services, templates, and update sources.
+- `VERSIONING`: releases, tags, changelog work, or GitHub Release publication.
+- `GITIGNORE.template`: repository deployment and publish-readiness checks.
+- `LICENSE.template`: GitHub publication or repositories without an approved `LICENSE`.
+
 ## Templates
 
 - `templates/PLAN.template.md`

@@ -15,4 +15,4 @@ Canonical files:
 - `templates/` — templates
 - `IMPORT-SOP-RU.md` — Russian import reference
 
-Rules: templates are English; the import template is `templates/IMPORT-SOP.template.md`; check updates at most once per 7 days per project; `.gitignore` must exclude state files, secrets, logs, and local artifacts.
+Rules: enable `StatusProject` when the task is complex and one answer is not enough; templates are English; minimum enabled state is `TODO`, `MEMORY`, and `PROJECT-RESUME`; use `STATUS-LOG` for long/batch work, `IMPORT-SOP.template.md` for imports/migrations/syncs, `VERSIONING.template.md` for releases, `GITIGNORE.template` and `LICENSE.template` for GitHub publication; check updates at most once per 7 days per project.

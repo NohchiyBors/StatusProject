@@ -8,6 +8,10 @@ This project uses semantic version tags for public releases.
 
 ### Added
 - `templates/LICENSE.template` for GitHub publication.
+- Explicit template-use rules in prompts, quick-start files, README files, and AI compatibility instructions.
+- The rule to enable `StatusProject` when a task is complex and one answer is not enough.
+- The same rule in root `AGENTS.md` and `CLAUDE.md`.
+- `templates/LICENSE.template` links in `LINKS.md` and `templates/LINKS.template.md`.
 
 ## v0.1.8 - 2026-05-05
 

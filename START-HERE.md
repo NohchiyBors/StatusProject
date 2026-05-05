@@ -13,12 +13,21 @@ Template and update sources: see `PROMPT.md`.
 - imports: `IMPORT-SOP.md` from `templates/IMPORT-SOP.template.md`
 
 ## Use When
+- the task is complex and one answer is not enough
 - long or multi-step task
 - multiple sessions
 - blockers, dependencies, rules, critical files
 - import, migration, publication, integration, infrastructure, support
 
 Do not use for short one-off tasks.
+
+## Template Use
+- Minimum state when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
+- Multi-phase strategy: add `PLAN`.
+- Long, batch, import, migration, sync, rollout: add `STATUS-LOG`; use `IMPORT-SOP` when data movement or repeatable import steps are involved.
+- Completed details that should leave active files: add `STATE-HISTORY`.
+- Domain-specific work: add `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when relevant.
+- Publication/release: use `GITIGNORE.template`, `LICENSE.template`, and `VERSIONING.template` as needed.
 
 ## Setup
 1. Copy `StatusProject/` or selected templates into the target repository.

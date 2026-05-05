@@ -53,7 +53,8 @@ StatusProject
 │   ├── templates/INFRASTRUCTURE.template.md
 │   ├── templates/SOFTWARE.template.md
 │   ├── templates/MCP.template.md
-│   └── templates/GITIGNORE.template
+│   ├── templates/GITIGNORE.template
+│   └── templates/LICENSE.template
 │
 └── Update Check
     ├── Local source of truth
@@ -76,3 +77,4 @@ StatusProject
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
 - [AI-SETTINGS-INSTRUCTION-RU.md](AI-SETTINGS-INSTRUCTION-RU.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
+- [templates/LICENSE.template](templates/LICENSE.template)

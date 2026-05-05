@@ -10,6 +10,7 @@ Maintain long-running work through project-state files, not only chat.
 - Update source: compare the target project's deployed `StatusProject/` files with the local template source and, when needed, the GitHub latest release.
 
 ## Enable When
+- the task is complex enough that one answer will not be enough
 - many steps or sessions
 - blockers, dependencies, rules, formulas, or critical files exist
 - import, migration, publication, integration, infrastructure, or support is involved
@@ -29,6 +30,20 @@ Do not enable for short one-off tasks.
 - `VERSIONING` — release rules, changelog flow, tags, and GitHub Release checklist
 
 Keep `templates/` in English.
+
+## Template Use
+Apply templates when a target repository or workstream needs durable project files, publication files, or a repeatable operating record.
+
+- Always create the minimum state set when `StatusProject` is enabled: `TODO`, `MEMORY`, and `PROJECT-RESUME`.
+- Add `PLAN` when the work has multiple phases, parallel workstreams, or strategy decisions.
+- Add `STATUS-LOG` for long, batch, repeated, migration, import, sync, or rollout work.
+- Add `STATE-HISTORY` when completed details need to be archived out of active files.
+- Add `IMPORT-SOP` for imports, migrations, syncs, package/bulk processing, or data movement.
+- Add `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when that domain is actually part of the project.
+- Add `LINKS` when repository paths, docs, services, templates, or update sources need one compact map.
+- Add `VERSIONING` before releases, tags, changelog work, or GitHub Release publication.
+- Use `GITIGNORE.template` when deploying into a repository or checking publish readiness.
+- Use `LICENSE.template` before publishing a repository to GitHub, or when a repository has no approved `LICENSE`.
 
 ## Session Start
 1. Read saved context: `PLAN*`, `TODO*`, `MEMORY*`, `PROJECT-RESUME*`, then optional `STATUS-LOG*`, `STATE-HISTORY*`.
