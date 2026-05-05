@@ -16,6 +16,8 @@ Templates are English by design for compact, consistent agent-facing fields.
 
 Operating docs:
 
+- `AI-INSTRUCTION.md` / `AI-INSTRUCTION-RU.md`
+- `AI-SETTINGS-INSTRUCTION.md` / `AI-SETTINGS-INSTRUCTION-RU.md`
 - `PROMPT.md` / `PROMPT-RU.md`
 - `START-HERE.md` / `START-HERE-RU.md`
 - `README.md` / `README-RU.md`
@@ -43,12 +45,13 @@ Core state files:
 ## Workflow
 
 1. Copy `StatusProject/` or selected templates into the target repo.
-2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
-3. Create project state files from `templates/`.
-4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
-5. Check template updates at most once per week per project; ask before applying.
-6. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
-7. Update state files after meaningful progress.
+2. Put `AI-SETTINGS-INSTRUCTION.md` or `AI-SETTINGS-INSTRUCTION-RU.md` into AI tool settings when needed.
+3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
+4. Create project state files from `templates/`.
+5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
+6. Check template updates at most once per week per project; ask before applying.
+7. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
+8. Update state files after meaningful progress.
 
 ## Rules
 

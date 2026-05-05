@@ -8,6 +8,13 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.2 - 2026-05-05
+
+### Added
+- English AI settings and compatibility instruction files:
+  - `AI-INSTRUCTION.md`
+  - `AI-SETTINGS-INSTRUCTION.md`
+
 ## v0.1.1 - 2026-05-05
 
 ### Added

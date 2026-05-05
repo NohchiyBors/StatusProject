@@ -5,6 +5,8 @@
 Английская версия: `README.md`.
 
 ## Основные файлы
+- `AI-INSTRUCTION.md` / `AI-INSTRUCTION-RU.md` — совместимый вход для ИИ
+- `AI-SETTINGS-INSTRUCTION.md` / `AI-SETTINGS-INSTRUCTION-RU.md` — текст для настроек ИИ
 - `PROMPT.md` / `PROMPT-RU.md` — канонические правила
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт
 - `CHANGELOG.md` — история версий GitHub
@@ -23,12 +25,13 @@
 
 ## Процесс
 1. Разверни `StatusProject/` в целевом проекте.
-2. В корне оставь короткие `AGENTS.md` / `CLAUDE.md`.
-3. Создай state-файлы из `templates/`.
-4. Проверь `.gitignore` по `templates/GITIGNORE.template`.
-5. Проверяй обновления шаблонов не чаще 1 раза в 7 дней.
-6. В начале сессии читай `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`.
-7. После значимых действий обновляй state-файлы.
+2. В настройки ИИ при необходимости добавь `AI-SETTINGS-INSTRUCTION.md` или `AI-SETTINGS-INSTRUCTION-RU.md`.
+3. В корне оставь короткие `AGENTS.md` / `CLAUDE.md`.
+4. Создай state-файлы из `templates/`.
+5. Проверь `.gitignore` по `templates/GITIGNORE.template`.
+6. Проверяй обновления шаблонов не чаще 1 раза в 7 дней.
+7. В начале сессии читай `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`.
+8. После значимых действий обновляй state-файлы.
 
 Шаблоны ведутся на английском для экономии токенов и единообразия.
 
