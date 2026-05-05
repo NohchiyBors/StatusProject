@@ -8,6 +8,12 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.8 - 2026-05-05
+
+### Added
+- `VERSIONING.md` with release rules, changelog flow, tag commands, GitHub Release checklist, and release note guidance.
+- `templates/VERSIONING.template.md` for target projects.
+
 ## v0.1.7 - 2026-05-05
 
 ### Changed

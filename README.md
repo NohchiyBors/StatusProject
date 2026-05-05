@@ -4,6 +4,7 @@ Lightweight project-state files for long-running agent work. State lives in file
 
 - Russian overview: [`README-RU.md`](README-RU.md)
 - Link tree: [`LINKS.md`](LINKS.md)
+- Versioning: [`VERSIONING.md`](VERSIONING.md)
 - Operating prompt: [`PROMPT.md`](PROMPT.md) / [`PROMPT-RU.md`](PROMPT-RU.md)
 - Quick start: [`START-HERE.md`](START-HERE.md) / [`START-HERE-RU.md`](START-HERE-RU.md)
 - Version history: [`CHANGELOG.md`](CHANGELOG.md)
@@ -30,6 +31,7 @@ Operating docs:
 - `PROMPT.md` / `PROMPT-RU.md`
 - `START-HERE.md` / `START-HERE-RU.md`
 - `README.md` / `README-RU.md`
+- `VERSIONING.md`
 - `IMPORT-SOP-RU.md`
 
 Core state files:
@@ -50,6 +52,7 @@ Core state files:
 - `templates/MCP.template.md`
 - `templates/IMPORT-SOP.template.md`
 - `templates/LINKS.template.md`
+- `templates/VERSIONING.template.md`
 - `templates/GITIGNORE.template`
 
 ## Workflow

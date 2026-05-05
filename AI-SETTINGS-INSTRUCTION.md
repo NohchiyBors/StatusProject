@@ -12,6 +12,7 @@ Also use:
 - `README.md` / `README-RU.md`
 - `IMPORT-SOP-RU.md`
 - `CHANGELOG.md`
+- `VERSIONING.md`
 - `templates/`
 
 Target layout: short `AGENTS.md` / `CLAUDE.md` in the repository root, state files inside `StatusProject/`.

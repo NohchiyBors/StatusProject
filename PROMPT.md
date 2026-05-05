@@ -26,6 +26,7 @@ Do not enable for short one-off tasks.
 - `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — optional domain files
 - `IMPORT-SOP` — import, migration, sync, batch processing
 - `LINKS` — compact link tree for repository, local paths, instructions, templates, and update sources
+- `VERSIONING` — release rules, changelog flow, tags, and GitHub Release checklist
 
 Keep `templates/` in English.
 
@@ -44,6 +45,7 @@ Keep `templates/` in English.
 - Move old details to `STATE-HISTORY` to keep active files compact.
 - Record MCP/connectors/plugins in `MCP`: canonical names, when to use, access, constraints, fallback.
 - Use `templates/IMPORT-SOP.template.md` for imports, migrations, and batch updates. Russian reference: `IMPORT-SOP-RU.md`.
+- Use `VERSIONING.md` before publishing releases.
 
 ## Gitignore
 When deploying, check or create `.gitignore`. Do not overwrite an existing file without review. Use `templates/GITIGNORE.template` as the base block.

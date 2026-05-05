@@ -10,6 +10,7 @@
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт
 - `README.md` / `README-RU.md` — справка
 - `CHANGELOG.md` — история версий
+- `VERSIONING.md` — правила релизов
 - `templates/` — шаблоны
 - `IMPORT-SOP-RU.md` — русская справка для импортов
 

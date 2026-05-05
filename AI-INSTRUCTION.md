@@ -11,6 +11,7 @@ Canonical files:
 - `START-HERE.md` / `START-HERE-RU.md` — quick start
 - `README.md` / `README-RU.md` — overview
 - `CHANGELOG.md` — version history
+- `VERSIONING.md` — release rules
 - `templates/` — templates
 - `IMPORT-SOP-RU.md` — Russian import reference
 

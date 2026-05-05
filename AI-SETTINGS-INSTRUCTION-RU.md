@@ -12,6 +12,7 @@
 - `README.md` / `README-RU.md`
 - `IMPORT-SOP-RU.md`
 - `CHANGELOG.md`
+- `VERSIONING.md`
 - `templates/`
 
 Целевая структура: короткие `AGENTS.md` / `CLAUDE.md` в корне, state-файлы внутри `StatusProject/`.

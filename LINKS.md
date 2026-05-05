@@ -26,6 +26,7 @@ StatusProject
 │   ├── START-HERE.md
 │   ├── START-HERE-RU.md
 │   ├── CHANGELOG.md
+│   ├── VERSIONING.md
 │   └── LICENSE
 │
 ├── AI Settings
@@ -42,6 +43,7 @@ StatusProject
 │
 ├── Templates
 │   ├── templates/LINKS.template.md
+│   ├── templates/VERSIONING.template.md
 │   ├── templates/PLAN.template.md
 │   ├── templates/TODO.template.md
 │   ├── templates/MEMORY.template.md

@@ -5,6 +5,7 @@
 Английская версия: `README.md`.
 
 Дерево ссылок: `LINKS.md`.
+Версионирование: `VERSIONING.md`.
 
 ## Ссылки
 
@@ -20,6 +21,7 @@
 - `PROMPT.md` / `PROMPT-RU.md` — канонические правила
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт
 - `CHANGELOG.md` — история версий GitHub
+- `VERSIONING.md` — правила версий и релизов
 - `templates/` — англоязычные шаблоны
 - `IMPORT-SOP-RU.md` — русская справка для импортов
 

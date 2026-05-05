@@ -23,6 +23,7 @@
 │   ├── PROMPT.md
 │   ├── START-HERE.md
 │   ├── CHANGELOG.md
+│   ├── VERSIONING.md
 │   └── LICENSE
 │
 ├── AI Settings
@@ -33,6 +34,7 @@
 │
 ├── Templates
 │   ├── templates/LINKS.template.md
+│   ├── templates/VERSIONING.template.md
 │   ├── templates/PLAN.template.md
 │   ├── templates/TODO.template.md
 │   ├── templates/MEMORY.template.md
