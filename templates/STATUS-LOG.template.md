@@ -1,34 +1,12 @@
-# STATUS LOG: <Название проекта или операции>
+# STATUS LOG: <Project/Operation>
 
-## Сводка
-- Операция: `<название>`
-- Запущено: `<YYYY-MM-DD HH:mm:ss Z>`
-- Текущий статус: `<выполняется / ожидание / повтор / блокер / завершено>`
-- Текущий элемент: `<элемент>`
-- Последний успешный элемент: `<элемент>`
-- Следующий элемент: `<элемент>`
+## Summary
+- Focus: `<current focus>`
+- Status: `<in-progress|waiting|done>`
+- Last result: `<result>`
+- Next: `<action>`
 
-## Записи статуса
-
-### <YYYY-MM-DD HH:mm:ss Z>
-- Status: `<start / success / partial / failed / retry / waiting>`
-- Item: `<файл / пакет / сущность / шаг>`
-- Result: `<краткий результат>`
-- Evidence: `<ответ / файл / количество / экран / лог>`
-- Next action: `<следующее действие>`
-
-### <YYYY-MM-DD HH:mm:ss Z>
-- Status: `<start / success / partial / failed / retry / waiting>`
-- Item: `<файл / пакет / сущность / шаг>`
-- Result: `<краткий результат>`
-- Evidence: `<ответ / файл / количество / экран / лог>`
-- Next action: `<следующее действие>`
-
-## Политика повторов
-- Максимум повторов: `<число>`
-- Задержка между повторами: `<длительность>`
-- Эскалация при условии: `<условие>`
-
-## Критерии завершения
-- `<критерий 1>`
-- `<критерий 2>`
+## Entries
+| Time | Status | Item | Result | Evidence | Next |
+| --- | --- | --- | --- | --- | --- |
+| `<YYYY-MM-DD HH:mm:ss Z>` | `<start|success|partial|failed|retry|waiting>` | `<step/file/batch>` | `<result>` | `<log/file/count>` | `<next>` |

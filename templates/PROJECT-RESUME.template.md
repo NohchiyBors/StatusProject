@@ -1,34 +1,18 @@
 # PROJECT RESUME
 
 Date: `<YYYY-MM-DD HH:mm:ss Z>`
-Project: `<название или путь>`
-Session owner: `<человек или агент>`
+Project: `<name/path>`
+Owner: `<person/agent>`
 
-## Где находимся
-- Текущая фаза: `<этап>`
-- Общий статус: `<в работе / заблокировано / ожидание / завершено>`
-- Последний подтвержденный результат: `<краткий факт>`
+## State
+- Phase: `<phase>`
+- Status: `<in-progress|waiting|blocked|done>`
+- Last result: `<fact>`
+- Focus: `<active workstream>`
+- Blockers: `<none/details>`
 
-## Следующий шаг
-- `<одно самое практичное следующее действие>`
-
-## Снимок прогресса
-- Завершено: `<краткий список или счетчики>`
-- В работе: `<текущий элемент>`
-- Осталось: `<что еще нужно сделать>`
-
-## Блокеры
-- `<блокер или "нет">`
-
-## Ключевые правила
-- `<правило 1>`
-- `<правило 2>`
-
-## Важные файлы
-- `<путь 1>`
-- `<путь 2>`
-
-## Заметки для следующей сессии
-- Стартовать с: `<файл / команда / экран / датасет>`
-- Перепроверить: `<что могло измениться>`
-- Не забыть: `<важный нюанс>`
+## Next
+- Action: `<one concrete next action>`
+- Recheck: `<what may have changed>`
+- Read: `PLAN -> TODO -> MEMORY -> PROJECT-RESUME -> STATUS-LOG`
+- Last StatusProject update check: `<YYYY-MM-DD|unknown>`

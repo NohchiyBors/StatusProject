@@ -1,50 +1,58 @@
 # StatusProject
 
-Набор файлов для режима работы, в котором агент ведет проект через:
-- `TODO` с чекбоксами и текущим блокером
-- `MEMORY` с устойчивым контекстом и договоренностями
-- `PROJECT-RESUME` для быстрого входа в следующую сессию
-- `STATUS-LOG` для фиксации хода выполнения по шагам
+Lightweight project-state files for long-running agent work. State lives in files, not only in chat.
 
-## Что входит
+- Russian overview: [`README-RU.md`](README-RU.md)
+- Operating prompt: [`PROMPT.md`](PROMPT.md) / [`PROMPT-RU.md`](PROMPT-RU.md)
+- Quick start: [`START-HERE.md`](START-HERE.md) / [`START-HERE-RU.md`](START-HERE-RU.md)
+- Version history: [`CHANGELOG.md`](CHANGELOG.md)
 
-- `PROMPT-RU.md` — основной промпт для агента
-- `START-HERE-RU.md` — короткая инструкция по старту работы с набором
-- `IMPORT-SOP-RU.md` — универсальный шаблон SOP для импортов и пакетных обновлений
-- `templates/TODO.template.md` — шаблон оперативного списка задач
-- `templates/MEMORY.template.md` — шаблон проектной памяти
-- `templates/PROJECT-RESUME.template.md` — шаблон короткого резюме состояния
-- `templates/STATUS-LOG.template.md` — шаблон журнала статусов выполнения
+Templates are English by design for compact, consistent agent-facing fields.
 
-## Рекомендуемый порядок
+## Target Layout
 
-1. Скопировать шаблоны в корень рабочего проекта.
-2. Переименовать файлы под конкретный проект или поток работ.
-3. Передать агенту `PROMPT-RU.md` как режим работы.
-4. В каждой сессии сначала читать `TODO`, `MEMORY` и `PROJECT-RESUME`.
-5. После каждого заметного шага обновлять статус и чекбоксы.
+- repo root: `AGENTS.md`, `CLAUDE.md`, normal project files
+- `StatusProject/`: operating docs and state files
 
-## Когда использовать
+Operating docs:
 
-`StatusProject` предназначен не для всех задач.
+- `PROMPT.md` / `PROMPT-RU.md`
+- `START-HERE.md` / `START-HERE-RU.md`
+- `README.md` / `README-RU.md`
+- `IMPORT-SOP-RU.md`
 
-Используй этот режим, если работа:
-- идет в несколько этапов
-- требует сохранения контекста между сессиями
-- имеет блокеры, зависимости, правила или критичные артефакты
-- связана с импортом, миграцией, пакетной обработкой, публикацией или длительным сопровождением
+Core state files:
 
-Не используй этот режим для:
-- простых разовых задач
-- коротких правок без риска потери контекста
-- одношаговых запросов, которые можно закрыть в рамках одной сессии
-- задач, где не нужны `TODO`, `MEMORY`, `PROJECT-RESUME` и `STATUS-LOG`
+- `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
+- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
 
-## Минимальный комплект
+## Templates
 
-Если нужен только базовый режим, достаточно:
-- `TODO`
-- `MEMORY`
-- `PROJECT-RESUME`
+- `templates/PLAN.template.md`
+- `templates/TODO.template.md`
+- `templates/MEMORY.template.md`
+- `templates/PROJECT-RESUME.template.md`
+- `templates/STATUS-LOG.template.md`
+- `templates/STATE-HISTORY.template.md`
+- `templates/INFRASTRUCTURE.template.md`
+- `templates/SOFTWARE.template.md`
+- `templates/MCP.template.md`
+- `templates/IMPORT-SOP.template.md`
+- `templates/GITIGNORE.template`
 
-`STATUS-LOG` полезен там, где работа идет итерациями, импортами, миграциями, публикациями или долгими задачами с повторами.
+## Workflow
+
+1. Copy `StatusProject/` or selected templates into the target repo.
+2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
+3. Create project state files from `templates/`.
+4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
+5. Check template updates at most once per week per project; ask before applying.
+6. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
+7. Update state files after meaningful progress.
+
+## Rules
+
+- Keep operational files short.
+- Put durable facts in `MEMORY`, current work in `TODO`, restart context in `PROJECT-RESUME`.
+- Move old details to `STATE-HISTORY`.
+- Do not overwrite local state or commit secrets, tokens, sensitive logs, private exports, or local tool state.
