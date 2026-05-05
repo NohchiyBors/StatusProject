@@ -25,6 +25,7 @@ Do not enable for short one-off tasks.
 - `STATE-HISTORY` — archive of completed phases
 - `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — optional domain files
 - `IMPORT-SOP` — import, migration, sync, batch processing
+- `LINKS` — compact link tree for repository, local paths, instructions, templates, and update sources
 
 Keep `templates/` in English.
 

@@ -8,6 +8,12 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.1.6 - 2026-05-05
+
+### Added
+- `LINKS.md` with a repository, local path, instruction, settings, and template link tree.
+- `templates/LINKS.template.md` for reusing the link-tree pattern in target projects.
+
 ## v0.1.5 - 2026-05-05
 
 ### Changed

@@ -1,6 +1,7 @@
 # ИИ-настройка: совместимый вход
 
 Основной источник правил: `PROMPT.md` / `PROMPT-RU.md`.
+Дерево ссылок: `LINKS.md`.
 
 Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`.
 Источник обновлений: сравнивай развернутую `StatusProject/` с `D:\Data\OneDrive\source\StatusProject` и при необходимости с https://github.com/NohchiyBors/StatusProject/releases/latest.

@@ -4,6 +4,8 @@
 
 Английская версия: `README.md`.
 
+Дерево ссылок: `LINKS.md`.
+
 ## Ссылки
 
 - Локальная папка: `D:\Data\OneDrive\source\StatusProject`

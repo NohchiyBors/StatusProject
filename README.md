@@ -3,6 +3,7 @@
 Lightweight project-state files for long-running agent work. State lives in files, not only in chat.
 
 - Russian overview: [`README-RU.md`](README-RU.md)
+- Link tree: [`LINKS.md`](LINKS.md)
 - Operating prompt: [`PROMPT.md`](PROMPT.md) / [`PROMPT-RU.md`](PROMPT-RU.md)
 - Quick start: [`START-HERE.md`](START-HERE.md) / [`START-HERE-RU.md`](START-HERE-RU.md)
 - Version history: [`CHANGELOG.md`](CHANGELOG.md)
@@ -48,6 +49,7 @@ Core state files:
 - `templates/SOFTWARE.template.md`
 - `templates/MCP.template.md`
 - `templates/IMPORT-SOP.template.md`
+- `templates/LINKS.template.md`
 - `templates/GITIGNORE.template`
 
 ## Workflow
