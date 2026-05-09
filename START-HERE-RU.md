@@ -11,7 +11,7 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 ## Структура
 - корень проекта: короткие `AGENTS.md` / `CLAUDE.md`
 - `StatusProject/`: `PROMPT-RU.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- опционально: `STATUS-LOG.md`, `STATE-HISTORY.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
+- опционально: `STATUS-LOG.md`, `STATE-HISTORY.md`, `ARCHITECTURE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
 - для импортов: `IMPORT-SOP.md` из `templates/IMPORT-SOP.template.md`
 
 ## Когда использовать
@@ -28,7 +28,9 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 - Многоэтапная стратегия: добавь `PLAN`.
 - Долгая, пакетная работа, импорт, миграция, синхронизация, rollout: добавь `STATUS-LOG`; используй `IMPORT-SOP`, если есть перенос данных или повторяемые шаги импорта.
 - Завершенные детали, которые нужно убрать из активных файлов: добавь `STATE-HISTORY`.
-- Доменная работа: добавляй `INFRASTRUCTURE`, `SOFTWARE` или `MCP` только когда это уместно.
+- Доменная работа: добавляй `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE` или `MCP` только когда это уместно.
+- Используй `ARCHITECTURE`, когда проекту нужна устойчивая карта компонентов, интерфейсов, зависимостей или потоков данных.
+- Если используется `INFRASTRUCTURE`, явно распиши `prod`, `staging`, `dev`, `local` и поддерживай их статусы в актуальном виде.
 - Публикация/релиз: используй `GITIGNORE.template`, `LICENSE.template` и `VERSIONING.template` по необходимости.
 
 ## Запуск
@@ -53,5 +55,5 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 - `PROJECT-RESUME` — точка продолжения
 - `STATUS-LOG` — недавний ход длинных процессов
 - `STATE-HISTORY` — архив
-- `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — доменный контекст
+- `ARCHITECTURE` / `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — доменный контекст
 - `IMPORT-SOP` — сценарии импорта, миграции и пакетной обработки

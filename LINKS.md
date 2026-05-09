@@ -27,6 +27,7 @@ StatusProject
 │   ├── START-HERE-RU.md
 │   ├── CHANGELOG.md
 │   ├── VERSIONING.md
+│   ├── MCP.md
 │   └── LICENSE
 │
 ├── AI Settings
@@ -50,6 +51,7 @@ StatusProject
 │   ├── templates/PROJECT-RESUME.template.md
 │   ├── templates/STATUS-LOG.template.md
 │   ├── templates/STATE-HISTORY.template.md
+│   ├── templates/ARCHITECTURE.template.md
 │   ├── templates/INFRASTRUCTURE.template.md
 │   ├── templates/SOFTWARE.template.md
 │   ├── templates/MCP.template.md
@@ -74,6 +76,7 @@ StatusProject
 - [PROMPT-RU.md](PROMPT-RU.md)
 - [START-HERE.md](START-HERE.md)
 - [START-HERE-RU.md](START-HERE-RU.md)
+- [MCP.md](MCP.md)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
 - [AI-SETTINGS-INSTRUCTION-RU.md](AI-SETTINGS-INSTRUCTION-RU.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)

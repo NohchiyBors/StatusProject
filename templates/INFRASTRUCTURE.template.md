@@ -4,12 +4,22 @@
 - Owner: `<person/team>`
 - Criticality: `<low|medium|high|critical>`
 - Primary env: `<prod|staging|dev|local>`
+- Env labels: `prod = production`, `staging = pre-production`, `dev = development`, `local = operator machine`
+
+## Environment Status
+| Env | Role | Status | Source of truth | Last verified | Notes |
+| --- | --- | --- | --- | --- | --- |
+| prod | `production` | `<up|degraded|down|unknown>` | `<host/service/doc>` | `<YYYY-MM-DD>` | `<live customer-facing env>` |
+| staging | `pre-production` | `<up|degraded|down|unknown>` | `<host/service/doc>` | `<YYYY-MM-DD>` | `<release validation env>` |
+| dev | `development` | `<up|degraded|down|unknown>` | `<host/service/doc>` | `<YYYY-MM-DD>` | `<team integration env>` |
+| local | `operator machine` | `<ready|partial|blocked|unknown>` | `<host/service/doc>` | `<YYYY-MM-DD>` | `<single-user workstation env>` |
 
 ## Environments
 | Env | URL | Provider/region | Runtime | DB/storage | Notes |
 | --- | --- | --- | --- | --- | --- |
 | prod | `<url>` | `<provider/region>` | `<runtime>` | `<db/storage>` | `<notes>` |
 | staging | `<url>` | `<provider/region>` | `<runtime>` | `<db/storage>` | `<notes>` |
+| dev | `<url>` | `<provider/region>` | `<runtime>` | `<db/storage>` | `<notes>` |
 | local | `<command>` | `<tools>` | `<runtime>` | `<local deps>` | `<notes>` |
 
 ## Components

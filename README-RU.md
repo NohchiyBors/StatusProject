@@ -22,6 +22,7 @@
 - `START-HERE.md` / `START-HERE-RU.md` — быстрый старт
 - `CHANGELOG.md` — история версий GitHub
 - `VERSIONING.md` — правила версий и релизов
+- `MCP.md` — перечень MCP и инструментов проекта
 - `templates/` — англоязычные шаблоны
 - `templates/LICENSE.template` — шаблон лицензии для публикации на GitHub
 - `IMPORT-SOP-RU.md` — русская справка для импортов
@@ -33,7 +34,7 @@
 - `PROJECT-RESUME` — точка продолжения
 - `STATUS-LOG` — недавние шаги
 - `STATE-HISTORY` — архив
-- `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — доменные файлы
+- `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — доменные файлы
 - `IMPORT-SOP` — импорт, миграция, синхронизация, пакетное обновление
 
 ## Когда применять шаблоны
@@ -43,7 +44,9 @@
 - `STATUS-LOG`: долгая, пакетная, повторяемая работа, миграция, импорт, синхронизация или rollout.
 - `IMPORT-SOP`: импорты, миграции, синхронизации, пакетная обработка или перенос данных.
 - `STATE-HISTORY`: архив завершенных этапов вне активных файлов.
-- `INFRASTRUCTURE`, `SOFTWARE`, `MCP`: только для релевантного доменного контекста.
+- `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `MCP`: только для релевантного доменного контекста.
+- Используй `ARCHITECTURE` для компонентов, интерфейсов, зависимостей и потоков данных.
+- В `INFRASTRUCTURE` всегда явно фиксируй среды: `prod` = production, `dev` = development, плюс `staging` и `local`, если они существуют.
 - `LINKS`: компактная карта путей репозитория, документации, сервисов, шаблонов и источников обновлений.
 - `VERSIONING`: релизы, теги, changelog или публикация GitHub Release.
 - `GITIGNORE.template`: разворачивание репозитория и проверка готовности к публикации.

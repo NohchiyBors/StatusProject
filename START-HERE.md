@@ -9,7 +9,7 @@ Template and update sources: see `PROMPT.md`.
 ## Layout
 - project root: short `AGENTS.md` / `CLAUDE.md`
 - `StatusProject/`: `PROMPT.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
+- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `ARCHITECTURE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
 - imports: `IMPORT-SOP.md` from `templates/IMPORT-SOP.template.md`
 
 ## Use When
@@ -26,7 +26,9 @@ Do not use for short one-off tasks.
 - Multi-phase strategy: add `PLAN`.
 - Long, batch, import, migration, sync, rollout: add `STATUS-LOG`; use `IMPORT-SOP` when data movement or repeatable import steps are involved.
 - Completed details that should leave active files: add `STATE-HISTORY`.
-- Domain-specific work: add `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when relevant.
+- Domain-specific work: add `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when relevant.
+- Use `ARCHITECTURE` when the project needs a durable map of components, interfaces, dependencies, or data flows.
+- If `INFRASTRUCTURE` is used, map `prod`, `staging`, `dev`, and `local` explicitly and keep their statuses current.
 - Publication/release: use `GITIGNORE.template`, `LICENSE.template`, and `VERSIONING.template` as needed.
 
 ## Setup
@@ -51,5 +53,5 @@ Do not use for short one-off tasks.
 - `PROJECT-RESUME` — restart point
 - `STATUS-LOG` — recent progress for long work
 - `STATE-HISTORY` — archive
-- `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — domain context
+- `ARCHITECTURE` / `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — domain context
 - `IMPORT-SOP` — imports, migrations, batch processing

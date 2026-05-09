@@ -32,12 +32,13 @@ Operating docs:
 - `START-HERE.md` / `START-HERE-RU.md`
 - `README.md` / `README-RU.md`
 - `VERSIONING.md`
+- `MCP.md`
 - `IMPORT-SOP-RU.md`
 
 Core state files:
 
 - `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
+- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `ARCHITECTURE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
 
 ## When To Apply Templates
 
@@ -47,7 +48,9 @@ Core state files:
 - `STATUS-LOG`: long, batch, repeated, migration, import, sync, or rollout work.
 - `IMPORT-SOP`: imports, migrations, syncs, bulk processing, or data movement.
 - `STATE-HISTORY`: archive completed phases out of active files.
-- `INFRASTRUCTURE`, `SOFTWARE`, `MCP`: only for relevant domain context.
+- `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `MCP`: only for relevant domain context.
+- Use `ARCHITECTURE` for components, interfaces, dependencies, and data flows.
+- In `INFRASTRUCTURE`, always map environments explicitly: `prod` = production, `dev` = development, plus `staging` and `local` when they exist.
 - `LINKS`: compact map of repo paths, docs, services, templates, and update sources.
 - `VERSIONING`: releases, tags, changelog work, or GitHub Release publication.
 - `GITIGNORE.template`: repository deployment and publish-readiness checks.
@@ -61,6 +64,7 @@ Core state files:
 - `templates/PROJECT-RESUME.template.md`
 - `templates/STATUS-LOG.template.md`
 - `templates/STATE-HISTORY.template.md`
+- `templates/ARCHITECTURE.template.md`
 - `templates/INFRASTRUCTURE.template.md`
 - `templates/SOFTWARE.template.md`
 - `templates/MCP.template.md`

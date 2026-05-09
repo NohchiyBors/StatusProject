@@ -11,7 +11,8 @@
 - `README.md` / `README-RU.md` — справка
 - `CHANGELOG.md` — история версий
 - `VERSIONING.md` — правила релизов
+- `MCP.md` — перечень MCP и инструментов проекта
 - `templates/` — шаблоны
 - `IMPORT-SOP-RU.md` — русская справка для импортов
 
-Правила: включай `StatusProject`, когда задача сложная и одного ответа недостаточно; шаблоны на английском; минимальный state-набор — `TODO`, `MEMORY`, `PROJECT-RESUME`; для долгих/пакетных работ используй `STATUS-LOG`, для импортов/миграций/синхронизаций — `IMPORT-SOP.template.md`, для релизов — `VERSIONING.template.md`, для публикации на GitHub — `GITIGNORE.template` и `LICENSE.template`; обновления проверять не чаще 1 раза в 7 дней.
+Правила: включай `StatusProject`, когда задача сложная и одного ответа недостаточно; шаблоны на английском; минимальный state-набор — `TODO`, `MEMORY`, `PROJECT-RESUME`; для долгих/пакетных работ используй `STATUS-LOG`, для компонентов/интерфейсов/зависимостей/потоков данных — `ARCHITECTURE.template.md`, для импортов/миграций/синхронизаций — `IMPORT-SOP.template.md`, для релизов — `VERSIONING.template.md`, для публикации на GitHub — `GITIGNORE.template` и `LICENSE.template`; обновления проверять не чаще 1 раза в 7 дней.

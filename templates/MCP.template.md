@@ -5,15 +5,23 @@
 - Policy owner: `<who decides access>`
 - Last reviewed: `<YYYY-MM-DD>`
 
-## Canonical Tools
+## Canonical Remote Tools
 | Name | Type | Purpose | Use when | Notes |
 | --- | --- | --- | --- | --- |
 | `<github>` | `<app/mcp/connector/plugin>` | `<repos/PR/issues>` | `<condition>` | `<limits>` |
 | `<drive>` | `<app/mcp/connector/plugin>` | `<docs/files>` | `<condition>` | `<limits>` |
 
+## Local Development Tools
+| Name | Type | Purpose | Use when | Notes |
+| --- | --- | --- | --- | --- |
+| `<git>` | `<cli>` | `<version control>` | `<condition>` | `<limits>` |
+| `<shell>` | `<cli/runtime>` | `<local inspection or execution>` | `<condition>` | `<limits>` |
+| `<editor/patch tool>` | `<local tool>` | `<file edits>` | `<condition>` | `<limits>` |
+
 ## Selection Rules
 - Use MCP for external data, current remote state, permissions, or remote artifacts.
 - Prefer local files when they are sufficient.
+- Prefer local development tools for repository inspection, editing, formatting, and local verification.
 - If several tools apply, use the canonical source above.
 
 ## Access And Safety

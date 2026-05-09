@@ -13,8 +13,9 @@
 - `IMPORT-SOP-RU.md`
 - `CHANGELOG.md`
 - `VERSIONING.md`
+- `MCP.md`
 - `templates/`
 
 Целевая структура: короткие `AGENTS.md` / `CLAUDE.md` в корне, state-файлы внутри `StatusProject/`.
 
-Не дублируй полные инструкции; ссылайся на канонические файлы. Включай `StatusProject`, когда задача сложная и одного ответа недостаточно. Минимальный state-набор — `TODO`, `MEMORY`, `PROJECT-RESUME`; для долгих/пакетных работ используй `STATUS-LOG`, для импортов/миграций/синхронизаций — `IMPORT-SOP.template.md`, для релизов — `VERSIONING.template.md`, для публикации на GitHub — `GITIGNORE.template` и `LICENSE.template`. Русская справка для импортов — `IMPORT-SOP-RU.md`.
+Не дублируй полные инструкции; ссылайся на канонические файлы. Включай `StatusProject`, когда задача сложная и одного ответа недостаточно. Минимальный state-набор — `TODO`, `MEMORY`, `PROJECT-RESUME`; для долгих/пакетных работ используй `STATUS-LOG`, для компонентов/интерфейсов/зависимостей/потоков данных — `ARCHITECTURE.template.md`, для импортов/миграций/синхронизаций — `IMPORT-SOP.template.md`, для релизов — `VERSIONING.template.md`, для публикации на GitHub — `GITIGNORE.template` и `LICENSE.template`. Русская справка для импортов — `IMPORT-SOP-RU.md`.

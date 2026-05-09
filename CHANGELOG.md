@@ -6,7 +6,20 @@ This project uses semantic version tags for public releases.
 
 ## Unreleased
 
+No unreleased changes yet.
+
+## v0.2.0 - 2026-05-09
+
 ### Added
+- `templates/ARCHITECTURE.template.md` for components, interfaces, dependencies, data flows, deployment mapping, and architecture decisions.
+- `MCP.md` as the canonical MCP and development-tool inventory for `StatusProject` itself.
+- Local development tool coverage in `templates/MCP.template.md`.
+
+### Changed
+- Updated AI instruction files, prompts, quick-start files, README files, and link tree to include `ARCHITECTURE` and `MCP`.
+- Expanded `templates/INFRASTRUCTURE.template.md` with explicit environment identity and status tracking for `prod`, `staging`, `dev`, and `local`.
+- Expanded `templates/GITIGNORE.template` to ignore local `ARCHITECTURE-*.md` files.
+- Updated root `AGENTS.md` and `CLAUDE.md` so agents read and maintain `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, and `MCP` when present.
 - `templates/LICENSE.template` for GitHub publication.
 - Explicit template-use rules in prompts, quick-start files, README files, and AI compatibility instructions.
 - The rule to enable `StatusProject` when a task is complex and one answer is not enough.

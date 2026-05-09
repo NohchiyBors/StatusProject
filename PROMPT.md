@@ -24,7 +24,7 @@ Do not enable for short one-off tasks.
 - `PROJECT-RESUME` — next-session restart point
 - `STATUS-LOG` — recent progress for long/batch work
 - `STATE-HISTORY` — archive of completed phases
-- `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — optional domain files
+- `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — optional domain files
 - `IMPORT-SOP` — import, migration, sync, batch processing
 - `LINKS` — compact link tree for repository, local paths, instructions, templates, and update sources
 - `VERSIONING` — release rules, changelog flow, tags, and GitHub Release checklist
@@ -39,7 +39,9 @@ Apply templates when a target repository or workstream needs durable project fil
 - Add `STATUS-LOG` for long, batch, repeated, migration, import, sync, or rollout work.
 - Add `STATE-HISTORY` when completed details need to be archived out of active files.
 - Add `IMPORT-SOP` for imports, migrations, syncs, package/bulk processing, or data movement.
-- Add `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when that domain is actually part of the project.
+- Add `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when that domain is actually part of the project.
+- Use `ARCHITECTURE` for a durable map of components, interfaces, dependencies, and data flows.
+- In `INFRASTRUCTURE`, always record environment identity and status explicitly: `prod` = production, `dev` = development, then `staging` and `local` if present. Avoid ambiguous labels.
 - Add `LINKS` when repository paths, docs, services, templates, or update sources need one compact map.
 - Add `VERSIONING` before releases, tags, changelog work, or GitHub Release publication.
 - Use `GITIGNORE.template` when deploying into a repository or checking publish readiness.
@@ -66,7 +68,7 @@ Apply templates when a target repository or workstream needs durable project fil
 When deploying, check or create `.gitignore`. Do not overwrite an existing file without review. Use `templates/GITIGNORE.template` as the base block.
 
 Exclude:
-- local state: `TODO-*.md`, `MEMORY-*.md`, `PROJECT-RESUME-*.md`, `STATUS-LOG-*.md`, `STATE-HISTORY-*.md`, `PLAN-*.md`, `INFRASTRUCTURE-*.md`, `SOFTWARE-*.md`, `MCP-*.md`
+- local state: `TODO-*.md`, `MEMORY-*.md`, `PROJECT-RESUME-*.md`, `STATUS-LOG-*.md`, `STATE-HISTORY-*.md`, `PLAN-*.md`, `ARCHITECTURE-*.md`, `INFRASTRUCTURE-*.md`, `SOFTWARE-*.md`, `MCP-*.md`
 - secrets: `.env`, `.env.*`, keys, certificates, `secrets/`, `private/`
 - logs/temp: `*.log`, `logs/`, `tmp/`, `temp/`, `*.bak`, `*.backup`
 - local tool state: `.codex/`, `.claude/`, `.cursor/`
