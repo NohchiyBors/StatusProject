@@ -36,7 +36,9 @@ StatusProject
 │   ├── AI-SETTINGS-INSTRUCTION.md
 │   ├── AI-SETTINGS-INSTRUCTION-RU.md
 │   ├── AGENTS.md
-│   └── CLAUDE.md
+│   ├── CLAUDE.md
+│   ├── templates/GEMINI.template.md
+│   └── templates/COPILOT_INSTRUCTIONS.template.md
 │
 ├── Import
 │   ├── IMPORT-SOP-RU.md
@@ -51,10 +53,16 @@ StatusProject
 │   ├── templates/PROJECT-RESUME.template.md
 │   ├── templates/STATUS-LOG.template.md
 │   ├── templates/STATE-HISTORY.template.md
+│   ├── templates/REQUIREMENTS.template.md
 │   ├── templates/ARCHITECTURE.template.md
+│   ├── templates/PROJECT-TREE.template.md
 │   ├── templates/INFRASTRUCTURE.template.md
 │   ├── templates/SOFTWARE.template.md
+│   ├── templates/DEVELOPMENT-STATUS.template.md
+│   ├── templates/TESTING.template.md
 │   ├── templates/MCP.template.md
+│   ├── templates/GEMINI.template.md
+│   ├── templates/COPILOT_INSTRUCTIONS.template.md
 │   ├── templates/GITIGNORE.template
 │   └── templates/LICENSE.template
 │

@@ -24,12 +24,13 @@
 - `PROJECT-RESUME` — точка старта следующей сессии
 - `STATUS-LOG` — недавний ход длинных или пакетных работ
 - `STATE-HISTORY` — архив завершенных этапов
-- `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `MCP` — доменные файлы при необходимости
+- `REQUIREMENTS`, `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING`, `MCP` — доменные файлы при необходимости
 - `IMPORT-SOP` — импорт, миграция, синхронизация, пакетная обработка
 - `LINKS` — компактное дерево ссылок на репозиторий, локальные пути, инструкции, шаблоны и источники обновлений
 - `VERSIONING` — правила релизов, changelog, теги и GitHub Release checklist
 
 Шаблоны в `templates/` веди на английском. Английская версия этого файла: `PROMPT.md`.
+StatusProject state-файлы храни внутри `StatusProject/`, а не в корне репозитория. В корне оставляй только короткие входные файлы вроде `AGENTS.md` и `CLAUDE.md`.
 
 ## Когда применять шаблоны
 Применяй шаблоны, когда целевому репозиторию или потоку работ нужны устойчивые проектные файлы, файлы публикации или повторяемый рабочий журнал.
@@ -38,10 +39,15 @@
 - Добавляй `PLAN`, если есть несколько этапов, параллельные потоки или стратегические решения.
 - Добавляй `STATUS-LOG` для долгих, пакетных, повторяемых работ, миграций, импортов, синхронизаций или rollout-задач.
 - Добавляй `STATE-HISTORY`, когда завершенные детали нужно вынести из активных файлов.
+- Добавляй `REQUIREMENTS`, когда нужен устойчивый источник истины для scope, приоритетов или acceptance.
 - Добавляй `IMPORT-SOP` для импортов, миграций, синхронизаций, пакетной обработки или переноса данных.
-- Добавляй `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE` или `MCP` только если этот домен реально участвует в проекте.
+- Добавляй `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING` или `MCP` только если этот домен реально участвует в проекте.
 - Используй `ARCHITECTURE` для устойчивой карты компонентов, интерфейсов, зависимостей и потоков данных.
+- Используй `PROJECT-TREE` для дерева репозитория, сервисов и зависимостей.
 - В `INFRASTRUCTURE` всегда явно фиксируй идентичность и статус сред: `prod` = production, `dev` = development, затем `staging` и `local`, если они есть. Не используй двусмысленные метки.
+- Локальные системы могут хранить секреты в `.env` или `.env.*`; для staging/prod предпочитай platform environment variables или secret manager. В Git коммить только `.env.example`, не реальные секреты.
+- Используй `DEVELOPMENT-STATUS` для дерева прогресса, процентов выполнения, блокеров и release readiness.
+- Используй `TESTING` для test scope, quality gates, критичных сценариев и release checks.
 - Добавляй `LINKS`, когда нужны компактная карта путей репозитория, документации, сервисов, шаблонов и источников обновлений.
 - Добавляй `VERSIONING` перед релизами, тегами, changelog-работой или публикацией GitHub Release.
 - Используй `GITIGNORE.template` при разворачивании в репозитории или проверке готовности к публикации.
@@ -60,6 +66,12 @@
 - Смену крупных потоков отражай в `PLAN`.
 - Итог сессии или важный чекпоинт записывай в `PROJECT-RESUME`.
 - Старые детали выноси в `STATE-HISTORY`, чтобы не раздувать рабочие файлы.
+- Правила синхронизации файлов:
+  - если меняется scope или acceptance, проверь `REQUIREMENTS`, затем `ARCHITECTURE`, `SOFTWARE` и `TODO`
+  - если меняется архитектура, проверь `ARCHITECTURE`, затем `SOFTWARE`, `TESTING` и `INFRASTRUCTURE`
+  - если меняются окружения или деплой, проверь `INFRASTRUCTURE`, затем `TESTING` и `VERSIONING`
+  - если меняется toolchain или коннекторы, проверь `MCP`
+  - если меняется release flow или release bar, проверь `TESTING` и `VERSIONING`
 - MCP, коннекторы и плагины фиксируй в `MCP`: имена, когда применять, доступы, ограничения, fallback.
 - Импорты, миграции и пакетные обновления веди по `templates/IMPORT-SOP.template.md`; русская справка — `IMPORT-SOP-RU.md`.
 - Перед публикацией релизов используй `VERSIONING.md`.
@@ -68,7 +80,7 @@
 При развёртывании проверь или создай `.gitignore`. Не перезаписывай существующий файл без анализа. Используй `templates/GITIGNORE.template` как базовый блок.
 
 Исключай:
-- локальные state-файлы: `TODO-*.md`, `MEMORY-*.md`, `PROJECT-RESUME-*.md`, `STATUS-LOG-*.md`, `STATE-HISTORY-*.md`, `PLAN-*.md`, `ARCHITECTURE-*.md`, `INFRASTRUCTURE-*.md`, `SOFTWARE-*.md`, `MCP-*.md`
+- локальные state-файлы: `TODO-*.md`, `MEMORY-*.md`, `PROJECT-RESUME-*.md`, `STATUS-LOG-*.md`, `STATE-HISTORY-*.md`, `PLAN-*.md`, `REQUIREMENTS-*.md`, `ARCHITECTURE-*.md`, `PROJECT-TREE-*.md`, `INFRASTRUCTURE-*.md`, `SOFTWARE-*.md`, `DEVELOPMENT-STATUS-*.md`, `TESTING-*.md`, `MCP-*.md`
 - секреты: `.env`, `.env.*`, ключи, сертификаты, `secrets/`, `private/`
 - логи и временные файлы: `*.log`, `logs/`, `tmp/`, `temp/`, `*.bak`, `*.backup`
 - локальное состояние инструментов: `.codex/`, `.claude/`, `.cursor/`

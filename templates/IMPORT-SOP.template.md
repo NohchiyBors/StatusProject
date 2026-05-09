@@ -2,6 +2,12 @@
 
 Use for imports, migrations, catalog syncs, and batch updates.
 
+## Life Cycle Context
+- Process type: `<transition|operation|maintenance|migration|retirement>`
+- System of interest: `<system/data set/service>`
+- Stakeholders: `<owner/users/downstream systems>`
+- Acceptance rule: `<what proves the import is valid>`
+
 ## Inputs
 - Source export: `<file>`
 - Working import file: `<file>`
@@ -15,6 +21,11 @@ Use for imports, migrations, catalog syncs, and batch updates.
 - Links/media target: `<domain/storage>`
 - Missing in fresh source: `<archive|mark|skip>`
 - Required fields: `<fields>`
+
+## Requirements Trace
+| Requirement | Source | Import rule | Verification |
+| --- | --- | --- | --- |
+| `<data/business requirement>` | `<stakeholder/doc>` | `<mapping/transform>` | `<check/report>` |
 
 ## Flow
 1. Fetch fresh source: `<command/url/path>`.
@@ -32,10 +43,20 @@ Use for imports, migrations, catalog syncs, and batch updates.
 - Missing-record rule was applied.
 - Import report: errors `0`, updated `>0`.
 
+## Verification And Validation
+| Item | Method | Expected | Actual | Result |
+| --- | --- | --- | --- | --- |
+| `<file/field/record count/link>` | `<script/manual review/sample>` | `<expected>` | `<actual>` | `<pass|fail|partial>` |
+
 ## Failures
 - File will not open: close editors, copy, resave.
 - Structure broken: restore last working copy, repeat only needed step.
 - Missing mapping: do not auto-add; record for manual follow-up.
+
+## Transition / Rollback
+- Cutover: `<when/how final output replaces old state>`
+- Rollback: `<backup/restore rule>`
+- Downstream notification: `<who/when>`
 
 ## State
 - `TODO-<project>.md`

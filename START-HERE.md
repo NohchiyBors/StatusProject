@@ -9,7 +9,7 @@ Template and update sources: see `PROMPT.md`.
 ## Layout
 - project root: short `AGENTS.md` / `CLAUDE.md`
 - `StatusProject/`: `PROMPT.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `ARCHITECTURE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
+- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`
 - imports: `IMPORT-SOP.md` from `templates/IMPORT-SOP.template.md`
 
 ## Use When
@@ -24,12 +24,28 @@ Do not use for short one-off tasks.
 ## Template Use
 - Minimum state when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
 - Multi-phase strategy: add `PLAN`.
+- Stable scope or acceptance: add `REQUIREMENTS`.
 - Long, batch, import, migration, sync, rollout: add `STATUS-LOG`; use `IMPORT-SOP` when data movement or repeatable import steps are involved.
 - Completed details that should leave active files: add `STATE-HISTORY`.
-- Domain-specific work: add `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, or `MCP` only when relevant.
+- Domain-specific work: add `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING`, or `MCP` only when relevant.
 - Use `ARCHITECTURE` when the project needs a durable map of components, interfaces, dependencies, or data flows.
+- Use `PROJECT-TREE` when the project needs a tree of repositories, services, and dependencies.
 - If `INFRASTRUCTURE` is used, map `prod`, `staging`, `dev`, and `local` explicitly and keep their statuses current.
+- Use `DEVELOPMENT-STATUS` when the project needs explicit tree-based progress tracking with percentages and blockers.
+- Use `TESTING` when the project needs explicit quality gates, scenario coverage, or release checks.
 - Publication/release: use `GITIGNORE.template`, `LICENSE.template`, and `VERSIONING.template` as needed.
+
+## File Selection Matrix
+| Condition | Add file |
+| --- | --- |
+| `stable scope / acceptance` | `REQUIREMENTS` |
+| `system structure / contracts` | `ARCHITECTURE` |
+| `repo/service tree` | `PROJECT-TREE` |
+| `deploy/runtime environments` | `INFRASTRUCTURE` |
+| `implementation map / commands` | `SOFTWARE` |
+| `tree-based progress / %` | `DEVELOPMENT-STATUS` |
+| `quality gates / release confidence` | `TESTING` |
+| `external tools/connectors` | `MCP` |
 
 ## Setup
 1. Copy `StatusProject/` or selected templates into the target repository.
@@ -53,5 +69,5 @@ Do not use for short one-off tasks.
 - `PROJECT-RESUME` — restart point
 - `STATUS-LOG` — recent progress for long work
 - `STATE-HISTORY` — archive
-- `ARCHITECTURE` / `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — domain context
+- `REQUIREMENTS` / `ARCHITECTURE` / `PROJECT-TREE` / `INFRASTRUCTURE` / `SOFTWARE` / `DEVELOPMENT-STATUS` / `TESTING` / `MCP` — domain context
 - `IMPORT-SOP` — imports, migrations, batch processing

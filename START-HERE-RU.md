@@ -11,7 +11,7 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 ## Структура
 - корень проекта: короткие `AGENTS.md` / `CLAUDE.md`
 - `StatusProject/`: `PROMPT-RU.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- опционально: `STATUS-LOG.md`, `STATE-HISTORY.md`, `ARCHITECTURE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `MCP.md`
+- опционально: `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`
 - для импортов: `IMPORT-SOP.md` из `templates/IMPORT-SOP.template.md`
 
 ## Когда использовать
@@ -26,12 +26,28 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 ## Когда применять шаблоны
 - Минимальный набор при включении: `TODO`, `MEMORY`, `PROJECT-RESUME`.
 - Многоэтапная стратегия: добавь `PLAN`.
+- Устойчивый scope или acceptance: добавь `REQUIREMENTS`.
 - Долгая, пакетная работа, импорт, миграция, синхронизация, rollout: добавь `STATUS-LOG`; используй `IMPORT-SOP`, если есть перенос данных или повторяемые шаги импорта.
 - Завершенные детали, которые нужно убрать из активных файлов: добавь `STATE-HISTORY`.
-- Доменная работа: добавляй `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE` или `MCP` только когда это уместно.
+- Доменная работа: добавляй `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING` или `MCP` только когда это уместно.
 - Используй `ARCHITECTURE`, когда проекту нужна устойчивая карта компонентов, интерфейсов, зависимостей или потоков данных.
+- Используй `PROJECT-TREE`, когда проекту нужно дерево репозитория, сервисов и зависимостей.
 - Если используется `INFRASTRUCTURE`, явно распиши `prod`, `staging`, `dev`, `local` и поддерживай их статусы в актуальном виде.
+- Используй `DEVELOPMENT-STATUS`, когда нужны дерево прогресса, проценты выполнения и блокеры.
+- Используй `TESTING`, когда нужны явные quality gates, покрытие сценариев или release checks.
 - Публикация/релиз: используй `GITIGNORE.template`, `LICENSE.template` и `VERSIONING.template` по необходимости.
+
+## Матрица выбора файлов
+| Условие | Добавить файл |
+| --- | --- |
+| `устойчивый scope / acceptance` | `REQUIREMENTS` |
+| `структура системы / контракты` | `ARCHITECTURE` |
+| `дерево репозитория / сервисов` | `PROJECT-TREE` |
+| `окружения и деплой` | `INFRASTRUCTURE` |
+| `карта реализации / команды` | `SOFTWARE` |
+| `дерево прогресса / проценты` | `DEVELOPMENT-STATUS` |
+| `quality gates / уверенность в релизе` | `TESTING` |
+| `внешние инструменты / коннекторы` | `MCP` |
 
 ## Запуск
 1. Скопируй `StatusProject/` или нужные шаблоны в целевой репозиторий.
@@ -55,5 +71,5 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 - `PROJECT-RESUME` — точка продолжения
 - `STATUS-LOG` — недавний ход длинных процессов
 - `STATE-HISTORY` — архив
-- `ARCHITECTURE` / `INFRASTRUCTURE` / `SOFTWARE` / `MCP` — доменный контекст
+- `REQUIREMENTS` / `ARCHITECTURE` / `PROJECT-TREE` / `INFRASTRUCTURE` / `SOFTWARE` / `DEVELOPMENT-STATUS` / `TESTING` / `MCP` — доменный контекст
 - `IMPORT-SOP` — сценарии импорта, миграции и пакетной обработки

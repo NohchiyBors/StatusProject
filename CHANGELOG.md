@@ -8,6 +8,23 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.3.0 - 2026-05-09
+
+### Added
+- `SYSTEMS-ENGINEERING-RU.md` as a practical Russian guide for applying systems engineering to `StatusProject`.
+- `templates/REQUIREMENTS.template.md` for scope, priorities, and acceptance rules.
+- `templates/TESTING.template.md` for quality gates, critical scenarios, and release checks.
+- `templates/PROJECT-TREE.template.md` for repository and service trees.
+- `templates/DEVELOPMENT-STATUS.template.md` for tree-based progress tracking with percentages.
+- `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md` as lightweight root-entry adapters.
+
+### Changed
+- Expanded templates with systems engineering fields for life cycle stage, stakeholders, requirements, verification, validation, transition, operation, maintenance, and retirement.
+- Updated prompts, quick-start files, README files, AI instruction files, and link tree to include `REQUIREMENTS`, `PROJECT-TREE`, `DEVELOPMENT-STATUS`, `TESTING`, and new root-entry adapters.
+- Clarified that StatusProject state files belong inside `StatusProject/`, not repository root entrypoints.
+- Clarified secret handling: local systems may use `.env` / `.env.*`, while staging/production should use environment variables or secret managers.
+- Expanded `.gitignore` guidance to ignore both bare state filenames and patterned local state files.
+
 ## v0.2.0 - 2026-05-09
 
 ### Added

@@ -22,6 +22,7 @@
 │   ├── README.md
 │   ├── PROMPT.md
 │   ├── START-HERE.md
+│   ├── ARCHITECTURE.md
 │   ├── CHANGELOG.md
 │   ├── VERSIONING.md
 │   └── LICENSE
@@ -39,6 +40,11 @@
 │   ├── templates/TODO.template.md
 │   ├── templates/MEMORY.template.md
 │   ├── templates/PROJECT-RESUME.template.md
+│   ├── templates/ARCHITECTURE.template.md
+│   ├── templates/INFRASTRUCTURE.template.md
+│   ├── templates/SOFTWARE.template.md
+│   ├── templates/MCP.template.md
+│   ├── templates/IMPORT-SOP.template.md
 │   ├── templates/STATUS-LOG.template.md
 │   ├── templates/STATE-HISTORY.template.md
 │   └── templates/LICENSE.template
@@ -58,6 +64,13 @@
 - [README.md](README.md)
 - [PROMPT.md](PROMPT.md)
 - [START-HERE.md](START-HERE.md)
+- [ARCHITECTURE.md](ARCHITECTURE.md)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
+- [templates/ARCHITECTURE.template.md](templates/ARCHITECTURE.template.md)
 - [templates/LICENSE.template](templates/LICENSE.template)
+
+## Systems Engineering Trace
+| Link type | Purpose | Life cycle process supported |
+| --- | --- | --- |
+| `<repo/doc/tool>` | `<why it matters>` | `<process area>` |

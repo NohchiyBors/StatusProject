@@ -4,6 +4,13 @@
 - Owner: `<person/team>`
 - Policy owner: `<who decides access>`
 - Last reviewed: `<YYYY-MM-DD>`
+- System role: tool and connector interface inventory for the project life cycle.
+- Life cycle stage: `<development|utilization|support|retirement>`
+
+## Stakeholder And Access Requirements
+| Requirement | Source | Tool impact | Verification |
+| --- | --- | --- | --- |
+| `<access/current-state/safety requirement>` | `<person/policy>` | `<tool/scope>` | `<review/test/log>` |
 
 ## Canonical Remote Tools
 | Name | Type | Purpose | Use when | Notes |
@@ -37,9 +44,14 @@
 4. If unavailable, record blocker and fallback.
 
 ## Scenarios
-| Scenario | Tool | Input | Output | State update |
-| --- | --- | --- | --- | --- |
-| `<scenario>` | `<name>` | `<input>` | `<output>` | `<file>` |
+| Scenario | Life cycle process | Tool | Input | Output | State update |
+| --- | --- | --- | --- | --- | --- |
+| `<scenario>` | `<process area>` | `<name>` | `<input>` | `<output>` | `<file>` |
+
+## Verification
+| Check | Method | Evidence | Status |
+| --- | --- | --- | --- |
+| `<tool works / access is appropriate / fallback exists>` | `<test/review>` | `<result>` | `<pass|fail|unknown>` |
 
 ## Constraints / Decisions
 - Constraints: `<constraint>`, `<constraint>`

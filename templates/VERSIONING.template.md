@@ -1,9 +1,20 @@
 # VERSIONING: <Project>
 
+## Life Cycle Context
+- Release role: transition baseline from development to utilization/support.
+- System baseline: `<version/tag/artifact>`
+- Release authority: `<person/team>`
+- Acceptance rule: `<what must be true before tag/release>`
+
 ## Version Rules
 - `patch`: `<small fixes/docs/templates/process improvements>`
 - `minor`: `<new workflows/features/non-breaking structure changes>`
 - `major`: `<breaking layout/API/compatibility changes>`
+
+## Release Requirements
+| Requirement / change | Source | Verification | Release impact |
+| --- | --- | --- | --- |
+| `<change>` | `<issue/doc/stakeholder>` | `<check/evidence>` | `<patch|minor|major>` |
 
 ## Release Checklist
 1. Confirm intended public changes only.
@@ -18,6 +29,14 @@
 7. Push branch and tag.
 8. Create release notes.
 9. Verify release.
+
+## Verification And Validation
+| Check | Evidence | Result |
+| --- | --- | --- |
+| Public files only | `<git status/diff>` | `<pass|fail>` |
+| Changelog matches release | `<CHANGELOG.md>` | `<pass|fail>` |
+| Tag and release match | `<tag/release URL>` | `<pass|fail>` |
+| Installation/update path works | `<manual/scripted check>` | `<pass|fail>` |
 
 ## Release Notes
 - Added: `<items>`
