@@ -8,6 +8,24 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.4.0 - 2026-05-13
+
+### Added
+- `install-statusproject.ps1`, `install-statusproject.sh`, and `install-statusproject.bat` for portable installation into target repositories.
+- `update-statusproject.ps1`, `update-statusproject.sh`, and `update-statusproject.bat` for state-safe updates of existing deployments.
+- `templates/SOURCE.template.md` to record installed version, source type, local source path, release URL, and update policy.
+- Context-budget rules so agents read `PROJECT-RESUME`, `TODO`, and `MEMORY` first and only open optional docs when needed.
+
+### Changed
+- Replaced hardcoded local template paths with `StatusProject/SOURCE.md` plus GitHub latest release fallback.
+- Clarified strict target layout: target repo root gets only short AI entry files; all StatusProject docs, templates, and state files stay inside root-level `StatusProject/`.
+- Updated AI instructions, prompts, quick-start files, README files, and link trees for the installer, updater, strict layout, and context-budget workflow.
+- Updated `templates/MEMORY.template.md` to prefer relative project paths, repo URLs, APIs, or source roles in `Sources`.
+
+### Safety
+- Updater backs up replaced files under `StatusProject/.backup/update-YYYYMMDD-HHMMSS/`.
+- Updater preserves local state files and updates root AI entry files only by explicit selection.
+
 ## v0.3.0 - 2026-05-09
 
 ### Added

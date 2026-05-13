@@ -1,16 +1,25 @@
 # Быстрый старт: StatusProject
 
-Папка шаблона: `D:\Data\OneDrive\source\StatusProject`
+Путь глобальной source-копии по умолчанию:
+- Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+- Linux/macOS: `~/.statusproject/source/StatusProject`
 
 GitHub: https://github.com/NohchiyBors/StatusProject
 Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
-Источники шаблонов и обновлений: см. `PROMPT-RU.md`.
+Источники шаблонов и обновлений: см. `PROMPT.md` и `StatusProject/SOURCE.md`.
 
 Английская версия: `START-HERE.md`.
 
+## Бюджет контекста
+- Начинай с `PROJECT-RESUME`, `TODO`, `MEMORY`.
+- `PLAN` добавляй только для многоэтапной работы.
+- Логи, историю и доменные файлы открывай только когда они нужны задаче.
+- Используй `LINKS` для поиска файлов вместо открытия всех документов.
+- Не читай `README`, `CHANGELOG`, `VERSIONING`, установщики или шаблоны, если задача не про документацию, релиз, установку или обновление шаблонов.
+
 ## Структура
-- корень проекта: короткие `AGENTS.md` / `CLAUDE.md`
-- `StatusProject/`: `PROMPT-RU.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
+- корень проекта: только короткие AI-entry файлы `StatusProject` (`AGENTS.md`, `CLAUDE.md`, опционально `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`)
+- `StatusProject/`: operating docs, templates и все state-файлы: `PROMPT.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
 - опционально: `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`
 - для импортов: `IMPORT-SOP.md` из `templates/IMPORT-SOP.template.md`
 
@@ -50,19 +59,22 @@ GitHub: https://github.com/NohchiyBors/StatusProject
 | `внешние инструменты / коннекторы` | `MCP` |
 
 ## Запуск
-1. Скопируй `StatusProject/` или нужные шаблоны в целевой репозиторий.
-2. В корне оставь короткий `AGENTS.md` / `CLAUDE.md` со ссылкой на `StatusProject/`.
-3. Создай state-файлы из `templates/` на английском.
-4. Проверь или создай `.gitignore` по `templates/GITIGNORE.template`.
-5. Создай `LICENSE` из `templates/LICENSE.template` перед публикацией на GitHub.
-6. В сессии читай: `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, затем при необходимости `STATUS-LOG`, `STATE-HISTORY`.
-7. После заметного шага обновляй state-файлы.
+1. Установи `StatusProject/` в целевой репозиторий через `install-statusproject.ps1`, `install-statusproject.sh` или ручное копирование.
+2. В корне оставь только короткие AI-entry файлы со ссылкой на `StatusProject/`.
+3. Держи root AI-entry файлы стабильными и короткими. По умолчанию обновляй документы внутри `StatusProject/`, а root AI-entry заменяй только если это явно выбрано в установщике.
+4. Создай state-файлы из `templates/` на английском.
+5. Проверь или создай `.gitignore` по `templates/GITIGNORE.template`.
+6. Создай `LICENSE` из `templates/LICENSE.template` перед публикацией на GitHub.
+7. В сессии сначала читай бюджетный набор: `PROJECT-RESUME`, `TODO`, `MEMORY`; `PLAN`, логи, историю и доменные файлы добавляй только когда нужны.
+8. После заметного шага обновляй state-файлы.
 
 ## Обновления
 - Проверять не чаще 1 раза в 7 дней на проект.
 - Дату проверки писать в `MEMORY` или `PROJECT-RESUME`.
 - Если шаблон новее, предложить пользователю обновление и список файлов.
 - Не перезаписывать локальные state-файлы без согласия.
+- При работе через установщик отдельно выбирать, какие AI-entry файлы ставить или обновлять, и не заменять существующие пользовательские промты без явного выбора.
+- Для уже развернутых проектов используй `update-statusproject.ps1` или `update-statusproject.sh`; он обновляет поставляемые docs/templates, делает backup, обновляет `SOURCE.md` и сохраняет локальные state-файлы.
 
 ## Роли
 - `PLAN` — стратегия

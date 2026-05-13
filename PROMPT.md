@@ -2,12 +2,24 @@
 
 Maintain long-running work through project-state files, not only chat.
 
+## Context Budget
+- Read the smallest useful set first: root AI entry -> `StatusProject/SOURCE.md` -> `PROJECT-RESUME` -> `TODO` -> `MEMORY`.
+- Read `PLAN` only for multi-phase work. Read `STATUS-LOG` / `STATE-HISTORY` only when recent history or archived decisions are needed.
+- Read domain files (`REQUIREMENTS`, `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING`, `MCP`) only when the task touches that domain.
+- Use `LINKS` as a navigation map instead of opening many docs to find paths.
+- Do not read `README`, `CHANGELOG`, `VERSIONING`, installer files, or templates unless the task is about docs, releases, installation, or template updates.
+- Keep active state compact: current facts in active files, old details in `STATE-HISTORY`, verbose evidence in `STATUS-LOG`.
+- In `Sources`, prefer relative project paths, repo URLs, APIs, or source roles. Keep machine-specific absolute paths only in local-only fields such as `Workspace` or `SOURCE.md` local source path.
+
 ## Links
-- Local folder: `D:\Data\OneDrive\source\StatusProject`
+- Local source role: recorded in `StatusProject/SOURCE.md`
 - GitHub repo: https://github.com/NohchiyBors/StatusProject
 - Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Template source: `D:\Data\OneDrive\source\StatusProject\templates`
-- Update source: compare the target project's deployed `StatusProject/` files with the local template source and, when needed, the GitHub latest release.
+- Default global source path:
+  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+  - Linux/macOS: `~/.statusproject/source/StatusProject`
+- Template source: recorded in `StatusProject/SOURCE.md`
+- Update source: compare the target project's deployed `StatusProject/` files with the source recorded in `StatusProject/SOURCE.md` and, when needed, the GitHub latest release.
 
 ## Enable When
 - the task is complex enough that one answer will not be enough
@@ -28,9 +40,10 @@ Do not enable for short one-off tasks.
 - `IMPORT-SOP` — import, migration, sync, batch processing
 - `LINKS` — compact link tree for repository, local paths, instructions, templates, and update sources
 - `VERSIONING` — release rules, changelog flow, tags, and GitHub Release checklist
+- `SOURCE` — installation source, version, and update path
 
 Keep `templates/` in English.
-Store StatusProject state files inside `StatusProject/`, not in the repository root. Keep only short entry files such as `AGENTS.md` and `CLAUDE.md` in root.
+In target projects, keep all StatusProject operating docs, templates, and state files inside the root-level `StatusProject/` folder. Do not place StatusProject docs or state files in the repository root. The only StatusProject files allowed in the repository root are short AI entry files such as `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and `COPILOT_INSTRUCTIONS.md`.
 
 ## Template Use
 Apply templates when a target repository or workstream needs durable project files, publication files, or a repeatable operating record.
@@ -54,13 +67,15 @@ Apply templates when a target repository or workstream needs durable project fil
 - Use `LICENSE.template` before publishing a repository to GitHub, or when a repository has no approved `LICENSE`.
 
 ## Session Start
-1. Read saved context: `PLAN*`, `TODO*`, `MEMORY*`, `PROJECT-RESUME*`, then optional `STATUS-LOG*`, `STATE-HISTORY*`.
-2. Identify current goal, next concrete step, and blockers.
-3. Check `StatusProject` updates at most once per 7 days per project. Compare against `D:\Data\OneDrive\source\StatusProject` and/or the GitHub latest release. Record the check date in `MEMORY` or `PROJECT-RESUME`.
-4. If the template is newer, list affected files and propose an update. Do not overwrite local state files without approval.
+1. Read saved context in budget order: `PROJECT-RESUME*`, `TODO*`, `MEMORY*`, then `PLAN*` only when needed.
+2. Add optional files only by trigger: `STATUS-LOG*` for recent long work, `STATE-HISTORY*` for archived decisions, domain files for domain tasks.
+3. Identify current goal, next concrete step, and blockers.
+4. Check `StatusProject` updates at most once per 7 days per project. Compare against the source recorded in `StatusProject/SOURCE.md` and/or the GitHub latest release. Record the check date in `MEMORY` or `PROJECT-RESUME`.
+5. If the template is newer, list affected files and propose an update. Use `update-statusproject.ps1` or `update-statusproject.sh` for existing deployments. Do not overwrite local state files without approval.
 
 ## Work Rules
 - Update state files after meaningful progress.
+- Prefer concise deltas over full rewrites.
 - Mark completed work in `TODO`.
 - Record durable rules/decisions in `MEMORY`.
 - Reflect major workstream changes in `PLAN`.

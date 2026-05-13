@@ -29,8 +29,9 @@
 - Known gap: `<gap/risk>`
 
 ## Sources
-- `<canonical file/data/API>`
-- `<canonical file/data/API>`
+- `<relative project path, repo URL, API, or source role>`
+- `<avoid machine-specific absolute paths unless this is local-only state>`
+- `StatusProject/SOURCE.md` records install/update source when available.
 
 ## Remember
 - `<durable fact/constraint>`

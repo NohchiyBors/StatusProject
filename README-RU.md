@@ -9,11 +9,14 @@
 
 ## Ссылки
 
-- Локальная папка: `D:\Data\OneDrive\source\StatusProject`
+- Локальный source-источник: после установки фиксируется в `StatusProject/SOURCE.md`
 - GitHub: https://github.com/NohchiyBors/StatusProject
 - Последний релиз: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Источник шаблонов: `D:\Data\OneDrive\source\StatusProject\templates`
-- Источник обновлений: сравнивай развернутую `StatusProject/` с локальной папкой и при необходимости с последним GitHub release.
+- Путь глобальной source-копии по умолчанию:
+  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+  - Linux/macOS: `~/.statusproject/source/StatusProject`
+- Источник шаблонов: фиксируется в `StatusProject/SOURCE.md`
+- Источник обновлений: сравнивай развернутую `StatusProject/` с источником из `StatusProject/SOURCE.md`, а при необходимости с последним GitHub release.
 
 ## Основные файлы
 - `AI-INSTRUCTION.md` / `AI-INSTRUCTION-RU.md` — совместимый вход для ИИ
@@ -24,6 +27,7 @@
 - `CHANGELOG.md` — история версий GitHub
 - `VERSIONING.md` — правила версий и релизов
 - `MCP.md` — перечень MCP и инструментов проекта
+- `SOURCE.md` — источник установки и путь обновления
 - `templates/` — англоязычные шаблоны
 - `templates/LICENSE.template` — шаблон лицензии для публикации на GitHub
 - `IMPORT-SOP-RU.md` — русская справка для импортов
@@ -79,19 +83,52 @@
 
 ## Процесс
 1. Разверни `StatusProject/` в целевом проекте.
+   Рекомендуемый путь: `install-statusproject.ps1`, `install-statusproject.sh` или ручное копирование.
 2. В настройки ИИ при необходимости добавь `AI-SETTINGS-INSTRUCTION.md` или `AI-SETTINGS-INSTRUCTION-RU.md`.
-3. В корне оставь короткие `AGENTS.md` / `CLAUDE.md`.
+3. В корне оставь только короткие AI-entry файлы `StatusProject` со ссылкой на `StatusProject/`.
 4. Создай state-файлы из `templates/`.
 5. Проверь `.gitignore` по `templates/GITIGNORE.template`.
 6. Создай `LICENSE` из `templates/LICENSE.template` перед публикацией на GitHub.
 7. Проверяй обновления шаблонов не чаще 1 раза в 7 дней.
-8. В начале сессии читай `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`.
+8. В начале сессии читай бюджетный набор: `PROJECT-RESUME`, `TODO`, `MEMORY`; `PLAN`, логи, историю и доменные файлы добавляй только когда нужны.
 9. После значимых действий обновляй state-файлы.
+
+## Установщик
+
+- Путь глобальной source-копии по умолчанию:
+  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+  - Linux/macOS: `~/.statusproject/source/StatusProject`
+- Путь развёртывания по умолчанию в репозитории: `<repo>/StatusProject/`
+- Если `StatusProject/` уже существует, установщик должен предложить:
+  - использовать существующую папку
+  - заменить её
+  - установить в другую папку
+- Установщик должен предложить, какие AI-entry файлы поставить или обновить:
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `GEMINI.md`
+  - `COPILOT_INSTRUCTIONS.md`
+- Если выбранный AI-entry файл уже существует, установщик должен спросить:
+  - сохранить как есть
+  - заменить
+  - пропустить
+- Установщик пишет `StatusProject/SOURCE.md`, чтобы следующие агенты видели источник, версию и политику обновлений.
+- Предпочтительный паттерн: держать root AI-entry файлы короткими и стабильными, а основную логику обновлять внутри `StatusProject/`, не перезаписывая пользовательские промты без явного выбора.
+
+## Обновление
+
+- Для уже развернутых проектов используй `update-statusproject.ps1` или `update-statusproject.sh`.
+- Обновлятор заменяет только поставляемые operating docs `StatusProject` и `templates/`.
+- Обновлятор не трогает локальные state-файлы: `TODO`, `MEMORY`, `PROJECT-RESUME`, `PLAN`, `STATUS-LOG`, `STATE-HISTORY` и доменные state-файлы.
+- Перед заменой создается backup в `StatusProject/.backup/update-YYYYMMDD-HHMMSS/`.
+- Root AI-entry файлы обновляются только если они явно выбраны.
+- `SOURCE.md` обновляется, чтобы следующие агенты видели текущий источник и путь обновления.
 
 Шаблоны ведутся на английском для экономии токенов и единообразия.
 
 ## Правила синхронизации файлов
 
+- Не раздувай контекст: читай минимальный полезный набор файлов, используй `LINKS` для навигации, а шаблоны и справочные документы открывай только когда задача этого требует.
 - если меняется scope или acceptance, проверь `REQUIREMENTS`, затем `ARCHITECTURE`, `SOFTWARE` и `TODO`
 - если меняется архитектура, проверь `ARCHITECTURE`, затем `SOFTWARE`, `TESTING` и `INFRASTRUCTURE`
 - если меняются окружения или деплой, проверь `INFRASTRUCTURE`, затем `TESTING` и `VERSIONING`

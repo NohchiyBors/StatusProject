@@ -13,16 +13,19 @@ Templates are English by design for compact, consistent agent-facing fields.
 
 ## Links
 
-- Local folder: `D:\Data\OneDrive\source\StatusProject`
+- Local source role: recorded in `StatusProject/SOURCE.md` after install
 - GitHub repo: https://github.com/NohchiyBors/StatusProject
 - Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Template source: `D:\Data\OneDrive\source\StatusProject\templates`
-- Update source: compare deployed `StatusProject/` against the local folder and, when needed, the GitHub latest release.
+- Default global source path:
+  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+  - Linux/macOS: `~/.statusproject/source/StatusProject`
+- Template source: recorded in `StatusProject/SOURCE.md`
+- Update source: compare deployed `StatusProject/` against the recorded source in `StatusProject/SOURCE.md`, then, when needed, the GitHub latest release.
 
 ## Target Layout
 
-- repo root: `AGENTS.md`, `CLAUDE.md`, normal project files
-- `StatusProject/`: operating docs and state files
+- repo root: normal project files plus only short StatusProject AI entry files (`AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`)
+- `StatusProject/`: all StatusProject operating docs, templates, and state files
 
 Operating docs:
 
@@ -34,6 +37,7 @@ Operating docs:
 - `README.md` / `README-RU.md`
 - `VERSIONING.md`
 - `MCP.md`
+- `SOURCE.md`
 - `IMPORT-SOP-RU.md`
 
 Core state files:
@@ -99,6 +103,7 @@ Core state files:
 - `templates/MCP.template.md`
 - `templates/GEMINI.template.md`
 - `templates/COPILOT_INSTRUCTIONS.template.md`
+- `templates/SOURCE.template.md`
 - `templates/IMPORT-SOP.template.md`
 - `templates/LINKS.template.md`
 - `templates/VERSIONING.template.md`
@@ -107,19 +112,41 @@ Core state files:
 
 ## Workflow
 
-1. Copy `StatusProject/` or selected templates into the target repo.
+1. Install with `install-statusproject.ps1`, `install-statusproject.sh`, or manual copy into the target repo.
 2. Put `AI-SETTINGS-INSTRUCTION.md` or `AI-SETTINGS-INSTRUCTION-RU.md` into AI tool settings when needed.
-3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
+3. Keep only short StatusProject AI entry files in the repository root and link them to `StatusProject/`.
 4. Create project state files from `templates/`.
 5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
 6. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
 7. Check template updates at most once per week per project; ask before applying.
-8. Start each session by reading `PLAN`, `TODO`, `MEMORY`, `PROJECT-RESUME`, then optional logs/history.
+8. Start each session with the context-budget set: `PROJECT-RESUME`, `TODO`, `MEMORY`; add `PLAN`, logs, history, and domain files only when needed.
 9. Update state files after meaningful progress.
+
+## Installer
+
+- Default global source path:
+  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
+  - Linux/macOS: `~/.statusproject/source/StatusProject`
+- Default deploy path in a target repo: `<repo>/StatusProject/`
+- If `StatusProject/` already exists, the installer should ask whether to reuse it, replace it, or install to another folder.
+- The installer should ask which AI entry files to install or update: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.
+- If a selected AI entry file already exists, the installer should ask whether to keep it, replace it, or skip it.
+- The installer writes `StatusProject/SOURCE.md` so future agents know the source type, version, and update path.
+- Preferred pattern: keep root AI entry files stable and minimal, and point them to `StatusProject/` so most updates happen inside the deployed folder instead of rewriting user-specific prompts.
+
+## Updater
+
+- Use `update-statusproject.ps1` or `update-statusproject.sh` for existing target repositories.
+- The updater replaces only shipped StatusProject operating docs and `templates/`.
+- The updater does not update local state files such as `TODO`, `MEMORY`, `PROJECT-RESUME`, `PLAN`, `STATUS-LOG`, `STATE-HISTORY`, or domain state files.
+- Before replacing files, the updater creates a backup under `StatusProject/.backup/update-YYYYMMDD-HHMMSS/`.
+- Root AI entry files are updated only when explicitly selected.
+- `SOURCE.md` is refreshed so future agents know the current source and update path.
 
 ## Rules
 
 - Keep operational files short.
+- Do not inflate context: read the smallest useful file set, use `LINKS` for navigation, and open templates/docs only when the task requires them.
 - Put durable facts in `MEMORY`, current work in `TODO`, restart context in `PROJECT-RESUME`.
 - Move old details to `STATE-HISTORY`.
 - Cross-file update rules:

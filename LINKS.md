@@ -14,11 +14,21 @@ StatusProject
 │
 ├── Local Sources
 │   ├── Project folder
-│   │   └── D:\Data\OneDrive\source\StatusProject
-│   └── Template source
-│       └── D:\Data\OneDrive\source\StatusProject\templates
+│   │   └── <current local clone>
+│   ├── Default global source (Windows)
+│   │   └── %USERPROFILE%\.statusproject\source\StatusProject
+│   ├── Default global source (Linux/macOS)
+│   │   └── ~/.statusproject/source/StatusProject
+│   └── Recorded install source
+│       └── StatusProject/SOURCE.md
 │
 ├── Entry Files
+│   ├── install-statusproject.ps1
+│   ├── install-statusproject.sh
+│   ├── install-statusproject.bat
+│   ├── update-statusproject.ps1
+│   ├── update-statusproject.sh
+│   ├── update-statusproject.bat
 │   ├── README.md
 │   ├── README-RU.md
 │   ├── PROMPT.md
@@ -28,6 +38,7 @@ StatusProject
 │   ├── CHANGELOG.md
 │   ├── VERSIONING.md
 │   ├── MCP.md
+│   ├── SOURCE.md
 │   └── LICENSE
 │
 ├── AI Settings
@@ -61,6 +72,7 @@ StatusProject
 │   ├── templates/DEVELOPMENT-STATUS.template.md
 │   ├── templates/TESTING.template.md
 │   ├── templates/MCP.template.md
+│   ├── templates/SOURCE.template.md
 │   ├── templates/GEMINI.template.md
 │   ├── templates/COPILOT_INSTRUCTIONS.template.md
 │   ├── templates/GITIGNORE.template
@@ -68,13 +80,15 @@ StatusProject
 │
 └── Update Check
     ├── Local source of truth
-    │   └── D:\Data\OneDrive\source\StatusProject
-    ├── Local templates
-    │   └── D:\Data\OneDrive\source\StatusProject\templates
+    │   └── recorded in StatusProject/SOURCE.md
+    ├── Fallback local source
+    │   └── default global source path for the current OS
     ├── Remote source
     │   └── https://github.com/NohchiyBors/StatusProject/releases/latest
     └── Frequency
         └── at most once per 7 days per target project
+    └── Safe updater
+        └── update-statusproject.ps1 / update-statusproject.sh
 ```
 
 ## Clickable Files
@@ -85,6 +99,10 @@ StatusProject
 - [START-HERE.md](START-HERE.md)
 - [START-HERE-RU.md](START-HERE-RU.md)
 - [MCP.md](MCP.md)
+- [install-statusproject.ps1](install-statusproject.ps1)
+- [install-statusproject.sh](install-statusproject.sh)
+- [update-statusproject.ps1](update-statusproject.ps1)
+- [update-statusproject.sh](update-statusproject.sh)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
 - [AI-SETTINGS-INSTRUCTION-RU.md](AI-SETTINGS-INSTRUCTION-RU.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
