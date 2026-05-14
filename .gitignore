@@ -66,6 +66,9 @@ temp/
 # Child repositories
 SysEng/
 
+# Local archive of removed docs
+.statusproject-archive/
+
 # OS/editor noise
 Thumbs.db
 .DS_Store

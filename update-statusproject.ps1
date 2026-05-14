@@ -86,12 +86,12 @@ $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $backupRoot = Join-Path $deployPath ".backup\update-$timestamp"
 
 $copyFiles = @(
-    "PROMPT.md","PROMPT-RU.md",
-    "START-HERE.md","START-HERE-RU.md",
-    "README.md","README-RU.md",
-    "AI-INSTRUCTION.md","AI-INSTRUCTION-RU.md",
-    "AI-SETTINGS-INSTRUCTION.md","AI-SETTINGS-INSTRUCTION-RU.md",
-    "CHANGELOG.md","VERSIONING.md","IMPORT-SOP-RU.md","MCP.md","SYSTEMS-ENGINEERING-RU.md"
+    "PROMPT.md",
+    "START-HERE.md",
+    "README.md",
+    "AI-INSTRUCTION.md",
+    "AI-SETTINGS-INSTRUCTION.md",
+    "CHANGELOG.md","VERSIONING.md","MCP.md"
 )
 
 $existingUpdateFiles = $copyFiles | Where-Object { Test-Path (Join-Path $scriptRoot $_) }

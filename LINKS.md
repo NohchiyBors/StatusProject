@@ -23,18 +23,9 @@ StatusProject
 │       └── StatusProject/SOURCE.md
 │
 ├── Entry Files
-│   ├── install-statusproject.ps1
-│   ├── install-statusproject.sh
-│   ├── install-statusproject.bat
-│   ├── update-statusproject.ps1
-│   ├── update-statusproject.sh
-│   ├── update-statusproject.bat
 │   ├── README.md
-│   ├── README-RU.md
 │   ├── PROMPT.md
-│   ├── PROMPT-RU.md
 │   ├── START-HERE.md
-│   ├── START-HERE-RU.md
 │   ├── CHANGELOG.md
 │   ├── VERSIONING.md
 │   ├── MCP.md
@@ -43,16 +34,13 @@ StatusProject
 │
 ├── AI Settings
 │   ├── AI-INSTRUCTION.md
-│   ├── AI-INSTRUCTION-RU.md
 │   ├── AI-SETTINGS-INSTRUCTION.md
-│   ├── AI-SETTINGS-INSTRUCTION-RU.md
 │   ├── AGENTS.md
 │   ├── CLAUDE.md
 │   ├── templates/GEMINI.template.md
 │   └── templates/COPILOT_INSTRUCTIONS.template.md
 │
 ├── Import
-│   ├── IMPORT-SOP-RU.md
 │   └── templates/IMPORT-SOP.template.md
 │
 ├── Templates
@@ -87,23 +75,13 @@ StatusProject
     │   └── https://github.com/NohchiyBors/StatusProject/releases/latest
     └── Frequency
         └── at most once per 7 days per target project
-    └── Safe updater
-        └── update-statusproject.ps1 / update-statusproject.sh
 ```
 
 ## Clickable Files
 - [README.md](README.md)
-- [README-RU.md](README-RU.md)
 - [PROMPT.md](PROMPT.md)
-- [PROMPT-RU.md](PROMPT-RU.md)
 - [START-HERE.md](START-HERE.md)
-- [START-HERE-RU.md](START-HERE-RU.md)
 - [MCP.md](MCP.md)
-- [install-statusproject.ps1](install-statusproject.ps1)
-- [install-statusproject.sh](install-statusproject.sh)
-- [update-statusproject.ps1](update-statusproject.ps1)
-- [update-statusproject.sh](update-statusproject.sh)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
-- [AI-SETTINGS-INSTRUCTION-RU.md](AI-SETTINGS-INSTRUCTION-RU.md)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
 - [templates/LICENSE.template](templates/LICENSE.template)

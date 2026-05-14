@@ -2,161 +2,59 @@
 
 Lightweight project-state files for long-running agent work. State lives in files, not only in chat.
 
-- Russian overview: [`README-RU.md`](README-RU.md)
-- Link tree: [`LINKS.md`](LINKS.md)
-- Versioning: [`VERSIONING.md`](VERSIONING.md)
-- Operating prompt: [`PROMPT.md`](PROMPT.md) / [`PROMPT-RU.md`](PROMPT-RU.md)
-- Quick start: [`START-HERE.md`](START-HERE.md) / [`START-HERE-RU.md`](START-HERE-RU.md)
+- Operating rules (canonical): [`PROMPT.md`](PROMPT.md)
+- Quick start: [`START-HERE.md`](START-HERE.md)
+- Links / paths: [`LINKS.md`](LINKS.md)
+- Versioning and releases: [`VERSIONING.md`](VERSIONING.md)
 - Version history: [`CHANGELOG.md`](CHANGELOG.md)
+- Install source / update path: [`SOURCE.md`](SOURCE.md)
 
-Templates are English by design for compact, consistent agent-facing fields.
+Templates in `templates/` are English by design for compact, consistent agent-facing fields.
 
-## Links
-
-- Local source role: recorded in `StatusProject/SOURCE.md` after install
-- GitHub repo: https://github.com/NohchiyBors/StatusProject
-- Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Default global source path:
-  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
-  - Linux/macOS: `~/.statusproject/source/StatusProject`
-- Template source: recorded in `StatusProject/SOURCE.md`
-- Update source: compare deployed `StatusProject/` against the recorded source in `StatusProject/SOURCE.md`, then, when needed, the GitHub latest release.
-
-## Target Layout
-
-- repo root: normal project files plus only short StatusProject AI entry files (`AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`)
-- `StatusProject/`: all StatusProject operating docs, templates, and state files
+## Layout
+- Repository root: `AGENTS.md`, `CLAUDE.md`, normal project files.
+- `StatusProject/`: operating docs, `templates/`, state files.
 
 Operating docs:
-
-- `AI-INSTRUCTION.md` / `AI-INSTRUCTION-RU.md`
-- `AI-SETTINGS-INSTRUCTION.md` / `AI-SETTINGS-INSTRUCTION-RU.md`
-- root-entry templates: `templates/GEMINI.template.md`, `templates/COPILOT_INSTRUCTIONS.template.md`
-- `PROMPT.md` / `PROMPT-RU.md`
-- `START-HERE.md` / `START-HERE-RU.md`
-- `README.md` / `README-RU.md`
-- `VERSIONING.md`
-- `MCP.md`
-- `SOURCE.md`
-- `IMPORT-SOP-RU.md`
+`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
 
 Core state files:
-
-- `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`
-- optional: `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`
+`PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
 
 ## When To Apply Templates
 
-- Enable `StatusProject` and apply the minimum templates when the task is complex and one answer is not enough.
-- `TODO`, `MEMORY`, `PROJECT-RESUME`: every enabled `StatusProject` workflow.
-- `PLAN`: multi-phase work, parallel workstreams, or strategy decisions.
-- `STATUS-LOG`: long, batch, repeated, migration, import, sync, or rollout work.
-- `REQUIREMENTS`: scope, requirements, priorities, and acceptance rules.
-- `IMPORT-SOP`: imports, migrations, syncs, bulk processing, or data movement.
-- `STATE-HISTORY`: archive completed phases out of active files.
-- `ARCHITECTURE`, `PROJECT-TREE`, `INFRASTRUCTURE`, `SOFTWARE`, `DEVELOPMENT-STATUS`, `TESTING`, `MCP`: only for relevant domain context.
-- Use `REQUIREMENTS` for scope, functional/non-functional requirements, and acceptance.
-- Use `ARCHITECTURE` for components, interfaces, dependencies, and data flows.
-- Use `PROJECT-TREE` for repository, service, and dependency trees.
-- In `INFRASTRUCTURE`, always map environments explicitly: `prod` = production, `dev` = development, plus `staging` and `local` when they exist.
-- Local systems may use `.env` or `.env.*`; use platform environment variables or secret managers for staging/prod. Keep only `.env.example` in Git.
-- Use `DEVELOPMENT-STATUS` for progress trees, percent completion, blockers, and release-readiness tracking.
-- Use `TESTING` for test scope, quality gates, critical scenarios, and release checks.
-- `LINKS`: compact map of repo paths, docs, services, templates, and update sources.
-- `VERSIONING`: releases, tags, changelog work, or GitHub Release publication.
-- `GITIGNORE.template`: repository deployment and publish-readiness checks.
-- `LICENSE.template`: GitHub publication or repositories without an approved `LICENSE`.
-
-## File Selection Matrix
-
-| Condition | Add file | Why |
+| Condition | Add | Why |
 | --- | --- | --- |
-| `task spans sessions` | `TODO`, `MEMORY`, `PROJECT-RESUME` | `minimum durable state` |
-| `multiple phases or strategy choices` | `PLAN` | `workstream control` |
-| `scope or acceptance must stay stable` | `REQUIREMENTS` | `source of truth for what to build` |
-| `system structure matters` | `ARCHITECTURE` | `components, contracts, data flows` |
-| `repo/service topology matters` | `PROJECT-TREE` | `tree of paths, services, dependencies` |
-| `deploy/runtime environments matter` | `INFRASTRUCTURE` | `prod/dev/staging/local clarity` |
-| `implementation shape matters` | `SOFTWARE` | `entrypoints, modules, commands` |
-| `you need progress by branch/module` | `DEVELOPMENT-STATUS` | `tree + % progress + blockers` |
-| `quality gates or test coverage matter` | `TESTING` | `release confidence` |
-| `external tools/connectors matter` | `MCP` | `canonical tool selection` |
-| `imports or migrations are involved` | `IMPORT-SOP` | `repeatable operational flow` |
-| `releases or tags are involved` | `VERSIONING` | `safe publication flow` |
-| `repo/docs/service links are scattered` | `LINKS` | `single navigation map` |
+| task spans sessions | `TODO`, `MEMORY`, `PROJECT-RESUME` | minimum durable state |
+| multi-phase / strategy | `PLAN` | workstream control |
+| stable scope / acceptance | `REQUIREMENTS` | source of truth |
+| system structure matters | `ARCHITECTURE` | components, contracts, data flows |
+| repo/service topology | `PROJECT-TREE` | tree of paths/services/deps |
+| deploy/runtime envs | `INFRASTRUCTURE` | `prod`/`dev`/`staging`/`local` clarity |
+| implementation shape | `SOFTWARE` | entrypoints, modules, commands |
+| progress by branch/module | `DEVELOPMENT-STATUS` | tree + % + blockers |
+| quality gates / coverage | `TESTING` | release confidence |
+| external tools/connectors | `MCP` | canonical tool selection |
+| imports / migrations | `IMPORT-SOP` | repeatable operational flow |
+| releases / tags | `VERSIONING` | safe publication flow |
+| scattered links | `LINKS` | single navigation map |
 
-## Templates
-
-- `templates/PLAN.template.md`
-- `templates/TODO.template.md`
-- `templates/MEMORY.template.md`
-- `templates/PROJECT-RESUME.template.md`
-- `templates/STATUS-LOG.template.md`
-- `templates/STATE-HISTORY.template.md`
-- `templates/REQUIREMENTS.template.md`
-- `templates/ARCHITECTURE.template.md`
-- `templates/PROJECT-TREE.template.md`
-- `templates/INFRASTRUCTURE.template.md`
-- `templates/SOFTWARE.template.md`
-- `templates/DEVELOPMENT-STATUS.template.md`
-- `templates/TESTING.template.md`
-- `templates/MCP.template.md`
-- `templates/GEMINI.template.md`
-- `templates/COPILOT_INSTRUCTIONS.template.md`
-- `templates/SOURCE.template.md`
-- `templates/IMPORT-SOP.template.md`
-- `templates/LINKS.template.md`
-- `templates/VERSIONING.template.md`
-- `templates/GITIGNORE.template`
-- `templates/LICENSE.template`
+Full rules for enabling, reading order, work rules, gitignore, and finish checks live in [`PROMPT.md`](PROMPT.md). Do not duplicate them here.
 
 ## Workflow
-
-1. Install with `install-statusproject.ps1`, `install-statusproject.sh`, or manual copy into the target repo.
-2. Put `AI-SETTINGS-INSTRUCTION.md` or `AI-SETTINGS-INSTRUCTION-RU.md` into AI tool settings when needed.
-3. Keep only short StatusProject AI entry files in the repository root and link them to `StatusProject/`.
+1. Install with `install-statusproject.ps1`, `install-statusproject.sh`, or manual copy.
+2. Put `AI-SETTINGS-INSTRUCTION.md` into AI tool settings when needed.
+3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
 4. Create project state files from `templates/`.
 5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
 6. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
-7. Check template updates at most once per week per project; ask before applying.
-8. Start each session with the context-budget set: `PROJECT-RESUME`, `TODO`, `MEMORY`; add `PLAN`, logs, history, and domain files only when needed.
-9. Update state files after meaningful progress.
+7. Each session: read `PROJECT-RESUME` → `TODO` → `MEMORY`, then `PLAN` and optional files as needed.
 
 ## Installer
-
-- Default global source path:
-  - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
-  - Linux/macOS: `~/.statusproject/source/StatusProject`
-- Default deploy path in a target repo: `<repo>/StatusProject/`
-- If `StatusProject/` already exists, the installer should ask whether to reuse it, replace it, or install to another folder.
-- The installer should ask which AI entry files to install or update: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.
-- If a selected AI entry file already exists, the installer should ask whether to keep it, replace it, or skip it.
-- The installer writes `StatusProject/SOURCE.md` so future agents know the source type, version, and update path.
-- Preferred pattern: keep root AI entry files stable and minimal, and point them to `StatusProject/` so most updates happen inside the deployed folder instead of rewriting user-specific prompts.
-
-## Updater
-
-- Use `update-statusproject.ps1` or `update-statusproject.sh` for existing target repositories.
-- The updater replaces only shipped StatusProject operating docs and `templates/`.
-- The updater does not update local state files such as `TODO`, `MEMORY`, `PROJECT-RESUME`, `PLAN`, `STATUS-LOG`, `STATE-HISTORY`, or domain state files.
-- Before replacing files, the updater creates a backup under `StatusProject/.backup/update-YYYYMMDD-HHMMSS/`.
-- Root AI entry files are updated only when explicitly selected.
-- `SOURCE.md` is refreshed so future agents know the current source and update path.
-
-## Rules
-
-- Keep operational files short.
-- Do not inflate context: read the smallest useful file set, use `LINKS` for navigation, and open templates/docs only when the task requires them.
-- Put durable facts in `MEMORY`, current work in `TODO`, restart context in `PROJECT-RESUME`.
-- Move old details to `STATE-HISTORY`.
-- Cross-file update rules:
-  - if scope or acceptance changes, review `REQUIREMENTS`, then `ARCHITECTURE`, `SOFTWARE`, and `TODO`
-  - if architecture changes, review `ARCHITECTURE`, then `SOFTWARE`, `TESTING`, and `INFRASTRUCTURE`
-  - if environments or deploy flow change, review `INFRASTRUCTURE`, then `TESTING` and `VERSIONING`
-  - if toolchain/connectors change, review `MCP`
-  - if release flow or release bar changes, review `TESTING` and `VERSIONING`
-- Do not overwrite local state or commit secrets, tokens, sensitive logs, private exports, or local tool state.
+- Default global source: `%USERPROFILE%\.statusproject\source\StatusProject` (Windows) or `~/.statusproject/source/StatusProject` (Linux/macOS).
+- Default deploy path: `<repo>/StatusProject/`.
+- The installer asks before reusing/replacing an existing `StatusProject/`, and before replacing existing root AI entry files.
+- The installer writes `StatusProject/SOURCE.md` with source type, version, and update path.
 
 ## License
-
 Personal non-commercial use only. See [`LICENSE`](LICENSE).
