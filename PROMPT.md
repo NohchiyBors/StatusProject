@@ -13,8 +13,9 @@ One answer is not enough: multi-step or multi-session work, blockers/dependencie
 ## Context Budget
 1. Always: `PROJECT-RESUME` → `TODO` → `MEMORY`.
 2. On demand: `PLAN` (multi-phase), `STATUS-LOG`/`STATE-HISTORY` (history needed), domain files when the task touches that domain.
-3. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installer files, templates.
-4. Use `LINKS.md` instead of opening many docs to find paths.
+3. Architecture floor: if the request touches structure, services, interfaces, deployment, runtime environments, access, or `dev`/`staging`/`prod`/`local` differences, read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when present before planning or editing.
+4. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installer files, templates.
+5. Use `LINKS.md` instead of opening many docs to find paths.
 
 ## State Files
 Minimum when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
