@@ -4,6 +4,9 @@ set -euo pipefail
 TARGET_PATH="${1:-.}"
 DEPLOY_FOLDER_NAME="${DEPLOY_FOLDER_NAME:-StatusProject}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SOURCE_STATUS_PROJECT="$SOURCE_ROOT/StatusProject"
+SOURCE_TEMPLATES="$SOURCE_STATUS_PROJECT/templates"
 REPO_PATH="$(cd "$TARGET_PATH" && pwd)"
 DEPLOY_PATH="$REPO_PATH/$DEPLOY_FOLDER_NAME"
 
@@ -54,10 +57,10 @@ copy_root_entry() {
   local dest="$REPO_PATH/$entry"
   local source=""
   case "$entry" in
-    AGENTS.md) source="$SCRIPT_DIR/AGENTS.md" ;;
-    CLAUDE.md) source="$SCRIPT_DIR/CLAUDE.md" ;;
-    GEMINI.md) source="$SCRIPT_DIR/templates/GEMINI.template.md" ;;
-    COPILOT_INSTRUCTIONS.md) source="$SCRIPT_DIR/templates/COPILOT_INSTRUCTIONS.template.md" ;;
+    AGENTS.md) source="$SOURCE_ROOT/AGENTS.md" ;;
+    CLAUDE.md) source="$SOURCE_ROOT/CLAUDE.md" ;;
+    GEMINI.md) source="$SOURCE_TEMPLATES/GEMINI.template.md" ;;
+    COPILOT_INSTRUCTIONS.md) source="$SOURCE_TEMPLATES/COPILOT_INSTRUCTIONS.template.md" ;;
     *) return 1 ;;
   esac
 
@@ -97,19 +100,25 @@ mkdir -p "$DEPLOY_PATH"
 
 copy_files=(
   PROMPT.md
+  INSTALL.md
   START-HERE.md
   README.md
   AI-INSTRUCTION.md
   AI-SETTINGS-INSTRUCTION.md
-  CHANGELOG.md VERSIONING.md MCP.md
+  CHANGELOG.md VERSIONING.md MCP.md LINKS.md
 )
 
 for f in "${copy_files[@]}"; do
-  [[ -f "$SCRIPT_DIR/$f" ]] && cp "$SCRIPT_DIR/$f" "$DEPLOY_PATH/$f"
+  if [[ "$f" == AI-*INSTRUCTION* ]]; then
+    source_file="$SOURCE_ROOT/$f"
+  else
+    source_file="$SOURCE_STATUS_PROJECT/$f"
+  fi
+  [[ -f "$source_file" ]] && cp "$source_file" "$DEPLOY_PATH/$f"
 done
 
 rm -rf "$DEPLOY_PATH/templates"
-cp -R "$SCRIPT_DIR/templates" "$DEPLOY_PATH/templates"
+cp -R "$SOURCE_TEMPLATES" "$DEPLOY_PATH/templates"
 
 selected_entries="$(ask_ai_entries)"
 if [[ -n "$selected_entries" ]]; then
@@ -119,16 +128,16 @@ if [[ -n "$selected_entries" ]]; then
   done <<< "$selected_entries"
 fi
 
-SOURCE_TEMPLATE="$SCRIPT_DIR/templates/SOURCE.template.md"
+SOURCE_TEMPLATE="$SOURCE_TEMPLATES/SOURCE.template.md"
 SOURCE_OUT="$DEPLOY_PATH/SOURCE.md"
 sed \
-  -e "s|<vX.Y.Z or manual>|v0.4.0|g" \
+  -e "s|<vX.Y.Z or manual>|v0.4.1|g" \
   -e "s|<YYYY-MM-DD>|$(date +%F)|g" \
-  -e "s|<script/manual>|install-statusproject.sh|g" \
+  -e "s|<script/manual>|scripts/install-statusproject.sh|g" \
   -e "s|<repo>/StatusProject|$REPO_PATH/$DEPLOY_FOLDER_NAME|g" \
   -e "s|<local\|release\|manual-copy>|local|g" \
   -e "s|<repo-url>|https://github.com/NohchiyBors/StatusProject|g" \
-  -e "s|<optional local path>|$SCRIPT_DIR|g" \
+  -e "s|<optional local path>|$SOURCE_ROOT|g" \
   -e "s|<optional release url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
   "$SOURCE_TEMPLATE" > "$SOURCE_OUT"
 

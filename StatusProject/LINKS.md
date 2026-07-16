@@ -23,8 +23,13 @@ StatusProject
 │       └── StatusProject/SOURCE.md
 │
 ├── Entry Files
+│   ├── install-statusproject.ps1
+│   ├── install-statusproject.sh
+│   ├── update-statusproject.ps1
+│   ├── update-statusproject.sh
 │   ├── README.md
 │   ├── PROMPT.md
+│   ├── INSTALL.md
 │   ├── START-HERE.md
 │   ├── CHANGELOG.md
 │   ├── VERSIONING.md
@@ -45,6 +50,7 @@ StatusProject
 │
 ├── Templates
 │   ├── templates/LINKS.template.md
+│   ├── templates/INSTALL.template.md
 │   ├── templates/VERSIONING.template.md
 │   ├── templates/PLAN.template.md
 │   ├── templates/TODO.template.md
@@ -74,14 +80,18 @@ StatusProject
     ├── Remote source
     │   └── https://github.com/NohchiyBors/StatusProject/releases/latest
     └── Frequency
-        └── at most once per 7 days per target project
+        └── at most once per 1 day per target project
 ```
 
 ## Clickable Files
 - [README.md](README.md)
 - [PROMPT.md](PROMPT.md)
+- [INSTALL.md](INSTALL.md)
 - [START-HERE.md](START-HERE.md)
 - [MCP.md](MCP.md)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
+- [install-statusproject.ps1](install-statusproject.ps1)
+- [update-statusproject.ps1](update-statusproject.ps1)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
+- [templates/INSTALL.template.md](templates/INSTALL.template.md)
 - [templates/LICENSE.template](templates/LICENSE.template)

@@ -76,6 +76,9 @@ function Backup-Directory {
 
 $repoPath = (Resolve-Path $TargetPath).Path
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sourceRoot = (Resolve-Path (Join-Path $scriptRoot "..")).Path
+$sourceStatusProject = Join-Path $sourceRoot "StatusProject"
+$sourceTemplates = Join-Path $sourceStatusProject "templates"
 $deployPath = Join-Path $repoPath $DeployFolderName
 
 if (-not (Test-Path $deployPath -PathType Container)) {
@@ -87,14 +90,15 @@ $backupRoot = Join-Path $deployPath ".backup\update-$timestamp"
 
 $copyFiles = @(
     "PROMPT.md",
+    "INSTALL.md",
     "START-HERE.md",
     "README.md",
     "AI-INSTRUCTION.md",
     "AI-SETTINGS-INSTRUCTION.md",
-    "CHANGELOG.md","VERSIONING.md","MCP.md"
+    "CHANGELOG.md","VERSIONING.md","MCP.md","LINKS.md"
 )
 
-$existingUpdateFiles = $copyFiles | Where-Object { Test-Path (Join-Path $scriptRoot $_) }
+$existingUpdateFiles = $copyFiles | Where-Object { Test-Path (Join-Path $sourceStatusProject $_) -or Test-Path (Join-Path $sourceRoot $_) }
 $entryKeys = @("AGENTS.md","CLAUDE.md","GEMINI.md","COPILOT_INSTRUCTIONS.md")
 
 Write-Host "StatusProject update target: $deployPath"
@@ -115,14 +119,18 @@ if (-not $Yes) {
 New-Item -ItemType Directory -Force -Path $backupRoot | Out-Null
 
 foreach ($file in $existingUpdateFiles) {
-    $source = Join-Path $scriptRoot $file
+    if ($file -match "^AI-.*INSTRUCTION") {
+        $source = Join-Path $sourceRoot $file
+    } else {
+        $source = Join-Path $sourceStatusProject $file
+    }
     $dest = Join-Path $deployPath $file
     Backup-File $dest $repoPath $backupRoot
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dest) | Out-Null
     Copy-Item $source $dest -Force
 }
 
-$templatesSource = Join-Path $scriptRoot "templates"
+$templatesSource = $sourceTemplates
 $templatesDest = Join-Path $deployPath "templates"
 Backup-Directory $templatesDest $repoPath $backupRoot
 if (Test-Path $templatesDest) {
@@ -131,10 +139,10 @@ if (Test-Path $templatesDest) {
 Copy-Item $templatesSource $templatesDest -Recurse -Force
 
 $rootEntryTemplates = @{
-    "AGENTS.md" = (Join-Path $scriptRoot "AGENTS.md")
-    "CLAUDE.md" = (Join-Path $scriptRoot "CLAUDE.md")
-    "GEMINI.md" = (Join-Path $scriptRoot "templates\GEMINI.template.md")
-    "COPILOT_INSTRUCTIONS.md" = (Join-Path $scriptRoot "templates\COPILOT_INSTRUCTIONS.template.md")
+    "AGENTS.md" = (Join-Path $sourceRoot "AGENTS.md")
+    "CLAUDE.md" = (Join-Path $sourceRoot "CLAUDE.md")
+    "GEMINI.md" = (Join-Path $sourceTemplates "GEMINI.template.md")
+    "COPILOT_INSTRUCTIONS.md" = (Join-Path $sourceTemplates "COPILOT_INSTRUCTIONS.template.md")
 }
 
 $selectedEntries = Get-AiEntrySelection "Select root AI entry files to update" $entryKeys
@@ -150,18 +158,18 @@ foreach ($entryKey in $selectedEntries) {
     Copy-Item $source $dest -Force
 }
 
-$sourceTemplatePath = Join-Path $scriptRoot "templates\SOURCE.template.md"
+$sourceTemplatePath = Join-Path $sourceTemplates "SOURCE.template.md"
 $sourceOutPath = Join-Path $deployPath "SOURCE.md"
 if (Test-Path $sourceTemplatePath) {
     Backup-File $sourceOutPath $repoPath $backupRoot
     $sourceContent = Get-Content $sourceTemplatePath -Raw
-    $sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", "v0.4.0")
+    $sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", "v0.4.1")
     $sourceContent = $sourceContent.Replace("<YYYY-MM-DD>", (Get-Date).ToString("yyyy-MM-dd"))
-    $sourceContent = $sourceContent.Replace("<script/manual>", "update-statusproject.ps1")
+    $sourceContent = $sourceContent.Replace("<script/manual>", "scripts/update-statusproject.ps1")
     $sourceContent = $sourceContent.Replace("<repo>/StatusProject", "$repoPath\$DeployFolderName")
     $sourceContent = $sourceContent.Replace("<local|release|manual-copy>", "local")
     $sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
-    $sourceContent = $sourceContent.Replace("<optional local path>", $scriptRoot)
+    $sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
     $sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
     Set-Content $sourceOutPath $sourceContent -Encoding UTF8
 }

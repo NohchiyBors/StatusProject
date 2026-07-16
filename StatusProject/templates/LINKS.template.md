@@ -21,17 +21,18 @@
 │       └── <project>/StatusProject/SOURCE.md
 │
 ├── Entry Files
-│   ├── install-statusproject.ps1
-│   ├── install-statusproject.sh
-│   ├── update-statusproject.ps1
-│   ├── update-statusproject.sh
-│   ├── README.md
-│   ├── PROMPT.md
-│   ├── START-HERE.md
-│   ├── ARCHITECTURE.md
-│   ├── CHANGELOG.md
-│   ├── VERSIONING.md
-│   ├── SOURCE.md
+│   ├── scripts/install-statusproject.ps1
+│   ├── scripts/install-statusproject.sh
+│   ├── scripts/update-statusproject.ps1
+│   ├── scripts/update-statusproject.sh
+│   ├── StatusProject/README.md
+│   ├── StatusProject/PROMPT.md
+│   ├── StatusProject/INSTALL.md
+│   ├── StatusProject/START-HERE.md
+│   ├── StatusProject/ARCHITECTURE.md
+│   ├── StatusProject/CHANGELOG.md
+│   ├── StatusProject/VERSIONING.md
+│   ├── StatusProject/SOURCE.md
 │   └── LICENSE
 │
 ├── AI Settings
@@ -41,7 +42,8 @@
 │   └── CLAUDE.md
 │
 ├── Templates
-│   ├── templates/LINKS.template.md
+│   ├── StatusProject/templates/LINKS.template.md
+│   ├── StatusProject/templates/INSTALL.template.md
 │   ├── templates/VERSIONING.template.md
 │   ├── templates/PLAN.template.md
 │   ├── templates/TODO.template.md
@@ -65,20 +67,22 @@
     ├── Remote source
     │   └── <latest-release-url>
     └── Frequency
-        └── at most once per 7 days per target project
+        └── at most once per 1 day per target project
     └── Safe updater
-        └── update-statusproject.ps1 / update-statusproject.sh
+        └── scripts/update-statusproject.ps1 / scripts/update-statusproject.sh
 ```
 
 ## Clickable Files
-- [README.md](README.md)
-- [PROMPT.md](PROMPT.md)
-- [START-HERE.md](START-HERE.md)
-- [ARCHITECTURE.md](ARCHITECTURE.md)
+- [StatusProject/README.md](StatusProject/README.md)
+- [StatusProject/PROMPT.md](StatusProject/PROMPT.md)
+- [StatusProject/INSTALL.md](StatusProject/INSTALL.md)
+- [StatusProject/START-HERE.md](StatusProject/START-HERE.md)
+- [StatusProject/ARCHITECTURE.md](StatusProject/ARCHITECTURE.md)
 - [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
-- [install-statusproject.ps1](install-statusproject.ps1)
-- [update-statusproject.ps1](update-statusproject.ps1)
+- [scripts/install-statusproject.ps1](scripts/install-statusproject.ps1)
+- [scripts/update-statusproject.ps1](scripts/update-statusproject.ps1)
 - [templates/LINKS.template.md](templates/LINKS.template.md)
+- [templates/INSTALL.template.md](templates/INSTALL.template.md)
 - [templates/ARCHITECTURE.template.md](templates/ARCHITECTURE.template.md)
 - [templates/LICENSE.template](templates/LICENSE.template)
 

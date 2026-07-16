@@ -5,11 +5,35 @@ All notable changes to `StatusProject` are documented in this file.
 This project uses semantic version tags for public releases.
 
 ## Unreleased
+No unreleased changes yet.
+
+## v0.5.0 - 2026-07-16
+
+### Changed
+- **Strict Layout Isolation:** All operating documents (e.g. `README.md`, `PROMPT.md`, `LINKS.md`) have been moved into `StatusProject/`, leaving only short AI entry files in the repository root.
+- **Templates Consolidation:** Moved all templates from root `templates/` to `StatusProject/templates/` to keep the root directory clean.
+- **Scripts Consolidation:** Moved installer and updater scripts (`install-statusproject.*`, `update-statusproject.*`) to the `scripts/` directory.
+- **Update Frequency:** Changed update check frequency rule from 7 days to 1 day (daily) across all templates, AI instructions, and operating docs.
+- **State Compaction:** Added periodic compaction of active state files with size (~150 lines, or `TODO` done>open), milestone triggers, and daily checks; history moves to `STATE-HISTORY`, verbose evidence to `STATUS-LOG`; compaction is move-based, never delete-based.
+- Session Start step 4: compact state before new work when a compaction trigger fires.
+
+### Added
+- `Last state compaction` field in `templates/MEMORY.template.md`.
+- New templates: `ADR.template.md`, `API.template.md`, `CONTRIBUTING.template.md`, `ENV.template`, `SECURITY.template.md`.
+
+## v0.4.1 - 2026-05-18
 
 ### Changed
 - Made `PROMPT.md` the single canonical source of operating rules.
 - Shrunk `README.md`, `START-HERE.md`, `AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, and `AI-SETTINGS-INSTRUCTION.md` to short pointers; removed duplicated rules and matrices.
 - Tightened `LINKS.md` and reflected the English-only entry set.
+- Restored `AGENTS.md` as a compact compatibility entry after it had been overwritten by a generic placeholder.
+- Updated `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` with the same minimal context-start rules used by agent entry files.
+- Added an architecture context floor so agents read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when work touches services, deployment, environments, or `dev`/`staging`/`prod`/`local` differences.
+- Restored a compact deployment/state contract in `PROMPT.md` so agents know where to get templates, which files must exist, and what each state/domain file must record.
+- Updated install/update scripts to deploy `LINKS.md` with the operating docs.
+- Added `INSTALL.md` and `templates/INSTALL.template.md` as the canonical install/update guide.
+- Updated install/update scripts to deploy `INSTALL.md` with operating docs.
 
 ### Removed
 - Russian companion docs and references: `README-RU.md`, `PROMPT-RU.md`, `START-HERE-RU.md`, `AI-INSTRUCTION-RU.md`, `AI-SETTINGS-INSTRUCTION-RU.md`, `IMPORT-SOP-RU.md`, `SYSTEMS-ENGINEERING-RU.md`, `SysEng/APPLICATION-GUIDE-RU.md`. Archived locally outside repository scope.

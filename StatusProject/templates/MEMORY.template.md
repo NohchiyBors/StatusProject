@@ -7,6 +7,7 @@
 - System of interest: `<system/product/service>`
 - Life cycle stage: `<concept|development|production|utilization|support|retirement>`
 - Last StatusProject update check: `<YYYY-MM-DD|unknown>`
+- Last state compaction: `<YYYY-MM-DD|never>`
 
 ## Stakeholders
 | Stakeholder | Role | Durable need / concern |

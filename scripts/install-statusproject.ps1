@@ -43,6 +43,9 @@ function Get-AiEntrySelection {
 
 $repoPath = (Resolve-Path $TargetPath).Path
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sourceRoot = (Resolve-Path (Join-Path $scriptRoot "..")).Path
+$sourceStatusProject = Join-Path $sourceRoot "StatusProject"
+$sourceTemplates = Join-Path $sourceStatusProject "templates"
 $deployPath = Join-Path $repoPath $DeployFolderName
 $defaultGlobalSource = Get-DefaultGlobalSourcePath
 
@@ -84,26 +87,32 @@ New-Item -ItemType Directory -Force -Path $deployPath | Out-Null
 
 $copyFiles = @(
     "PROMPT.md",
+    "INSTALL.md",
     "START-HERE.md",
     "README.md",
     "AI-INSTRUCTION.md",
     "AI-SETTINGS-INSTRUCTION.md",
-    "CHANGELOG.md","VERSIONING.md","MCP.md"
+    "CHANGELOG.md","VERSIONING.md","MCP.md","LINKS.md"
 )
 
 foreach ($file in $copyFiles) {
-    if (Test-Path (Join-Path $scriptRoot $file)) {
-        Copy-Item (Join-Path $scriptRoot $file) (Join-Path $deployPath $file) -Force
+    if ($file -match "^AI-.*INSTRUCTION") {
+        $sourceFile = Join-Path $sourceRoot $file
+    } else {
+        $sourceFile = Join-Path $sourceStatusProject $file
+    }
+    if (Test-Path $sourceFile) {
+        Copy-Item $sourceFile (Join-Path $deployPath $file) -Force
     }
 }
 
-Copy-Item (Join-Path $scriptRoot "templates") (Join-Path $deployPath "templates") -Recurse -Force
+Copy-Item $sourceTemplates (Join-Path $deployPath "templates") -Recurse -Force
 
 $rootEntryTemplates = @{
-    "AGENTS.md" = (Join-Path $scriptRoot "AGENTS.md")
-    "CLAUDE.md" = (Join-Path $scriptRoot "CLAUDE.md")
-    "GEMINI.md" = (Join-Path $scriptRoot "templates\GEMINI.template.md")
-    "COPILOT_INSTRUCTIONS.md" = (Join-Path $scriptRoot "templates\COPILOT_INSTRUCTIONS.template.md")
+    "AGENTS.md" = (Join-Path $sourceRoot "AGENTS.md")
+    "CLAUDE.md" = (Join-Path $sourceRoot "CLAUDE.md")
+    "GEMINI.md" = (Join-Path $sourceTemplates "GEMINI.template.md")
+    "COPILOT_INSTRUCTIONS.md" = (Join-Path $sourceTemplates "COPILOT_INSTRUCTIONS.template.md")
 }
 
 $entryKeys = @("AGENTS.md","CLAUDE.md","GEMINI.md","COPILOT_INSTRUCTIONS.md")
@@ -122,16 +131,16 @@ foreach ($entryKey in $selectedEntries) {
     Copy-Item $source $dest -Force
 }
 
-$sourceTemplatePath = Join-Path $scriptRoot "templates\SOURCE.template.md"
+$sourceTemplatePath = Join-Path $sourceTemplates "SOURCE.template.md"
 $sourceOutPath = Join-Path $deployPath "SOURCE.md"
 $sourceContent = Get-Content $sourceTemplatePath -Raw
-$sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", "v0.4.0")
+$sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", "v0.4.1")
 $sourceContent = $sourceContent.Replace("<YYYY-MM-DD>", (Get-Date).ToString("yyyy-MM-dd"))
-$sourceContent = $sourceContent.Replace("<script/manual>", "install-statusproject.ps1")
+$sourceContent = $sourceContent.Replace("<script/manual>", "scripts/install-statusproject.ps1")
 $sourceContent = $sourceContent.Replace("<repo>/StatusProject", "$repoPath\$DeployFolderName")
 $sourceContent = $sourceContent.Replace("<local|release|manual-copy>", "local")
 $sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
-$sourceContent = $sourceContent.Replace("<optional local path>", $scriptRoot)
+$sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
 $sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
 Set-Content $sourceOutPath $sourceContent
 

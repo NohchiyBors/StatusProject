@@ -4,6 +4,9 @@ set -euo pipefail
 TARGET_PATH="${1:-.}"
 DEPLOY_FOLDER_NAME="${DEPLOY_FOLDER_NAME:-StatusProject}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SOURCE_STATUS_PROJECT="$SOURCE_ROOT/StatusProject"
+SOURCE_TEMPLATES="$SOURCE_STATUS_PROJECT/templates"
 REPO_PATH="$(cd "$TARGET_PATH" && pwd)"
 DEPLOY_PATH="$REPO_PATH/$DEPLOY_FOLDER_NAME"
 
@@ -62,10 +65,10 @@ copy_root_entry() {
   local dest="$REPO_PATH/$entry"
   local source=""
   case "$entry" in
-    AGENTS.md) source="$SCRIPT_DIR/AGENTS.md" ;;
-    CLAUDE.md) source="$SCRIPT_DIR/CLAUDE.md" ;;
-    GEMINI.md) source="$SCRIPT_DIR/templates/GEMINI.template.md" ;;
-    COPILOT_INSTRUCTIONS.md) source="$SCRIPT_DIR/templates/COPILOT_INSTRUCTIONS.template.md" ;;
+    AGENTS.md) source="$SOURCE_ROOT/AGENTS.md" ;;
+    CLAUDE.md) source="$SOURCE_ROOT/CLAUDE.md" ;;
+    GEMINI.md) source="$SOURCE_TEMPLATES/GEMINI.template.md" ;;
+    COPILOT_INSTRUCTIONS.md) source="$SOURCE_TEMPLATES/COPILOT_INSTRUCTIONS.template.md" ;;
     *) return 1 ;;
   esac
 
@@ -89,18 +92,23 @@ BACKUP_ROOT="$DEPLOY_PATH/.backup/update-$TIMESTAMP"
 
 copy_files=(
   PROMPT.md
+  INSTALL.md
   START-HERE.md
   README.md
   AI-INSTRUCTION.md
   AI-SETTINGS-INSTRUCTION.md
-  CHANGELOG.md VERSIONING.md MCP.md
+  CHANGELOG.md VERSIONING.md MCP.md LINKS.md
 )
 
 echo "StatusProject update target: $DEPLOY_PATH"
 echo "Backup path: $BACKUP_ROOT"
 echo "Will update operating docs:"
 for f in "${copy_files[@]}"; do
-  [[ -f "$SCRIPT_DIR/$f" ]] && echo "  StatusProject/$f"
+  if [[ "$f" == AI-*INSTRUCTION* ]]; then
+    [[ -f "$SOURCE_ROOT/$f" ]] && echo "  StatusProject/$f"
+  else
+    [[ -f "$SOURCE_STATUS_PROJECT/$f" ]] && echo "  StatusProject/$f"
+  fi
 done
 echo "Will update templates: StatusProject/templates/"
 echo "Will preserve state files unless they are explicitly listed above."
@@ -114,15 +122,20 @@ fi
 mkdir -p "$BACKUP_ROOT"
 
 for f in "${copy_files[@]}"; do
-  [[ -f "$SCRIPT_DIR/$f" ]] || continue
+  if [[ "$f" == AI-*INSTRUCTION* ]]; then
+    source_file="$SOURCE_ROOT/$f"
+  else
+    source_file="$SOURCE_STATUS_PROJECT/$f"
+  fi
+  [[ -f "$source_file" ]] || continue
   dest="$DEPLOY_PATH/$f"
   backup_path "$dest"
-  cp "$SCRIPT_DIR/$f" "$dest"
+  cp "$source_file" "$dest"
 done
 
 backup_path "$DEPLOY_PATH/templates"
 rm -rf "$DEPLOY_PATH/templates"
-cp -R "$SCRIPT_DIR/templates" "$DEPLOY_PATH/templates"
+cp -R "$SOURCE_TEMPLATES" "$DEPLOY_PATH/templates"
 
 selected_entries="$(ask_ai_entries)"
 if [[ -n "$selected_entries" ]]; then
@@ -132,18 +145,18 @@ if [[ -n "$selected_entries" ]]; then
   done <<< "$selected_entries"
 fi
 
-SOURCE_TEMPLATE="$SCRIPT_DIR/templates/SOURCE.template.md"
+SOURCE_TEMPLATE="$SOURCE_TEMPLATES/SOURCE.template.md"
 SOURCE_OUT="$DEPLOY_PATH/SOURCE.md"
 if [[ -f "$SOURCE_TEMPLATE" ]]; then
   backup_path "$SOURCE_OUT"
   sed \
-    -e "s|<vX.Y.Z or manual>|v0.4.0|g" \
+    -e "s|<vX.Y.Z or manual>|v0.4.1|g" \
     -e "s|<YYYY-MM-DD>|$(date +%F)|g" \
-    -e "s|<script/manual>|update-statusproject.sh|g" \
+    -e "s|<script/manual>|scripts/update-statusproject.sh|g" \
     -e "s|<repo>/StatusProject|$REPO_PATH/$DEPLOY_FOLDER_NAME|g" \
     -e "s|<local\|release\|manual-copy>|local|g" \
     -e "s|<repo-url>|https://github.com/NohchiyBors/StatusProject|g" \
-    -e "s|<optional local path>|$SCRIPT_DIR|g" \
+    -e "s|<optional local path>|$SOURCE_ROOT|g" \
     -e "s|<optional release url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
     "$SOURCE_TEMPLATE" > "$SOURCE_OUT"
 fi

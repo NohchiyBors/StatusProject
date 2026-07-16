@@ -3,6 +3,7 @@
 Lightweight project-state files for long-running agent work. State lives in files, not only in chat.
 
 - Operating rules (canonical): [`PROMPT.md`](PROMPT.md)
+- Install/update guide: [`INSTALL.md`](INSTALL.md)
 - Quick start: [`START-HERE.md`](START-HERE.md)
 - Links / paths: [`LINKS.md`](LINKS.md)
 - Versioning and releases: [`VERSIONING.md`](VERSIONING.md)
@@ -16,10 +17,16 @@ Templates in `templates/` are English by design for compact, consistent agent-fa
 - `StatusProject/`: operating docs, `templates/`, state files.
 
 Operating docs:
-`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
+`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
 
 Core state files:
 `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
+
+Required enabled state:
+`TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`. If missing, create them from `StatusProject/templates/`.
+
+Source resolution:
+`StatusProject/SOURCE.md` -> recorded local source -> maintainer local default `D:\Data\OneDrive\source\StatusProject` when on this machine -> default global source -> GitHub latest release. Templates come from `<source>/templates/`.
 
 ## When To Apply Templates
 
@@ -41,8 +48,10 @@ Core state files:
 
 Full rules for enabling, reading order, work rules, gitignore, and finish checks live in [`PROMPT.md`](PROMPT.md). Do not duplicate them here.
 
+State write rules live in [`PROMPT.md`](PROMPT.md): `TODO` tracks tasks/blockers/next action, `MEMORY` tracks durable rules/decisions, and `PROJECT-RESUME` tracks restart context. Domain files are updated only when their domain facts changed.
+
 ## Workflow
-1. Install with `install-statusproject.ps1`, `install-statusproject.sh`, or manual copy.
+1. Install with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy; see [`INSTALL.md`](INSTALL.md).
 2. Put `AI-SETTINGS-INSTRUCTION.md` into AI tool settings when needed.
 3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
 4. Create project state files from `templates/`.
