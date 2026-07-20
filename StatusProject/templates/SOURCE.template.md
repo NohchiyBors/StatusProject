@@ -15,7 +15,8 @@
 ## Update Policy
 - Compare deployed `StatusProject/` against this recorded source first.
 - If local source is unavailable or outdated, compare against the latest GitHub release.
-- Check updates at most once per 1 day per target project.
+- Run updater scripts from `<source>/scripts/`; they are not copied into the target project.
+- Check updates at most once per 7 days per target project.
 
 ## Notes
 - Root entry files may exist in repo root: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.

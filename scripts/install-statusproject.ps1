@@ -2,153 +2,324 @@ param(
     [string]$TargetPath = ".",
     [string]$DeployFolderName = "StatusProject",
     [switch]$ReplaceExisting,
-    [switch]$ReuseExisting
+    [switch]$ReuseExisting,
+    [switch]$Yes,
+    [string]$AiEntries
 )
 
 $ErrorActionPreference = "Stop"
-
-function Get-DefaultGlobalSourcePath {
-    if ($IsWindows -or $env:OS -eq "Windows_NT") {
-        return Join-Path $HOME ".statusproject\source\StatusProject"
-    }
-    return Join-Path $HOME ".statusproject/source/StatusProject"
-}
+$entryKeys = @("AGENTS.md", "CLAUDE.md", "GEMINI.md", "COPILOT_INSTRUCTIONS.md")
+$copyFiles = @(
+    "PROMPT.md", "INSTALL.md", "START-HERE.md", "README.md",
+    "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md",
+    "CHANGELOG.md", "VERSIONING.md"
+)
+$stateFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "MCP.md")
+$managedFiles = @($copyFiles + @("VERSION", "SOURCE.md", "LINKS.md"))
 
 function Ask-Choice {
-    param(
-        [string]$Prompt,
-        [string[]]$Choices
-    )
+    param([string]$Prompt, [string[]]$Choices)
     while ($true) {
         $answer = Read-Host "$Prompt [$($Choices -join '/')]"
         if ($Choices -contains $answer) { return $answer }
     }
 }
 
-function Get-AiEntrySelection {
-    param(
-        [string]$Prompt,
-        [string[]]$Allowed
-    )
-    while ($true) {
-        $answer = Read-Host "$Prompt [$($Allowed -join ', ') or none/all]"
-        if ($answer -eq "all") { return $Allowed }
-        if ($answer -eq "none") { return @() }
-        $items = $answer.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ }
-        if ($items.Count -eq 0) { return @() }
-        $invalid = $items | Where-Object { $Allowed -notcontains $_ }
-        if ($invalid.Count -eq 0) { return $items | Select-Object -Unique }
+function Get-DefaultGlobalSourcePath {
+    if ($IsWindows -or $env:OS -eq "Windows_NT") {
+        $homePath = $env:USERPROFILE
+        if ([string]::IsNullOrWhiteSpace($homePath)) { $homePath = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile) }
+    } else {
+        $homePath = $HOME
+    }
+    if ([string]::IsNullOrWhiteSpace($homePath)) { throw "Cannot resolve the user home directory for the default StatusProject source path." }
+    return Join-Path $homePath ".statusproject/source/StatusProject"
+}
+
+function Resolve-AiEntries {
+    param([AllowNull()][string]$Selection, [switch]$NonInteractive)
+    if ([string]::IsNullOrWhiteSpace($Selection)) {
+        if ($NonInteractive) { return @() }
+        while ($true) {
+            $Selection = Read-Host "Select AI entry files [$($entryKeys -join ', ') or none/all]"
+            try { return @(Resolve-AiEntries $Selection -NonInteractive) } catch { Write-Warning $_.Exception.Message }
+        }
+    }
+    if ($Selection -eq "none") { return @() }
+    if ($Selection -eq "all") { return $entryKeys }
+    $items = @($Selection.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ } | Select-Object -Unique)
+    $invalid = @($items | Where-Object { $entryKeys -notcontains $_ })
+    if ($items.Count -eq 0 -or $invalid.Count -gt 0) {
+        throw "Invalid AiEntries value. Use none, all, or a comma-separated subset of: $($entryKeys -join ', ')."
+    }
+    return $items
+}
+
+function Assert-SafeFolderName {
+    param([string]$Name)
+    if ([string]::IsNullOrWhiteSpace($Name) -or $Name -in @(".", "..") -or
+        [System.IO.Path]::IsPathRooted($Name) -or $Name -match '[\\/:]' -or $Name.IndexOf([char]0) -ge 0) {
+        throw "DeployFolderName must be one safe directory name without separators, drive, UNC, '.' or '..'."
     }
 }
 
-$repoPath = (Resolve-Path $TargetPath).Path
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sourceRoot = (Resolve-Path (Join-Path $scriptRoot "..")).Path
-$sourceStatusProject = Join-Path $sourceRoot "StatusProject"
-$sourceTemplates = Join-Path $sourceStatusProject "templates"
-$deployPath = Join-Path $repoPath $DeployFolderName
-$defaultGlobalSource = Get-DefaultGlobalSourcePath
-
-if (-not (Test-Path $repoPath -PathType Container)) {
-    throw "Target path does not exist: $repoPath"
+function Assert-NoReparseComponents {
+    param([string]$Path)
+    $item = Get-Item -LiteralPath $Path -Force
+    while ($null -ne $item) {
+        $linkType = $item.PSObject.Properties["LinkType"]
+        if ($null -ne $linkType -and -not [string]::IsNullOrWhiteSpace([string]$linkType.Value)) {
+            throw "Managed path contains a symlink or junction: $($item.FullName)"
+        }
+        $item = $item.Parent
+    }
 }
 
-$existingEntries = @("AGENTS.md","CLAUDE.md","GEMINI.md","COPILOT_INSTRUCTIONS.md") |
-    Where-Object { Test-Path (Join-Path $repoPath $_) }
+function Test-PathPrefix {
+    param([string]$Parent, [string]$Child)
+    $comparison = if ($IsWindows -or $env:OS -eq "Windows_NT") { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
+    $prefix = $Parent.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+    return $Child.StartsWith($prefix, $comparison)
+}
 
-if (Test-Path $deployPath) {
-    if ($ReuseExisting) {
+function Get-ValidatedDeployPath {
+    param([string]$Repo, [string]$Name, [string]$SourceStatusProject)
+    Assert-SafeFolderName $Name
+    $candidate = [System.IO.Path]::GetFullPath((Join-Path $Repo $Name))
+    if (-not (Test-PathPrefix $Repo $candidate)) { throw "Deployment must be a strict child of the target repository." }
+    $comparison = if ($IsWindows -or $env:OS -eq "Windows_NT") { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
+    if ($candidate.Equals($SourceStatusProject, $comparison) -or (Test-PathPrefix $candidate $SourceStatusProject)) {
+        throw "Deployment cannot equal or contain the StatusProject source."
+    }
+    if (Test-Path -LiteralPath $candidate) {
+        Assert-NoReparseComponents $candidate
+        if (-not (Test-Path -LiteralPath $candidate -PathType Container)) { throw "Deployment path is not a directory: $candidate" }
+    }
+    return $candidate
+}
+
+function Get-SourceFile {
+    param([string]$File, [string]$SourceRoot, [string]$SourceStatusProject)
+    if ($File -match '^AI-.*INSTRUCTION') { return Join-Path $SourceRoot $File }
+    return Join-Path $SourceStatusProject $File
+}
+
+function Assert-RequiredSources {
+    param([string[]]$SelectedEntries)
+    $required = @($copyFiles | ForEach-Object { Get-SourceFile $_ $sourceRoot $sourceStatusProject })
+    $required += @(
+        $versionPath,
+        (Join-Path $sourceTemplates "SOURCE.template.md"),
+        (Join-Path $sourceTemplates "LINKS.template.md"),
+        (Join-Path $sourceTemplates "TODO.template.md"),
+        (Join-Path $sourceTemplates "MEMORY.template.md"),
+        (Join-Path $sourceTemplates "PROJECT-RESUME.template.md"),
+        (Join-Path $sourceTemplates "MCP.template.md")
+    )
+    foreach ($entry in $SelectedEntries) { $required += $rootEntryTemplates[$entry] }
+    $missing = @($required | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) })
+    if (-not (Test-Path -LiteralPath $sourceTemplates -PathType Container)) { $missing += $sourceTemplates }
+    if ($missing.Count -gt 0) { throw "Source preflight failed. Missing: $($missing -join ', ')" }
+}
+
+function Copy-ToBackup {
+    param([string]$Path, [string]$BackupPath)
+    if (-not (Test-Path -LiteralPath $Path)) { return $false }
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $BackupPath) | Out-Null
+    if (Test-Path -LiteralPath $Path -PathType Container) { Copy-Item -LiteralPath $Path -Destination $BackupPath -Recurse -Force }
+    else { Copy-Item -LiteralPath $Path -Destination $BackupPath -Force }
+    return $true
+}
+
+function Set-OwnerWritableRecursive {
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $items = @(Get-Item -LiteralPath $Path -Force)
+    if (Test-Path -LiteralPath $Path -PathType Container) { $items += @(Get-ChildItem -LiteralPath $Path -Force -Recurse) }
+    foreach ($item in $items) {
+        $linkType = $item.PSObject.Properties["LinkType"]
+        if ($null -ne $linkType -and -not [string]::IsNullOrWhiteSpace([string]$linkType.Value)) { continue }
+        if ($IsWindows -or $env:OS -eq "Windows_NT") {
+            if (($item.Attributes -band [System.IO.FileAttributes]::ReadOnly) -ne 0) {
+                [System.IO.File]::SetAttributes($item.FullName, ($item.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)))
+            }
+            continue
+        }
+        $getMode = [System.IO.File].GetMethod("GetUnixFileMode", [type[]]@([string]))
+        $setMode = [System.IO.File].GetMethod("SetUnixFileMode", [type[]]@([string], [System.IO.UnixFileMode]))
+        if ($null -eq $getMode -or $null -eq $setMode) { throw "This PowerShell runtime cannot normalize Unix owner permissions with .NET APIs." }
+        $mode = $getMode.Invoke($null, @($item.FullName))
+        $bits = [int]$mode -bor [int][System.IO.UnixFileMode]::UserWrite
+        if ($item.PSIsContainer) { $bits = $bits -bor [int][System.IO.UnixFileMode]::UserExecute }
+        $setMode.Invoke($null, @($item.FullName, [System.IO.UnixFileMode]$bits)) | Out-Null
+    }
+}
+
+$repoPath = (Resolve-Path -LiteralPath $TargetPath).Path
+if (-not (Test-Path -LiteralPath $repoPath -PathType Container)) { throw "Target path does not exist: $repoPath" }
+Assert-NoReparseComponents $repoPath
+
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sourceRoot = (Resolve-Path -LiteralPath (Join-Path $scriptRoot "..")).Path
+$sourceStatusProject = (Resolve-Path -LiteralPath (Join-Path $sourceRoot "StatusProject")).Path
+$sourceTemplates = Join-Path $sourceStatusProject "templates"
+$versionPath = Join-Path $sourceStatusProject "VERSION"
+Assert-NoReparseComponents $sourceRoot
+
+$rootEntryTemplates = @{
+    "AGENTS.md" = Join-Path $sourceRoot "AGENTS.md"
+    "CLAUDE.md" = Join-Path $sourceRoot "CLAUDE.md"
+    "GEMINI.md" = Join-Path $sourceTemplates "GEMINI.template.md"
+    "COPILOT_INSTRUCTIONS.md" = Join-Path $sourceTemplates "COPILOT_INSTRUCTIONS.template.md"
+}
+
+$deployPath = Get-ValidatedDeployPath $repoPath $DeployFolderName $sourceStatusProject
+$existing = Test-Path -LiteralPath $deployPath -PathType Container
+if ($existing) {
+    if ($ReuseExisting -or ($Yes -and -not $ReplaceExisting)) {
         Write-Host "Reusing existing deployment at $deployPath"
         exit 0
     }
     if (-not $ReplaceExisting) {
-        Write-Host "Existing deployment found at $deployPath"
-        if ($existingEntries.Count -gt 0) {
-            Write-Host "Existing root entry files: $($existingEntries -join ', ')"
-        }
-        $choice = Ask-Choice "Choose action" @("reuse","replace","custom","cancel")
+        $choice = Ask-Choice "Existing deployment found. Choose action" @("reuse", "replace", "custom", "cancel")
         switch ($choice) {
-            "reuse" { Write-Host "Reusing existing deployment."; exit 0 }
+            "reuse" { Write-Host "Reusing existing deployment at $deployPath"; exit 0 }
             "replace" { $ReplaceExisting = $true }
             "custom" {
                 $DeployFolderName = Read-Host "Enter new folder name"
-                $deployPath = Join-Path $repoPath $DeployFolderName
+                $deployPath = Get-ValidatedDeployPath $repoPath $DeployFolderName $sourceStatusProject
+                if (Test-Path -LiteralPath $deployPath) { throw "Custom deployment path already exists: $deployPath" }
+                $existing = $false
             }
             "cancel" { Write-Host "Cancelled."; exit 1 }
         }
     }
-}
-
-if ((Test-Path $deployPath) -and $ReplaceExisting) {
-    Remove-Item $deployPath -Recurse -Force
-}
-
-New-Item -ItemType Directory -Force -Path $deployPath | Out-Null
-
-$copyFiles = @(
-    "PROMPT.md",
-    "INSTALL.md",
-    "START-HERE.md",
-    "README.md",
-    "AI-INSTRUCTION.md",
-    "AI-SETTINGS-INSTRUCTION.md",
-    "CHANGELOG.md","VERSIONING.md","MCP.md","LINKS.md"
-)
-
-foreach ($file in $copyFiles) {
-    if ($file -match "^AI-.*INSTRUCTION") {
-        $sourceFile = Join-Path $sourceRoot $file
-    } else {
-        $sourceFile = Join-Path $sourceStatusProject $file
-    }
-    if (Test-Path $sourceFile) {
-        Copy-Item $sourceFile (Join-Path $deployPath $file) -Force
+    if ($ReplaceExisting -and (-not (Test-Path -LiteralPath (Join-Path $deployPath "PROMPT.md") -PathType Leaf) -or
+        -not (Test-Path -LiteralPath (Join-Path $deployPath "templates") -PathType Container))) {
+        throw "Refusing to replace an unmarked deployment. PROMPT.md and templates/ are required markers."
     }
 }
 
-Copy-Item $sourceTemplates (Join-Path $deployPath "templates") -Recurse -Force
+$selectedEntries = @(Resolve-AiEntries $AiEntries -NonInteractive:$Yes)
+Assert-RequiredSources $selectedEntries
+$version = (Get-Content -LiteralPath $versionPath -Raw).Trim()
+if ($version -notmatch '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$') { throw "Invalid StatusProject/VERSION: $version" }
 
-$rootEntryTemplates = @{
-    "AGENTS.md" = (Join-Path $sourceRoot "AGENTS.md")
-    "CLAUDE.md" = (Join-Path $sourceRoot "CLAUDE.md")
-    "GEMINI.md" = (Join-Path $sourceTemplates "GEMINI.template.md")
-    "COPILOT_INSTRUCTIONS.md" = (Join-Path $sourceTemplates "COPILOT_INSTRUCTIONS.template.md")
+$effectiveEntries = @()
+foreach ($entry in $selectedEntries) {
+    $dest = Join-Path $repoPath $entry
+    if (Test-Path -LiteralPath $dest) {
+        Assert-NoReparseComponents $dest
+        if ($Yes) { $effectiveEntries += $entry; continue }
+        if ((Ask-Choice "Root entry $entry exists. Choose action" @("keep", "replace", "skip")) -eq "replace") { $effectiveEntries += $entry }
+    } else { $effectiveEntries += $entry }
+}
+if ($existing) {
+    foreach ($managed in @($managedFiles + @("templates"))) {
+        $managedPath = Join-Path $deployPath $managed
+        if (Test-Path -LiteralPath $managedPath) { Assert-NoReparseComponents $managedPath }
+    }
 }
 
-$entryKeys = @("AGENTS.md","CLAUDE.md","GEMINI.md","COPILOT_INSTRUCTIONS.md")
-$selectedEntries = Get-AiEntrySelection "Select AI entry files to install or update" $entryKeys
+$operationId = "{0}-{1}" -f (Get-Date -Format "yyyyMMdd-HHmmss-fff"), ([guid]::NewGuid().ToString("N").Substring(0, 8))
+$stageRoot = Join-Path $repoPath ".statusproject-stage-$operationId"
+$stageDeploy = Join-Path $stageRoot "deployment"
+$stageEntries = Join-Path $stageRoot "root"
+$backupRoot = if ($existing) { Join-Path $deployPath ".backup\install-$operationId" } else { $null }
+$backupBase = if ($existing) { $backupRoot } else { Join-Path $stageRoot "rollback" }
+$createdDeployment = -not $existing
+$applied = New-Object System.Collections.Generic.List[object]
 
-foreach ($entryKey in $selectedEntries) {
-    $source = $rootEntryTemplates[$entryKey]
-    $dest = Join-Path $repoPath $entryKey
-    if (Test-Path $dest) {
-        $entryChoice = Ask-Choice "Root entry $entryKey already exists. Choose action" @("keep","replace","skip")
-        if ($entryChoice -eq "replace") {
-            Copy-Item $source $dest -Force
+try {
+    New-Item -ItemType Directory -Force -Path $stageDeploy, $stageEntries | Out-Null
+    foreach ($file in $copyFiles) { Copy-Item -LiteralPath (Get-SourceFile $file $sourceRoot $sourceStatusProject) -Destination (Join-Path $stageDeploy $file) -Force }
+    Copy-Item -LiteralPath $versionPath -Destination (Join-Path $stageDeploy "VERSION") -Force
+    Copy-Item -LiteralPath $sourceTemplates -Destination (Join-Path $stageDeploy "templates") -Recurse -Force
+    foreach ($entry in $effectiveEntries) { Copy-Item -LiteralPath $rootEntryTemplates[$entry] -Destination (Join-Path $stageEntries $entry) -Force }
+
+    $sourceContent = Get-Content -LiteralPath (Join-Path $sourceTemplates "SOURCE.template.md") -Raw
+    $sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", $version)
+    $sourceContent = $sourceContent.Replace("<YYYY-MM-DD>", (Get-Date).ToString("yyyy-MM-dd"))
+    $sourceContent = $sourceContent.Replace("<script/manual>", "scripts/install-statusproject.ps1")
+    $sourceContent = $sourceContent.Replace("<repo>/StatusProject", $deployPath)
+    $sourceContent = $sourceContent.Replace("<local|release|manual-copy>", "local")
+    $sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
+    $sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
+    $sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
+    Set-Content -LiteralPath (Join-Path $stageDeploy "SOURCE.md") -Value $sourceContent -Encoding UTF8
+
+    $projectName = Split-Path -Leaf $repoPath
+    $linksContent = Get-Content -LiteralPath (Join-Path $sourceTemplates "LINKS.template.md") -Raw
+    $linksContent = $linksContent.Replace("<Project>", $projectName)
+    $linksContent = $linksContent.Replace("<project>", $projectName)
+    $linksContent = $linksContent.Replace("<local-project-path>", $repoPath)
+    $linksContent = $linksContent.Replace("<recorded-source-from-SOURCE.md>", $sourceRoot)
+    $linksContent = $linksContent.Replace("<source>", $sourceRoot)
+    $linksContent = $linksContent.Replace("<latest-release-url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
+    $linksContent = $linksContent.Replace("<os-default-global-source-path>", (Get-DefaultGlobalSourcePath))
+    Set-Content -LiteralPath (Join-Path $stageDeploy "LINKS.md") -Value $linksContent -Encoding UTF8
+    Set-OwnerWritableRecursive $stageDeploy
+    Set-OwnerWritableRecursive $stageEntries
+
+    foreach ($required in $managedFiles) {
+        if (-not (Test-Path -LiteralPath (Join-Path $stageDeploy $required) -PathType Leaf)) { throw "Staging validation failed: $required" }
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $stageDeploy "templates") -PathType Container)) { throw "Staging validation failed: templates" }
+
+    New-Item -ItemType Directory -Force -Path $deployPath | Out-Null
+    foreach ($file in $managedFiles) {
+        $dest = Join-Path $deployPath $file
+        $backup = Join-Path $backupBase "deployment\$file"
+        $hadOriginal = if ($existing) { Copy-ToBackup $dest $backup } else { $false }
+        $applied.Add([pscustomobject]@{ Path = $dest; Backup = $backup; HadOriginal = $hadOriginal; Directory = $false })
+        Set-OwnerWritableRecursive $dest
+        Copy-Item -LiteralPath (Join-Path $stageDeploy $file) -Destination $dest -Force
+        Set-OwnerWritableRecursive $dest
+    }
+
+    $templatesDest = Join-Path $deployPath "templates"
+    $templatesBackup = Join-Path $backupBase "deployment\templates"
+    $hadTemplates = if ($existing) { Copy-ToBackup $templatesDest $templatesBackup } else { $false }
+    $applied.Add([pscustomobject]@{ Path = $templatesDest; Backup = $templatesBackup; HadOriginal = $hadTemplates; Directory = $true })
+    Set-OwnerWritableRecursive $templatesDest
+    if (Test-Path -LiteralPath $templatesDest) { Assert-NoReparseComponents $templatesDest; Remove-Item -LiteralPath $templatesDest -Recurse -Force }
+    Copy-Item -LiteralPath (Join-Path $stageDeploy "templates") -Destination $templatesDest -Recurse -Force
+    Set-OwnerWritableRecursive $templatesDest
+
+    foreach ($state in $stateFiles) {
+        $dest = Join-Path $deployPath $state
+        if (-not (Test-Path -LiteralPath $dest)) {
+            Copy-Item -LiteralPath (Join-Path $sourceTemplates ($state.Replace(".md", ".template.md"))) -Destination $dest
+            Set-OwnerWritableRecursive $dest
+            $applied.Add([pscustomobject]@{ Path = $dest; Backup = $null; HadOriginal = $false; Directory = $false })
         }
-        continue
     }
-    Copy-Item $source $dest -Force
+
+    foreach ($entry in $effectiveEntries) {
+        $dest = Join-Path $repoPath $entry
+        $backup = Join-Path $backupBase "root\$entry"
+        if (Test-Path -LiteralPath $dest) { Assert-NoReparseComponents $dest }
+        $hadOriginal = Copy-ToBackup $dest $backup
+        $applied.Add([pscustomobject]@{ Path = $dest; Backup = $backup; HadOriginal = $hadOriginal; Directory = $false })
+        Set-OwnerWritableRecursive $dest
+        Copy-Item -LiteralPath (Join-Path $stageEntries $entry) -Destination $dest -Force
+        Set-OwnerWritableRecursive $dest
+    }
+} catch {
+    for ($i = $applied.Count - 1; $i -ge 0; $i--) {
+        $item = $applied[$i]
+        if (Test-Path -LiteralPath $item.Path) { Remove-Item -LiteralPath $item.Path -Recurse:$item.Directory -Force }
+        if ($item.HadOriginal -and (Test-Path -LiteralPath $item.Backup)) {
+            Copy-Item -LiteralPath $item.Backup -Destination $item.Path -Recurse:$item.Directory -Force
+            Set-OwnerWritableRecursive $item.Path
+        }
+    }
+    if ($createdDeployment -and (Test-Path -LiteralPath $deployPath)) { Remove-Item -LiteralPath $deployPath -Recurse -Force }
+    throw
+} finally {
+    if (Test-Path -LiteralPath $stageRoot) { Remove-Item -LiteralPath $stageRoot -Recurse -Force }
 }
 
-$sourceTemplatePath = Join-Path $sourceTemplates "SOURCE.template.md"
-$sourceOutPath = Join-Path $deployPath "SOURCE.md"
-$sourceContent = Get-Content $sourceTemplatePath -Raw
-$sourceContent = $sourceContent.Replace("<vX.Y.Z or manual>", "v0.4.1")
-$sourceContent = $sourceContent.Replace("<YYYY-MM-DD>", (Get-Date).ToString("yyyy-MM-dd"))
-$sourceContent = $sourceContent.Replace("<script/manual>", "scripts/install-statusproject.ps1")
-$sourceContent = $sourceContent.Replace("<repo>/StatusProject", "$repoPath\$DeployFolderName")
-$sourceContent = $sourceContent.Replace("<local|release|manual-copy>", "local")
-$sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
-$sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
-$sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
-Set-Content $sourceOutPath $sourceContent
-
-Write-Host "Installed StatusProject to $deployPath"
-Write-Host "Default global source path: $defaultGlobalSource"
-if ($existingEntries.Count -gt 0) {
-    Write-Host "Existing root entry files were preserved: $($existingEntries -join ', ')"
-}
-if ($selectedEntries.Count -gt 0) {
-    Write-Host "AI entry selection: $($selectedEntries -join ', ')"
-}
+Write-Host "Installed StatusProject $version to $deployPath"
+if ($backupRoot) { Write-Host "Backup created at $backupRoot" }
+if ($effectiveEntries.Count -gt 0) { Write-Host "AI entry selection: $($effectiveEntries -join ', ')" }

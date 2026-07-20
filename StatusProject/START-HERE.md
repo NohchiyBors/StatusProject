@@ -10,7 +10,7 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
   - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
   - Linux/macOS: `~/.statusproject/source/StatusProject`
 - Recorded install source per deployment: `StatusProject/SOURCE.md`
-- Template folder: `<source>/templates/`, where `<source>` is resolved from `StatusProject/SOURCE.md`, then default global source, then GitHub latest release.
+- Template folder: `<source>/StatusProject/templates/`, where `<source>` is resolved from `StatusProject/SOURCE.md`, then default global source, then GitHub latest release.
 
 ## Layout
 - Repo root: short `AGENTS.md` / `CLAUDE.md`.
@@ -18,7 +18,7 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 - Required state files when enabled: `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`. Create missing files from `StatusProject/templates/`.
 
 ## Setup
-1. Install `StatusProject/` into the target repository with `install-statusproject.ps1`, `install-statusproject.sh`, or manual copy.
+1. From the resolved source repository, install `StatusProject/` into the target with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy.
 2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`. Keep root AI entry files stable; replace them only when explicitly selected in the installer.
 3. Create state files from English templates in `templates/`.
 4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
@@ -27,9 +27,9 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 7. After meaningful progress, update `TODO`, `MEMORY`, and `PROJECT-RESUME`; update `STATUS-LOG` for long/batch/release work and domain files when their facts changed.
 
 ## Updates
-- Check at most once per 1 day per project. Record the check date in `MEMORY` or `PROJECT-RESUME`.
+- Check at most once per 7 days per project. Record the check date in `MEMORY` or `PROJECT-RESUME`.
 - Compare against `StatusProject/SOURCE.md`, then GitHub latest release if needed. Propose updates; never overwrite local state without approval.
-- For existing deployments, use `update-statusproject.ps1` / `update-statusproject.sh`.
+- For existing deployments, run `scripts/update-statusproject.ps1` or `scripts/update-statusproject.sh` from the resolved StatusProject source repository.
 
 ## See Also
 - Full operating rules: [`PROMPT.md`](PROMPT.md)

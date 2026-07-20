@@ -1,97 +1,62 @@
 # StatusProject Link Tree
 
 ```text
-StatusProject
-├── Repository
-│   ├── GitHub repo
-│   │   └── https://github.com/NohchiyBors/StatusProject
-│   ├── Latest release
-│   │   └── https://github.com/NohchiyBors/StatusProject/releases/latest
-│   ├── All releases
-│   │   └── https://github.com/NohchiyBors/StatusProject/releases
-│   └── Tags
-│       └── https://github.com/NohchiyBors/StatusProject/tags
-│
-├── Local Sources
-│   ├── Project folder
-│   │   └── <current local clone>
-│   ├── Default global source (Windows)
-│   │   └── %USERPROFILE%\.statusproject\source\StatusProject
-│   ├── Default global source (Linux/macOS)
-│   │   └── ~/.statusproject/source/StatusProject
-│   └── Recorded install source
-│       └── StatusProject/SOURCE.md
-│
-├── Entry Files
+StatusProject source repository
+├── README.md
+├── scripts/
 │   ├── install-statusproject.ps1
 │   ├── install-statusproject.sh
 │   ├── update-statusproject.ps1
-│   ├── update-statusproject.sh
-│   ├── README.md
-│   ├── PROMPT.md
-│   ├── INSTALL.md
-│   ├── START-HERE.md
-│   ├── CHANGELOG.md
-│   ├── VERSIONING.md
-│   ├── MCP.md
-│   ├── SOURCE.md
-│   └── LICENSE
-│
-├── AI Settings
-│   ├── AI-INSTRUCTION.md
-│   ├── AI-SETTINGS-INSTRUCTION.md
-│   ├── AGENTS.md
-│   ├── CLAUDE.md
-│   ├── templates/GEMINI.template.md
-│   └── templates/COPILOT_INSTRUCTIONS.template.md
-│
-├── Import
-│   └── templates/IMPORT-SOP.template.md
-│
-├── Templates
-│   ├── templates/LINKS.template.md
-│   ├── templates/INSTALL.template.md
-│   ├── templates/VERSIONING.template.md
-│   ├── templates/PLAN.template.md
-│   ├── templates/TODO.template.md
-│   ├── templates/MEMORY.template.md
-│   ├── templates/PROJECT-RESUME.template.md
-│   ├── templates/STATUS-LOG.template.md
-│   ├── templates/STATE-HISTORY.template.md
-│   ├── templates/REQUIREMENTS.template.md
-│   ├── templates/ARCHITECTURE.template.md
-│   ├── templates/PROJECT-TREE.template.md
-│   ├── templates/INFRASTRUCTURE.template.md
-│   ├── templates/SOFTWARE.template.md
-│   ├── templates/DEVELOPMENT-STATUS.template.md
-│   ├── templates/TESTING.template.md
-│   ├── templates/MCP.template.md
-│   ├── templates/SOURCE.template.md
-│   ├── templates/GEMINI.template.md
-│   ├── templates/COPILOT_INSTRUCTIONS.template.md
-│   ├── templates/GITIGNORE.template
-│   └── templates/LICENSE.template
-│
-└── Update Check
-    ├── Local source of truth
-    │   └── recorded in StatusProject/SOURCE.md
-    ├── Fallback local source
-    │   └── default global source path for the current OS
-    ├── Remote source
-    │   └── https://github.com/NohchiyBors/StatusProject/releases/latest
-    └── Frequency
-        └── at most once per 1 day per target project
+│   └── update-statusproject.sh
+└── StatusProject/
+    ├── PROMPT.md              canonical AI operating contract
+    ├── INSTALL.md             source-run install/update guide
+    ├── VERSION                canonical source version
+    ├── VERSIONING.md          commit and release policy
+    ├── SOURCE.md              deployed-source metadata
+    ├── CHANGELOG.md
+    └── templates/             canonical English templates
 ```
 
-## Clickable Files
-- [README.md](README.md)
-- [PROMPT.md](PROMPT.md)
-- [INSTALL.md](INSTALL.md)
-- [START-HERE.md](START-HERE.md)
-- [MCP.md](MCP.md)
-- [AI-SETTINGS-INSTRUCTION.md](AI-SETTINGS-INSTRUCTION.md)
-- [install-statusproject.ps1](install-statusproject.ps1)
-- [update-statusproject.ps1](update-statusproject.ps1)
-- [templates/LINKS.template.md](templates/LINKS.template.md)
-- [templates/INSTALL.template.md](templates/INSTALL.template.md)
-- [templates/LICENSE.template](templates/LICENSE.template)
+## Canonical Files
+
+- [Root README](../README.md)
+- [AI operating contract](PROMPT.md)
+- [Install and update guide](INSTALL.md)
+- [Canonical version](VERSION)
+- [Versioning and release policy](VERSIONING.md)
+- [Source metadata](SOURCE.md)
+- [Changelog](CHANGELOG.md)
+- [Reusable PM launch prompt](templates/CODEX-MULTI-AGENT-PROMPT.template.md)
+
+## Source Scripts
+
+These scripts remain in the StatusProject source/global repository and are not deployed into target projects.
+
+- [PowerShell installer](../scripts/install-statusproject.ps1)
+- [Bash installer](../scripts/install-statusproject.sh)
+- [PowerShell updater](../scripts/update-statusproject.ps1)
+- [Bash updater](../scripts/update-statusproject.sh)
+
+## Repositories And Releases
+
+- [GitHub repository](https://github.com/NohchiyBors/StatusProject)
+- [Latest release](https://github.com/NohchiyBors/StatusProject/releases/latest)
+- [All releases](https://github.com/NohchiyBors/StatusProject/releases)
+- [Tags](https://github.com/NohchiyBors/StatusProject/tags)
+
+## Source Resolution
+
+```text
+StatusProject/SOURCE.md
+└── recorded local source
+    └── OS default global source
+        └── GitHub latest release
+```
+
+- Windows global source: `%USERPROFILE%\.statusproject\source\StatusProject`
+- Linux/macOS global source: `~/.statusproject/source/StatusProject`
+- Maintainer local default: `D:\Data\OneDrive\source\StatusProject`
+- Update check: at most once per 7 days per target project
+
+English documents are canonical. Russian documents, when present, are optional translations. AI entry instructions must link to English canonical files.

@@ -1,5 +1,10 @@
+param(
+    [string]$TargetPath = "."
+)
+
 $ErrorActionPreference = "Stop"
-$StatusDir = "StatusProject"
+$repoPath = (Resolve-Path -LiteralPath $TargetPath).Path
+$StatusDir = Join-Path $repoPath "StatusProject"
 $RequiredFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "PROMPT.md")
 $AllPassed = $true
 
@@ -23,7 +28,7 @@ if (Test-Path $LinksFile) {
         if ($line -match "\[.*\]\(([^)]+)\)") {
             $link = $matches[1]
             if ($link -notmatch "^http") {
-                if (-not (Test-Path $link) -and -not (Test-Path (Join-Path $StatusDir $link))) {
+                if (-not (Test-Path (Join-Path $repoPath $link)) -and -not (Test-Path (Join-Path $StatusDir $link))) {
                      Write-Host "WARN: Possible broken link in LINKS.md -> $link" -ForegroundColor Yellow
                 }
             }

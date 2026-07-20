@@ -17,6 +17,7 @@
 ## Rules
 - `<durable rule>`
 - `<durable rule>`
+- Dockerized directory policy: do not run host package managers (`npm install`, `yarn`, `pip install`, etc.) or create host `node_modules`, `venv`, or vendor directories; install and run dependencies only inside the respective Docker containers.
 
 ## Decisions
 - `<YYYY-MM-DD: decision>` — rationale: `<reason>`; impacted process: `<process area>`

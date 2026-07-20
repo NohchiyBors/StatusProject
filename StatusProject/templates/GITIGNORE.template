@@ -57,6 +57,8 @@ temp/
 *.tmp
 *.bak
 *.backup
+.backup/
+StatusProject/.backup/
 
 # Local agent/tool state
 .codex/

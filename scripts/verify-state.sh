@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-STATUS_DIR="StatusProject"
+TARGET_PATH="${1:-.}"
+REPO_PATH="$(cd "$TARGET_PATH" && pwd -P)"
+STATUS_DIR="$REPO_PATH/StatusProject"
 REQUIRED_FILES=("TODO.md" "MEMORY.md" "PROJECT-RESUME.md" "PROMPT.md")
 ALL_PASSED=true
 
@@ -21,7 +23,7 @@ LINKS_FILE="$STATUS_DIR/LINKS.md"
 if [ -f "$LINKS_FILE" ]; then
     echo "Checking local links in LINKS.md..."
     grep -oE '\[.*\]\([^)]+\)' "$LINKS_FILE" | grep -v 'http' | sed -E 's/.*\[.*\]\((.*)\)/\1/' | while read -r link; do
-        if [ ! -e "$link" ] && [ ! -e "$STATUS_DIR/$link" ]; then
+        if [ ! -e "$REPO_PATH/$link" ] && [ ! -e "$STATUS_DIR/$link" ]; then
             echo "WARN: Possible broken link in LINKS.md -> $link"
         fi
     done

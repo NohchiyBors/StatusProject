@@ -5,7 +5,37 @@ All notable changes to `StatusProject` are documented in this file.
 This project uses semantic version tags for public releases.
 
 ## Unreleased
+
 No unreleased changes yet.
+
+## v0.6.0 - 2026-07-20
+
+### Added
+- `PM plan` and `PM plan <objective>` canonical planning commands, with `PM` retained as a backward-compatible alias.
+- `PM start` and `PM start <objective>` canonical full local-cycle commands, with `PM all` retained as a backward-compatible alias.
+- Compact orchestration telemetry with block/task counts, elapsed time, evidence-based approximate ETA, and current/next work.
+- Git metadata placement policy for the maintainer machine: keep physical metadata outside OneDrive under `D:\Data\git`, use `D:\Data\repos` for ordinary clones, and verify `.git` pointers after Git operations.
+- `templates/CODEX-MULTI-AGENT-PROMPT.template.md` with adaptive read-only planning, Architect / PM synthesis, approval gating, isolated build waves, and StatusProject output mapping.
+- `PM` and `PM <objective>` commands for launching the standard read-only hierarchical planning phase.
+- `PM all` and `PM all <objective>` commands for running the full local planning, block execution, integration, verification, state update, and reporting cycle.
+- `PM help` command for action-free help covering commands, inferred objective, agent roles and goals, workflow phases, and safety boundaries.
+- `PM status` command for evidence-backed completion auditing, remaining-work analysis, critical-path reporting, and StatusProject state reconciliation without product implementation.
+- `PM commit` command for scoped secret-safe staging, SemVer updates, detailed change/function descriptions, GitHub repository discovery or creation, commit, push, and protected-branch PR fallback.
+
+### Changed
+- Extended plan and development-status templates with estimated effort/duration and progress-summary fields.
+- Restored the update-check interval to at most once per 7 days across canonical documentation and templates.
+- Clarified that PM commands are AI instructions, `PM all` is a local plan-build-verify-status cycle, and publication remains exclusive to `PM commit`.
+- Defined `StatusProject/VERSION` as the canonical version source without advancing the current version.
+- Corrected source-run installer/updater paths and documented the shared non-interactive CLI contract.
+- Clarified Docker bootstrap boundaries and added publication gates for smoke checks, links, state preservation, Git scope, and secrets.
+- Development plans must cite specification files, project files, and/or conversation context as requirement sources instead of relying on unverified assumptions.
+- Parallel multi-agent plans now require bounded ownership, non-overlapping write scopes, execution waves, integration ownership, and primary-agent verification after every wave.
+- Build execution now enforces one uniquely identified logical block per dedicated agent thread, with scoped handoffs and sequential integration for blocks that cannot be isolated.
+- Expanded `templates/PLAN.template.md` with source evidence, allowed file/subsystem scope, integration owner, and wave verification fields.
+
+### Security
+- Required shipped-file backups during replacement/update and expanded Git ignore rules for `.backup/` directories.
 
 ## v0.5.0 - 2026-07-16
 
@@ -13,7 +43,7 @@ No unreleased changes yet.
 - **Strict Layout Isolation:** All operating documents (e.g. `README.md`, `PROMPT.md`, `LINKS.md`) have been moved into `StatusProject/`, leaving only short AI entry files in the repository root.
 - **Templates Consolidation:** Moved all templates from root `templates/` to `StatusProject/templates/` to keep the root directory clean.
 - **Scripts Consolidation:** Moved installer and updater scripts (`install-statusproject.*`, `update-statusproject.*`) to the `scripts/` directory.
-- **Update Frequency:** Changed update check frequency rule from 7 days to 1 day (daily) across all templates, AI instructions, and operating docs.
+- **Update Frequency:** Temporarily shortened the update-check interval across templates and operating docs; the current rule is defined under `Unreleased`.
 - **State Compaction:** Added periodic compaction of active state files with size (~150 lines, or `TODO` done>open), milestone triggers, and daily checks; history moves to `STATE-HISTORY`, verbose evidence to `STATUS-LOG`; compaction is move-based, never delete-based.
 - Session Start step 4: compact state before new work when a compaction trigger fires.
 
