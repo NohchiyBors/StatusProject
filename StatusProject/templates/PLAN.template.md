@@ -49,12 +49,15 @@
 
 ## Progress Summary
 - Phase: `<planning|synthesis|build|integration|verification|status|done>`
+- Display: `PM PROGRESS [########------------] 40%` or `PM PROGRESS [--------------------] --%`
+- Progress basis: `<equal blocks|weighted work units|manifest items|unavailable>`
 - Total blocks/tasks: `<count or unknown>`
 - Completed / in progress / remaining / failed or blocked: `<counts>`
 - Elapsed: `<duration>`
 - ETA: `<approximate duration/timestamp or unknown>`
 - Current / next: `<current block or wave> / <next action>`
 - Percentage: `<0-100% only when total is known and stable; otherwise unavailable>`
+- Measured items / rate: `<completed/total and units/time, or not applicable>`
 
 ## Planning Synthesis
 | Planning agent | Proposal focus | Key idea | Conflict / risk | Accepted into integrated plan? |

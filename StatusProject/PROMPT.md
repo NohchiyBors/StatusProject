@@ -1,6 +1,6 @@
 # Prompt: StatusProject
 
-Canonical operating rules. All other root docs (`README.md`, `START-HERE.md`, `AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`) are short pointers — do not duplicate rules into them. Links/paths live in `LINKS.md` and `StatusProject/SOURCE.md`.
+Canonical operating rules. Short compatibility entries in this StatusProject source repository (`AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`) are pointers — do not duplicate rules into them. A deployed target has the narrower root contract below. Links/paths live in `LINKS.md` and `StatusProject/SOURCE.md`.
 
 ## Enable When
 One answer is not enough: multi-step or multi-session work, blockers/dependencies/critical files, imports, migrations, publication, integration, infrastructure, or support. Skip short one-off tasks.
@@ -15,7 +15,8 @@ The user command `StatusProject` (alone or as "StatusProject init/инициал
 6. Report per file: created / updated / unchanged / needs approval.
 
 ## Layout
-- Repo root: short `AGENTS.md` / `CLAUDE.md` (+ optional `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`) and normal project files.
+- StatusProject source-repository root: short compatibility entries `AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, optional `GEMINI.md` / `COPILOT_INSTRUCTIONS.md`, plus normal source-project files.
+- Deployed target root: only selectable AI adapters `AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md` / `COPILOT_INSTRUCTIONS.md`, plus the target project's normal files. Deployed `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` belong inside `StatusProject/`, matching installer behavior.
 - `StatusProject/`: operating docs, `templates/`, state files. Do not put state files in repo root.
 - Templates stay English. Update `StatusProject/` docs by default; replace root entries only when explicitly selected.
 
@@ -34,6 +35,7 @@ Templates are taken from `<source>/StatusProject/templates/` and deployed to `<r
 ## Deployment Contract
 In every enabled target project:
 - Root gets only short AI entries: `AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.
+- `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` are deployed under `StatusProject/`, not duplicated into the target root.
 - `StatusProject/` must contain operating docs, `templates/`, `SOURCE.md`, and active state files.
 - Required state files: `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`.
 - Add `PLAN.md` for multi-phase work. Add `STATUS-LOG.md` for long/batch/repeated work. Add domain files only when the domain exists.
@@ -115,32 +117,152 @@ Procedure:
 ## Development Planning
 When forming a development plan:
 - Reusable launch prompt: `templates/CODEX-MULTI-AGENT-PROMPT.template.md`.
-- PM commands are AI instruction commands, not shell executables. `PM help` shows concise command, objective, role, phase, alias, and safety help without actions. `PM status` performs an evidence-backed progress audit and reconciles state without implementation. `PM plan` or `PM plan <objective>` analyzes relevant project files plus current chat context, launches relevant read-only planning roles in parallel, and synthesizes one multi-agent plan containing requirements and sources, atomic blocks, dependencies, waves, acceptance/evidence, risks, and unresolved decisions; it never implements and stops for approval. `PM` and `PM <objective>` are backward-compatible aliases for `PM plan`. `PM start` or `PM start <objective>` runs the complete local planning -> synthesis -> block execution -> integration -> verification -> state/status -> report cycle. `PM all` and `PM all <objective>` are backward-compatible aliases for `PM start`. Build execution enforces one atomic block per dedicated agent. Neither `PM start` nor `PM all` implicitly authorizes commit, push, tag, GitHub Release, deployment, production changes, destructive actions, or scope expansion. `PM commit` is the separate publication command: it runs a status preflight, updates canonical `StatusProject/VERSION` and `CHANGELOG.md` according to SemVer, creates a detailed scoped commit, and pushes to the configured GitHub repository. If no repository exists, request repository name, personal or organization ownership, organization name when applicable, and visibility before creation. Explicit `PM commit patch|minor|major|vX.Y.Z` overrides automatic version selection. Use the explicit objective or infer it from current context; ask when no clear objective exists.
+- PM commands are AI instruction commands, not shell executables. `PM help` shows concise command, goal, role, phase, alias, and safety help without actions. `PM doctor [goal]` audits StatusProject wiring, required files, templates, links, Git metadata policy, and Docker policy without product implementation. `PM status [goal]` performs an evidence-backed progress audit and reconciles state without implementation. `PM plan <goal>` analyzes relevant project files plus current chat context, attempts bounded read-only internal planning workers in parallel, and synthesizes one multi-agent plan containing requirements and sources, atomic blocks, dependencies, waves, acceptance/evidence, risks, and unresolved decisions; it never implements and stops for approval. `PM <goal>` is its backward-compatible alias. `PM start <goal>`, `PM start all <goal>`, or `PM all <goal>` runs the complete local planning -> synthesis -> all required block execution -> integration -> verification -> state/status -> report cycle. `PM test <goal> [target]` runs verification only for the supplied goal and target; it may update evidence/state but must not implement, deploy, or mutate runtime data. `PM dev <goal> [target]` prepares, builds, starts, and verifies the project development environment through Docker; when the target location cannot be resolved, it asks the user where to deploy before changing or starting anything. `PM prod <goal> [target]` prepares and verifies an explicit production deployment or production operations goal using the documented production environment; when the production target, credentials path, release artifact, rollback plan, or approval boundary is unclear, it asks before changing anything. `PM rollback <goal> [target]` executes an explicit rollback goal using a documented rollback procedure and verifies the restored service state. A working command without `<goal>` asks for the goal and stops before actions. Build execution assigns one atomic block per internal worker when worker orchestration is available. Neither `PM start`, `PM start all`, `PM all`, `PM test`, nor `PM dev` implicitly authorizes commit, push, tag, GitHub Release, production deployment, destructive actions, or scope expansion. `PM prod` and `PM rollback` authorize only the production actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM commit` is the separate publication command: it runs a status preflight, updates canonical `StatusProject/VERSION` and `CHANGELOG.md` according to SemVer, creates a detailed scoped commit, and pushes to the configured GitHub repository. If no repository exists, request repository name, personal or organization ownership, organization name when applicable, and visibility before creation. Explicit `PM commit patch|minor|major|vX.Y.Z` overrides automatic version selection. `PM release <goal>` is the separate public release command for tag and GitHub Release publication from an already committed version; it must verify the intended commit, version, changelog, tag, release notes, and remote state before publishing.
+
+## PM Goal Contract
+
+- Planning and execution commands require an explicit `<goal>`: `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, and `PM release <goal>`.
+- If `<goal>` is missing or too vague to define completion, ask one concise goal question and stop before starting internal workers, editing files, building, deploying, or updating state.
+- Convert the goal into a stable objective, scope, acceptance criteria, constraints, and Definition of Done. Record conversation-derived requirements as `from context`.
+- Treat the goal and Definition of Done as the completion baseline. Do not silently reduce scope, omit difficult blocks, or report completion from task labels alone.
+- `PM start <goal>` (and its `PM start all` / `PM all` aliases) explicitly requires every necessary plan block, integration step, verification gate, and state update. Continue until the Definition of Done is verified or progress is genuinely blocked.
+- A full-cycle result must be either `verified complete` with evidence or `blocked` with the exact unmet criterion, cause, completed work, and smallest unblocking action. Never present partial or unverified work as complete.
+- New requirements discovered during execution are added only when required to satisfy the stated goal or explicitly approved by the user; unrelated expansion remains prohibited.
+- Goal completion does not bypass command boundaries. Verification, commit/push, production deployment, rollback, destructive operations, tag, and release still require their dedicated explicit commands.
 - Requirements source: use the specification file named in the task, other relevant project files, and/or the current conversation. Record the exact sources in the plan; mark conversation-derived requirements "from context". Do not replace missing facts with unverified assumptions.
 - Prefer hierarchical multi-agent planning for Codex development work:
-  1. Launch several independent planning agents first; each designs a solution from the same sources without implementing.
+  1. Use bounded internal subagent workers inside the current Codex task; do not create separate user-visible tasks or chats unless the user explicitly requests them. Each planning worker designs a solution from the same sources without implementing.
   2. The `Architect / PM` (primary agent) compares their plans, resolves conflicts, merges the strongest parts, and produces one integrated plan.
   3. Launch development agents only after user approval, or automatically when `PM start` (or its `PM all` alias) explicitly pre-authorized implementation and synthesis found no unresolved scope or architecture decisions.
 - The `Architect / PM` owns requirements alignment, architecture coherence, plan approval, task boundaries, execution waves, integration decisions, and final verification; planning and development agents remain bounded contributors.
 - Split the integrated plan into separate atomic logical blocks (e.g., data, logic, UI, infrastructure, tests). Each block has a unique ID and records: goal, inputs, outputs, dependencies, allowed and prohibited files or subsystem, owner, and done criterion.
 - Build a dependency graph; mark blocks with no mutual dependencies as parallelizable.
-- Enforce `one block = one dedicated development agent thread`. An agent receives only its assigned block, must not take another block or expand scope, and returns a concise handoff with changed files, verification evidence, risks, and blockers.
+- When internal worker orchestration is available, enforce `one block = one dedicated internal development worker`. A worker receives only its assigned block, must not take another block or expand scope, and returns a concise handoff with changed files, verification evidence, risks, and blockers.
 - Execute ready blocks in waves (wave 1 = independent blocks, wave 2 = blocks depending on wave 1, ...). Run independent blocks in parallel; run blocks that cannot be safely isolated sequentially under the integration owner.
 - Avoid overlapping writes by different agents. If overlap is unavoidable, define the integration owner and merge order before execution.
 - Always present the plan (blocks + dependency graph + waves). Wait for user approval before launching development agents unless `PM start` (or its `PM all` alias) explicitly authorized the full cycle; even then, stop if scope, architecture, destructive, production, deployment, or publication approval is required.
 - After each wave, the `Architect / PM` reviews every result and runs an integration/verification step before starting the next wave.
 - Record the approved plan in `PLAN` and current execution in `TODO`.
 
-## PM Progress Telemetry
+## PM Agent Runtime Recovery
 
-During `PM start` / `PM all` orchestration, the primary `Architect / PM` emits a compact progress status at the beginning, after every completed block or wave, when ETA changes materially, and in the final report. Do not repeat an unchanged status.
+- This recovery contract applies after the primary turn starts. If logs show that the task's `agent loop` already received `shutdown` and the UI then sends a turn to that terminated process, the task is no longer reusable even if the Codex WebSocket reconnects. Do not diagnose this sequence as VPN/DNS failure and do not keep retrying the dead loop: open a new Codex task and rerun `PM plan <goal>` there. Restart/reopen Codex first only when the UI cannot create the new task.
+- Keep the primary `Architect / PM` in the current Codex task. Internal planning/build workers are optional execution aids, not required user-visible tasks.
+- Start only the relevant workers: normally 2-3 for medium work and at most 5 for large or high-risk work. Close completed workers before starting another wave.
+- If an internal worker fails to start, returns `internal error`, or its agent loop dies, record the failed role/block and retry once with fewer concurrent workers.
+- If the retry fails, do not abort `PM plan` or lose the goal. Continue in the primary agent by analyzing the missing roles sequentially, clearly label this as fallback mode, and synthesize the same required plan structure.
+- Never recursively ask a worker to create more workers. Never loop on worker creation, and never create a separate user-visible Codex task/chat as an automatic fallback.
+- A worker-runtime failure is a tooling degradation, not automatically a project blocker. Mark the command blocked only when the primary agent also cannot produce required evidence or continue safely.
+- A transient WebSocket warm-up timeout followed by a successful reconnect does not revive a loop that already shut down. Recovery evidence is a completion from a newly running loop, not connectivity restoration alone.
 
-Use these fields: `Objective`, `Phase`, `Total blocks/tasks`, `Completed`, `In progress`, `Remaining`, `Failed/blocked`, `Elapsed`, `ETA`, and `Current/next`.
+## PM Doctor Contract
 
-- Calculate a percentage only when the total is known and stable; otherwise report counts without a percentage.
-- Treat ETA as approximate. Recalculate it from observed completion rate, remaining dependencies, and verification/integration work.
-- Use `unknown` when evidence is insufficient; never manufacture precision.
-- A status update reports orchestration progress, not evidence that a block is complete. Completion still requires its done criterion and verification evidence.
+For `PM doctor [goal]`:
+1. Audit StatusProject wiring without product implementation: root AI entries, `StatusProject/` layout, required state files, templates, `SOURCE.md`, `VERSION`, `LINKS`, update-source resolution, Git metadata placement, `.gitignore`, Dockerized directory policy, and obvious stale references.
+2. If `[goal]` is present, focus the audit on that project area; otherwise run a general StatusProject health audit.
+3. Create missing required state files only when initialization rules allow it. Do not overwrite local state, secrets, product files, deployment files, or user changes.
+4. Report findings as `pass`, `warning`, or `fail`, with exact files, smallest corrective action, and whether the agent can fix it safely.
+5. Update `TODO`, `MEMORY`, and `PROJECT-RESUME` only for durable state-system facts, detected blockers, and performed safe repairs.
+
+`PM doctor` authorizes StatusProject health inspection and safe state scaffolding. It does not authorize product implementation, dependency installation, deployment, commit, push, tag, release, destructive cleanup, or secret changes.
+
+## PM Dev Contract
+
+For `PM dev <goal> [target]`:
+1. Require `<goal>` and derive development acceptance criteria from it. Resolve the deployment location in this order: explicit `[target]` argument; current chat context; the `dev`/`local` entry in `StatusProject/INFRASTRUCTURE.md`; active Docker context when it is clearly documented for this project.
+2. If the location is still missing or ambiguous, ask the user where to deploy and stop before editing files, building images, creating volumes, or starting containers. Request only missing facts such as local versus remote Docker host/context, project path, and required URL/ports.
+3. Read `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `ENV`, `PROJECT-TREE`, and existing Docker/Compose files when present. Clearly distinguish `local`, `dev`, `staging`, and `prod`.
+4. `PM dev` targets only `local` or `dev`. Reject an inferred production target and require a separate explicit production/deployment workflow.
+5. Verify Docker availability, selected context/host, target path, port conflicts, volumes, networks, required environment variables, and secret sources. Local development secrets may use ignored `.env` files; never commit or echo secret values.
+6. Use existing Dockerfiles and Compose definitions when possible. If development Docker assets are missing, create the minimum project-consistent assets only when no unresolved architecture decision is required; otherwise stop with a `PM plan` recommendation.
+7. Install dependencies, build, migrate non-destructively, and run the project strictly inside the selected containers. Never run host package managers or create host dependency directories.
+8. Start the development stack, run container health/smoke checks, and verify expected ports/URLs. Do not claim success from container state alone when an application health endpoint or equivalent check exists.
+9. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `TODO`, and `PROJECT-RESUME` with the resolved dev location, Docker context, services, ports/URLs, verification evidence, and stop/restart commands. Do not record secret values.
+10. Report target, containers/services, health, URLs, logs command, stop/restart command, elapsed time, and remaining blockers.
+
+`PM dev` authorizes development-only Docker configuration, build, start, and verification at the resolved target. It does not authorize production/staging deployment, external DNS or TLS changes, destructive migrations, data deletion, commit, push, tag, release, or secret publication.
+
+## PM Test Contract
+
+For `PM test <goal> [target]`:
+1. Require `<goal>` and derive verification acceptance criteria from it. Resolve `[target]` from the explicit argument, current chat context, `StatusProject/TESTING.md`, `SOFTWARE.md`, or `INFRASTRUCTURE.md`.
+2. If the test target, environment, command, expected URL/API, credentials path, or acceptance evidence is missing or ambiguous, ask for the missing fact and stop before running tests that touch external systems.
+3. Read `REQUIREMENTS`, `PLAN`, `TODO`, `ARCHITECTURE`, `SOFTWARE`, `INFRASTRUCTURE`, `TESTING`, and relevant test/CI files when present.
+4. Run only verification commands appropriate to the resolved target. Follow the Docker policy: project dependencies, linters, test runners, and application commands run inside containers unless the command is a StatusProject host bootstrap/check.
+5. `PM test` must not implement product changes, deploy, restart production services, mutate runtime data, run destructive migrations, publish secrets, commit, push, tag, or release.
+6. Prefer non-destructive checks: unit/integration/e2e tests, smoke checks, healthchecks, read-only API checks, logs, and build verification. For production, use read-only health/smoke checks unless the user explicitly authorizes a broader production test.
+7. Record exact commands, target, environment, pass/fail/skip status, evidence, coverage gaps, and blockers in `TESTING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME`.
+8. Report result as `passed`, `failed`, `partial`, or `blocked`, with evidence and the smallest next action.
+
+`PM test` authorizes verification and state/evidence updates only. It does not authorize implementation, deployment, runtime mutation, commit, push, tag, GitHub Release, or destructive operations.
+
+## PM Prod Contract
+
+For `PM prod <goal> [target]`:
+1. Require `<goal>` and derive production acceptance criteria from it. Resolve the production target in this order: explicit `[target]` argument; current chat context; the `prod` entry in `StatusProject/INFRASTRUCTURE.md`; deployment records in `StatusProject/SOFTWARE.md`, `StatusProject/VERSIONING.md`, or `StatusProject/STATUS-LOG.md`.
+2. If the production target, release artifact/version, credentials path, healthcheck, rollback method, or approval boundary is missing or ambiguous, ask the user for the missing fact and stop before editing files, changing infrastructure, deploying, restarting services, or touching data.
+3. Read `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `ENV`, `TESTING`, `VERSIONING`, `PROJECT-TREE`, and deployment manifests/scripts when present. Clearly distinguish `prod` from `staging`, `dev`, and `local`.
+4. `PM prod` targets only `prod`. Reject inferred `dev`, `local`, or `staging` targets unless the user explicitly changes the command or goal.
+5. Run a production preflight before changes: repository status/scope, intended artifact/version, Docker or runtime context, current service health, backups/restore posture, migration risk, environment variables and secret sources, access, DNS/TLS impact, and rollback command or procedure. Never print or commit secret values.
+6. Prefer documented deployment scripts, Compose files, CI/CD workflows, and runbooks. If production deployment assets are missing or inconsistent, stop with a `PM plan` recommendation instead of inventing an unsafe production path.
+7. Apply only non-destructive production changes that are explicitly within the goal and approval boundary. Destructive migrations, data deletion, secret rotation, DNS/TLS changes, public release/tag creation, force push, or rollback require separate explicit confirmation.
+8. Verify production after the action with healthchecks, smoke tests, logs, and user-visible URL/API checks where available. Do not claim success from command exit code alone when service verification exists.
+9. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `VERSIONING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with target, artifact/version, commands or workflow names, health evidence, rollback path, timestamp, and remaining risk. Do not record secret values.
+10. Report target, artifact/version, production services, health evidence, URLs, logs command, rollback command/procedure, elapsed time, and remaining blockers.
+
+`PM prod` authorizes production-scoped preparation, deployment or operations, and verification only as explicitly described by the goal and confirmed boundaries. It does not authorize unrelated feature work, unapproved destructive operations, secret publication, commit, push, tag, GitHub Release, DNS/TLS changes, or scope expansion.
+
+## PM Rollback Contract
+
+For `PM rollback <goal> [target]`:
+1. Require `<goal>` and derive rollback acceptance criteria from it. Resolve the target from the explicit `[target]`, current chat context, `StatusProject/INFRASTRUCTURE.md`, `SOFTWARE.md`, `VERSIONING.md`, `STATUS-LOG.md`, or documented deployment records.
+2. If the target, current version/state, rollback artifact/version, rollback command/procedure, backup/restore status, healthcheck, or approval boundary is missing or ambiguous, ask for the missing fact and stop before changing services or data.
+3. Read `INFRASTRUCTURE`, `SOFTWARE`, `VERSIONING`, `TESTING`, `STATUS-LOG`, deployment manifests/scripts, and runbooks when present. Clearly distinguish rollback target: `prod`, `staging`, `dev`, or `local`.
+4. Prefer documented rollback procedures. If rollback assets are missing, inconsistent, or unverified for the requested target, stop with a `PM plan` or `PM prod` recommendation instead of inventing a rollback path.
+5. Run preflight checks: current health, active version/artifact, desired previous version/artifact, backups, migrations, data compatibility, access, logs, rollback command, and forward-fix option.
+6. Apply only the rollback explicitly described by the goal and approval boundary. Data deletion, destructive migrations, secret rotation, DNS/TLS changes, force pushes, tags, and public release changes require separate explicit confirmation.
+7. Verify the restored state with healthchecks, smoke tests, logs, URL/API checks, and version checks where available.
+8. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `VERSIONING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with rollback target, from/to versions, commands or workflow names, evidence, timestamp, and remaining risk. Do not record secret values.
+9. Report target, from/to version or artifact, services affected, health evidence, logs command, forward-fix path, elapsed time, and blockers.
+
+`PM rollback` authorizes only the explicitly requested rollback and verification. It does not authorize unrelated feature work, unapproved destructive operations, secret publication, commit, push, tag, GitHub Release, DNS/TLS changes, or scope expansion.
+
+## PM Release Contract
+
+For `PM release <goal>`:
+1. Require `<goal>` and derive release acceptance criteria from it. Resolve the intended version from `StatusProject/VERSION`, `CHANGELOG.md`, current Git commit, tags, and the conversation.
+2. If the release version, commit SHA, branch, changelog entry, release notes, target repository, remote authentication, or public/private release boundary is missing or ambiguous, ask for the missing fact and stop before tagging or publishing.
+3. Run release preflight: clean/intended working tree, no secrets, version/changelog consistency, relevant verification evidence, current branch, remote URL, existing tags/releases, and protected-branch status.
+4. `PM release` requires an already committed release candidate. If required files are uncommitted, recommend `PM commit` first unless the user explicitly changes the goal.
+5. Create or verify the annotated Git tag and GitHub Release only for the resolved version and commit. Do not change product files, deploy, rotate secrets, alter DNS/TLS, or force push as part of release.
+6. If a tag or release already exists, compare it with the intended commit and notes. Do not overwrite, delete, or recreate it without explicit confirmation.
+7. Verify the published tag/release remotely, then update `VERSIONING`, `CHANGELOG`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with version, commit SHA, tag, release URL, evidence, and remaining post-release actions.
+8. Report version, commit, tag, release URL, verification, and blockers.
+
+`PM release` authorizes tag and GitHub Release publication for an already committed version. It does not authorize product implementation, dependency installation, deployment, production changes, destructive operations, commit, unrelated push, force push, or secret publication.
+
+## Execution Progress Display
+
+For every substantial task, including `PM plan`, `PM start` / `PM all`, `PM doctor`, `PM status`, `PM test`, `PM dev`, `PM prod`, `PM rollback`, `PM commit`, and `PM release`, the primary agent emits a compact, fixed-layout progress block in the user's language. Show it at the start, after each completed block or wave, when the current operation, ETA, or blocker changes, every 30-60 seconds while active when new evidence is available, and in the final report. Do not repeat unchanged status or stream raw worker logs.
+
+```text
+PM PROGRESS [############--------] 60%
+Goal: <short goal>
+Phase: <planning|synthesis|build|integration|verification|status|done>
+Current: <block, operation, or item>
+Tasks: 6/10 complete | 1 active | 3 remaining | 0 failed
+Items: 7,895/8,000 | Rate: 65 items/s
+Elapsed: 12m 40s | ETA: ~8m
+Next: <next block or gate>
+```
+
+- Keep the bar at 20 characters. Use `#` for complete and `-` for remaining.
+- Show a percentage only when a stable denominator exists in an approved plan, manifest, or discovered item list. Otherwise use `[--------------------] --%`, report known counts, and set ETA to `unknown`.
+- Use weighted work units when known blocks differ materially in size; state the progress basis in `PLAN` or `DEVELOPMENT-STATUS`.
+- Include `Items` and `Rate` only for measurable batch work. Calculate rate from observed item deltas and elapsed time; never estimate it from intuition.
+- Recalculate approximate ETA from observed rate, dependencies, integration, and verification. Use `unknown` instead of false precision.
+- Add `Blocked: <reason>` only when blocked. Aggregate internal-worker results into the task counts.
+- Progress is telemetry, not completion evidence. Reserve `100%` for a verified Definition of Done; use at most `99%` while final integration, verification, or required state updates remain.
 
 ## Work Rules
 - Update state files after meaningful progress; prefer concise deltas over rewrites.
@@ -159,8 +281,8 @@ For projects in this directory:
 1. All projects are Dockerized.
 2. Do not run `npm install`, `yarn`, `pip install`, or other package managers locally on the host machine.
 3. Do not create local `node_modules`, `venv`, or vendor directories on the host disk.
-4. All project dependency installations, executions, builds, and tests must be done strictly inside the respective Docker containers.
-5. Cross-platform StatusProject bootstrap scripts are host file operations, not project dependency execution. Verify their behavior in Docker; native Windows `.bat` and macOS runtime certification require native runners.
+4. All project dependency installations, executions, builds, tests, language servers, and project linters must run strictly inside the respective Docker containers. Configure the host IDE to use a container/remote interpreter or container-executed tooling; being ignored by Git does not permit project-local `.venv`, `node_modules`, or vendor directories on the host.
+5. Cross-platform StatusProject bootstrap scripts and the host IDE application itself are host tools, not project dependency execution. They must not install project dependencies or create project-local dependency directories. Verify bootstrap behavior in Docker; native Windows `.bat` and macOS runtime certification require native runners.
 
 ## Git Metadata Placement
 On the maintainer machine, physical Git metadata must not be created inside OneDrive.

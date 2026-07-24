@@ -10,6 +10,7 @@ StatusProject source repository
 │   └── update-statusproject.sh
 └── StatusProject/
     ├── PROMPT.md              canonical AI operating contract
+    ├── START-HERE.md          Start Here guide
     ├── INSTALL.md             source-run install/update guide
     ├── VERSION                canonical source version
     ├── VERSIONING.md          commit and release policy
@@ -22,6 +23,7 @@ StatusProject source repository
 
 - [Root README](../README.md)
 - [AI operating contract](PROMPT.md)
+- [Start Here guide](START-HERE.md)
 - [Install and update guide](INSTALL.md)
 - [Canonical version](VERSION)
 - [Versioning and release policy](VERSIONING.md)

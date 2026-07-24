@@ -13,5 +13,6 @@ Use this entry in AI tool settings instead of pasting full instructions. Do not 
 - After meaningful progress, update state before finishing.
 - If the task touches architecture, services, deployment, environments, or dev/prod differences, also read `StatusProject/ARCHITECTURE`, `StatusProject/INFRASTRUCTURE`, and `StatusProject/SOFTWARE` when present before changing files.
 - For development planning, use hierarchical multi-agent planning: independent planning agents first, `Architect / PM` synthesis and approval second, development agents only afterward.
-- `PM help` shows command/agent help; `PM status` audits progress; `PM plan` plans for approval (`PM` alias); `PM start` runs the local cycle (`PM all` alias); `PM commit` publishes per `StatusProject/PROMPT.md`.
+- Working commands require a goal: `PM plan <goal>` (`PM <goal>` alias), `PM start <goal>` / `PM start all <goal>` / `PM all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, and `PM release <goal>`; ask for a missing goal before acting. `PM help`, `PM doctor [goal]`, `PM status [goal]`, and `PM commit` follow `StatusProject/PROMPT.md`.
+- During substantial work, show and refresh the compact progress display defined in `StatusProject/PROMPT.md`.
 - Dockerized directory policy: do not run host package managers (`npm install`, `yarn`, `pip install`, etc.) or create host `node_modules`, `venv`, or vendor directories; install and run dependencies only inside the respective Docker containers.

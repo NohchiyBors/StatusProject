@@ -7,16 +7,19 @@
 - Last updated: `<YYYY-MM-DD>`
 - Objective: `<current objective>`
 - Phase: `<planning|synthesis|build|integration|verification|status|done>`
+- Display: `PM PROGRESS [########------------] 40%` or `PM PROGRESS [--------------------] --%`
+- Progress basis: `<equal tasks|weighted work units|manifest items|unavailable>`
 - Total blocks/tasks: `<count or unknown>`
 - Completed: `<count>`
 - In progress: `<count>`
 - Remaining: `<count or unknown>`
 - Failed/blocked: `<count>`
+- Measured items / rate: `<completed/total and units/time, or not applicable>`
 - Elapsed: `<duration>`
 - ETA: `<approximate duration/timestamp or unknown>`
 - Current/next: `<current work> / <next action>`
 
-Use percentages only when the total is known and stable. Recalculate approximate ETA from actual completion rate and dependencies; use `unknown` rather than false precision. Do not record unchanged telemetry repeatedly.
+Keep the display bar at 20 characters. Use percentages only when the denominator is known and stable, use measured rates only when observed, and reserve `100%` for a verified Definition of Done. Recalculate approximate ETA from actual completion rate and dependencies; use `unknown` rather than false precision. Do not record unchanged telemetry repeatedly.
 
 ## Workstream Progress
 | Workstream | Progress | Status | Next step |

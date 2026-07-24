@@ -9,6 +9,7 @@
 │   └── COPILOT_INSTRUCTIONS.md           optional
 └── StatusProject/
     ├── PROMPT.md                         canonical AI operating contract
+    ├── START-HERE.md                     Start Here guide
     ├── INSTALL.md                        install/update guide
     ├── SOURCE.md                         deployed-source metadata
     ├── VERSION                           source version when shipped
@@ -25,6 +26,7 @@
 - Local project: `<local-project-path>`
 - Deployed source metadata: `StatusProject/SOURCE.md`
 - Canonical operating contract: `StatusProject/PROMPT.md`
+- Start Here guide: `StatusProject/START-HERE.md`
 - Install/update guide: `StatusProject/INSTALL.md`
 
 ## StatusProject Source

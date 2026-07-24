@@ -8,6 +8,24 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.7.0 - 2026-07-24
+
+### Added
+- `PM doctor [goal]` command for StatusProject health audits covering wiring, required state files, templates, links, Git metadata policy, and Docker policy.
+- `PM test <goal> [target]` command for verification-only workflows that can update evidence/state but must not implement, deploy, or mutate runtime data.
+- `PM dev <goal> [target]` command for resolving, starting, and verifying a development-only Docker deployment, with an explicit location question when the target is not known.
+- `PM prod <goal> [target]` command for explicit production deployment or operations workflows, including production preflight, rollback boundary, verification evidence, and state updates.
+- `PM rollback <goal> [target]` command for documented rollback workflows with preflight, from/to version tracking, restored-state verification, and state updates.
+- `PM release <goal>` command for tag and GitHub Release publication from an already committed release candidate.
+- Required `<goal>` grammar for planning and execution commands, including `PM start all <goal>`, with verified-complete-or-blocked completion semantics.
+- Fixed-layout execution progress display with a 20-character bar, evidence-based percentage, task and item counts, measured rate, elapsed time, approximate ETA, current operation, and blocker state.
+
+### Fixed
+- Made Codex multi-agent orchestration resilient to worker startup/internal-loop failures: stay in the current task, retry once with lower concurrency, then continue sequentially in the primary agent without creating user-visible tasks.
+- Documented the distinct dead-task recovery path for an `agent loop` that received `shutdown`: create a new Codex task; do not treat a later WebSocket reconnect as loop recovery or diagnose the sequence as VPN/DNS failure.
+- Reconciled IDE tooling with the strict Docker policy: host IDEs may use container/remote language services, but ignored host `.venv`, `node_modules`, and vendor directories remain prohibited.
+- Distinguished StatusProject source-root compatibility entries from the narrower deployed-target adapter set so documentation matches installer behavior.
+
 ## v0.6.0 - 2026-07-20
 
 ### Added
