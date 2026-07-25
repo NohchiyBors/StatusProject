@@ -5,6 +5,8 @@ Use this prompt for substantial development work. Replace bracketed fields befor
 These are AI instruction commands, not shell executables. Summary:
 - `PM help` displays command, objective, agent-role, workflow, and safety help without spawning agents or changing files.
 - `PM doctor [goal]` audits StatusProject wiring, required files, templates, Git metadata policy, and Docker policy without product implementation.
+- `PM env [goal]` checks local environment readiness, tools, Git, Docker, network/update access, filesystem policy, and configured StatusProject source without product implementation.
+- `PM multiagent <goal>` prepares hierarchical multi-agent planning state, worker boundaries, role selection, and progress telemetry without starting implementation.
 - `PM status` audits evidence-backed progress, reconciles project state, and reports the remaining path to completion without implementing product changes.
 - `PM commit` verifies intended changes, updates the semantic version, creates a detailed commit, and publishes it to the configured GitHub repository.
 - `PM release <goal>` verifies an already committed version, creates or verifies the tag, and publishes a GitHub Release.
@@ -14,13 +16,14 @@ These are AI instruction commands, not shell executables. Summary:
 - `PM dev <goal> [target]` prepares, starts, and verifies the Docker development environment for the goal; if the target location is not known, it asks the user before making changes.
 - `PM prod <goal> [target]` prepares, executes, and verifies an explicit production deployment or operations goal; if the production target, artifact/version, credentials path, rollback plan, or approval boundary is unclear, it asks before making changes.
 - `PM rollback <goal> [target]` executes an explicit rollback through a documented rollback procedure and verifies the restored service state.
+- `PM update-statusproject <goal> [target]` force-checks GitHub for the StatusProject project and updates the selected target from the latest release/source while preserving local state.
 
-If a working command has no explicit goal, ask the user for it before spawning subagents or taking actions. `PM start <goal>`, `PM start all <goal>`, and `PM all <goal>` authorize planning, implementation waves, integration, verification, StatusProject state updates, and the final report for that goal. They do not implicitly authorize scope expansion, destructive actions, production changes, deployment, commit, push, tag, or release. `PM test` authorizes verification only. `PM prod` and `PM rollback` authorize only production actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM release` authorizes tag and GitHub Release publication only for an already committed version.
+If a working command has no explicit goal, ask the user for it before spawning subagents or taking actions. `PM start <goal>`, `PM start all <goal>`, and `PM all <goal>` authorize planning, implementation waves, integration, verification, StatusProject state updates, and the final report for that goal. They do not implicitly authorize scope expansion, destructive actions, production changes, deployment, commit, push, tag, or release. `PM env`, `PM multiagent`, and `PM test` authorize inspection/setup/verification only. `PM prod`, `PM rollback`, and `PM update-statusproject` authorize only actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM release` authorizes tag and GitHub Release publication only for an already committed version.
 
 ## PM Help Contract
 
 For `PM help`, respond in the user's language and show:
-1. Command syntax and the difference between help, doctor, status, planning-only, full-cycle, testing, development Docker deployment, production operations, rollback, commit, and release operations.
+1. Command syntax and the difference between help, doctor, environment check, multi-agent setup, status, planning-only, full-cycle, testing, development Docker deployment, production operations, forced StatusProject update, rollback, commit, and release operations.
 2. Current inferred objective, or `not defined` when the conversation does not provide one.
 3. Planning agents with each role's goal and when it is selected: System Architect, Business Analyst, Technical Lead, Security Reviewer, QA Strategist.
 4. Build roles: one bounded internal development worker per atomic block when available, plus the Architect / PM as integration owner.
@@ -29,7 +32,7 @@ For `PM help`, respond in the user's language and show:
 
 Do not spawn subagents, edit files, run project commands, or update state in response to `PM help`.
 
-Help must list `PM doctor [goal]`, `PM status [goal]`, `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM commit`, and `PM release <goal>` as canonical commands and identify `PM <goal>` and `PM all <goal>` as backward-compatible forms.
+Help must list `PM doctor [goal]`, `PM env [goal]`, `PM multiagent <goal>`, `PM status [goal]`, `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM update-statusproject <goal> [target]`, `PM commit`, and `PM release <goal>` as canonical commands and identify `PM <goal>` and `PM all <goal>` as backward-compatible forms.
 
 ## PM Doctor Contract
 
@@ -40,6 +43,27 @@ For `PM doctor [goal]`:
 4. Report `pass`, `warning`, or `fail` with exact files, smallest correction, and whether the agent can fix it safely.
 
 `PM doctor` authorizes StatusProject health inspection and safe state scaffolding only.
+
+## PM Env Contract
+
+For `PM env [goal]`:
+1. Audit environment readiness without product implementation: shell, OS, workspace, filesystem permissions, Git status/remotes, Git metadata placement, Docker availability/context, network/update access, GitHub CLI/auth when present, and configured StatusProject source/version.
+2. Focus on `[goal]` when supplied; otherwise run a general readiness check.
+3. Prefer read-only checks. Do not install dependencies, start services, create containers, change Docker context, edit product files, deploy, commit, push, tag, release, or mutate secrets.
+4. Classify each item as `ready`, `warning`, `blocked`, or `unknown`, with evidence and the smallest safe fix.
+
+`PM env` authorizes environment inspection and state/evidence updates only.
+
+## PM Multiagent Contract
+
+For `PM multiagent <goal>`:
+1. Require the goal and derive multi-agent readiness criteria: roles, worker count, ownership boundaries, integration owner, verification gates, and progress telemetry.
+2. Read prompt, plan, TODO, resume, development status, architecture, software, testing, MCP, and the multi-agent prompt template when present.
+3. Verify state files, reusable prompt, role selection, one-block-per-worker rules, non-overlapping scopes, waves, runtime recovery, and final evidence requirements.
+4. Create or update only StatusProject planning/state scaffolding needed for readiness. Preserve local content.
+5. Do not launch planning or development workers unless followed by `PM plan`, `PM start`, or `PM all`.
+
+`PM multiagent` authorizes multi-agent planning setup and state updates only.
 
 ## PM Goal Contract
 
@@ -158,6 +182,19 @@ For `PM prod <goal> [target]`:
 
 `PM prod` does not authorize unrelated feature work, unapproved destructive operations, secret publication, commit, push, tag, GitHub Release, DNS/TLS changes, or scope expansion.
 
+## PM Update StatusProject Contract
+
+For `PM update-statusproject <goal> [target]`:
+1. Require the goal and resolve target from explicit argument, current workspace, chat context, or deployed `StatusProject/SOURCE.md`.
+2. Force-check GitHub project `https://github.com/NohchiyBors/StatusProject` for the latest release/source and bypass the normal 7-day interval while recording date and evidence.
+3. Preflight target path, source record, current version, latest GitHub version/tag/release, working tree, local state files, backup destination, root AI entry selection, and network/tool access.
+4. Stop or ask if GitHub cannot be verified, target is ambiguous, local state would be overwritten, or unrelated changes would be touched.
+5. Use the documented updater when possible. Update shipped operating docs and templates; preserve state files, secrets, `.env`, logs, and local tool state.
+6. Update root AI entries only when explicitly selected or approved as StatusProject-managed compatibility files.
+7. Back up every replaced shipped file and verify version/source, required files, templates, root entry pointers, state preservation, release notes, and Git scope.
+
+`PM update-statusproject` authorizes a forced StatusProject docs/templates update from GitHub only.
+
 ## PM Rollback Contract
 
 For `PM rollback <goal> [target]`:
@@ -174,7 +211,7 @@ For `PM rollback <goal> [target]`:
 
 ## Execution Progress Display Contract
 
-For every substantial task, including all PM planning, execution, doctor, status, test, development, production, rollback, commit, and release commands, the primary `Architect / PM` emits a compact, fixed-layout progress block in the user's language. Show it at the start, after each completed block or wave, when the current operation, ETA, or blocker changes, every 30-60 seconds while active when new evidence is available, and in the final report. Do not repeat unchanged status or stream raw worker logs.
+For every substantial task, including all PM planning, execution, doctor, environment, multi-agent setup, status, test, development, production, forced StatusProject update, rollback, commit, and release commands, the primary `Architect / PM` emits a compact, fixed-layout progress block in the user's language. Show it at the start, after each completed block or wave, when the current operation, ETA, or blocker changes, every 30-60 seconds while active when new evidence is available, and in the final report. Do not repeat unchanged status or stream raw worker logs.
 
 ```text
 PM PROGRESS [############--------] 60%

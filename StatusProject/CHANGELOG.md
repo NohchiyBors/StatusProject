@@ -8,6 +8,13 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.8.0 - 2026-07-25
+
+### Added
+- `PM env [goal]` command for read-only environment readiness checks covering shell, filesystem, Git, Docker, network/update access, GitHub CLI/auth, and configured StatusProject source/version.
+- `PM multiagent <goal>` command for preparing hierarchical multi-agent planning setup, worker boundaries, role selection, state scaffolding, and progress telemetry without launching implementation.
+- `PM update-statusproject <goal> [target]` command for forced StatusProject updates from the GitHub project, bypassing the normal 7-day interval while preserving local state and backups.
+
 ## v0.7.0 - 2026-07-24
 
 ### Added
