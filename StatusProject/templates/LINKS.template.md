@@ -16,8 +16,19 @@
     ├── TODO.md                           local state
     ├── MEMORY.md                         local state
     ├── PROJECT-RESUME.md                 local state
+    ├── CONTEXT-INDEX.md                  optional routing-only index
     └── templates/                        canonical English templates
 ```
+
+## Context Routes
+
+- Canonical read order: `PROJECT-RESUME -> TODO -> MEMORY`.
+- Follow the Restart Capsule's exact project-relative `file#section` pointers before broad search.
+- `CONTEXT-INDEX.md` is optional and routing-only; do not copy canonical facts, decisions, evidence, or history into it.
+
+| Stable ID / question | Canonical owner pointer | Purpose |
+| --- | --- | --- |
+| `<REQ/DEC/CTX/EV-ID or question>` | `StatusProject/<file>.md#<section>` | `<why this route matters>` |
 
 ## Project Links
 

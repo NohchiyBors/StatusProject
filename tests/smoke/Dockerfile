@@ -13,6 +13,7 @@ COPY tests/smoke/ ./tests/smoke/
 RUN chmod -R a-w /opt/statusproject \
     && chmod 0555 /opt/statusproject/tests/smoke/run-smoke.sh \
         /opt/statusproject/tests/smoke/smoke-bash.sh \
+        /opt/statusproject/tests/smoke/context-integrity.sh \
     && useradd --no-create-home --uid 10001 --shell /usr/sbin/nologin smoke
 
 ENV HOME=/tmp

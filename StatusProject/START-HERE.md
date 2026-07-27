@@ -23,8 +23,9 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 3. Create state files from English templates in `templates/`.
 4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
 5. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
-6. Each session: read `PROJECT-RESUME` → `TODO` → `MEMORY`, then `PLAN` and optional files only when the task needs them.
-7. After meaningful progress, update `TODO`, `MEMORY`, and `PROJECT-RESUME`; update `STATUS-LOG` for long/batch/release work and domain files when their facts changed.
+6. Each session: read `PROJECT-RESUME` first, then open `TODO` and `MEMORY`; follow its Restart Capsule and precise pointers into active/domain context, and open evidence/history only when required.
+7. After meaningful progress, update canonical fact owners plus `TODO`, `MEMORY`, and the `PROJECT-RESUME` Restart Capsule so the next session can continue without the previous chat.
+8. Use optional `CONTEXT-INDEX.md` only when context is dispersed or L0 cannot route precisely. Full L0-L3, budget, pointer, and transactional compaction rules live in [`PROMPT.md`](PROMPT.md#context-integrity-v1).
 
 ## Updates
 - Check at most once per 7 days per project. Record the check date in `MEMORY` or `PROJECT-RESUME`.

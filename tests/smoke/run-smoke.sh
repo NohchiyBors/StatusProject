@@ -25,15 +25,18 @@ find "$SOURCE_ROOT" -type f -print0 \
 
 mkdir -p "$WORK_ROOT"
 
-printf '\n[1/4] Bash install/update flow\n'
+printf '\n[1/5] Bash install/update flow\n'
 bash "$SOURCE_ROOT/tests/smoke/smoke-bash.sh" "$WORK_ROOT/bash target"
 
-printf '\n[2/4] PowerShell install/update flow\n'
+printf '\n[2/5] PowerShell install/update flow\n'
 pwsh -NoLogo -NoProfile -NonInteractive -File \
   "$SOURCE_ROOT/tests/smoke/smoke-powershell.ps1" \
   -TargetPath "$WORK_ROOT/powershell target"
 
-printf '\n[3/4] BAT wrapper static coverage\n'
+printf '\n[3/5] Context Integrity validator/compactor flow\n'
+bash "$SOURCE_ROOT/tests/smoke/context-integrity.sh"
+
+printf '\n[4/5] BAT wrapper static coverage\n'
 for wrapper in install-statusproject update-statusproject; do
   bat="$SOURCE_ROOT/scripts/$wrapper.bat"
   ps1="$SOURCE_ROOT/scripts/$wrapper.ps1"
@@ -42,7 +45,7 @@ for wrapper in install-statusproject update-statusproject; do
 done
 printf 'PASS: BAT wrappers reference their PowerShell scripts. Windows runtime is NOT CERTIFIED.\n'
 
-printf '\n[4/4] Source immutability\n'
+printf '\n[5/5] Source immutability\n'
 find "$SOURCE_ROOT" -type f -print0 \
   | sort -z \
   | xargs -0 sha256sum > /tmp/statusproject-source.after

@@ -4,7 +4,7 @@
 - Strategic plan and major workstreams. Current execution lives in `TODO`; archived detail lives in `STATE-HISTORY`.
 - Systems engineering basis: ISO/IEC 15288-style life cycle thinking; record practical process coverage, not certification claims.
 - **Planning Rules**:
-  - **Source Data**: Base the plan on named specification files, relevant project files, and/or current conversation content. List exact sources and label conversation-derived requirements `from context`; do not invent missing facts.
+  - **Source Data**: Base the plan on named specification files, relevant project files, and/or current conversation content. List exact sources and label conversation-derived requirements `from context`; externalize any chat-derived fact needed after the turn so chat is not the only durable source. Do not invent missing facts.
   - **Hierarchical Multi-Agent Planning**: For Codex development work, first run several independent planning agents, then let the `Architect / PM` (primary agent) compare, resolve conflicts, and merge their proposals into one integrated plan before any implementation starts.
   - **Architect / PM Ownership**: Own requirements alignment, architecture coherence, plan approval, task boundaries, execution waves, integration decisions, and final verification.
   - **Logical Blocks**: Decompose the integrated plan into uniquely identified, atomic, and independently verifiable logical blocks.
@@ -17,6 +17,14 @@
 - System of interest: `<system/product/service>`
 - Boundary: `<in scope / out of scope>`
 - Success criteria: `<measurable outcome>`
+
+## Context Baseline
+- Goal ID / why: `GOAL-<human-stable-name>` — `<goal>` / `<stakeholder need and provenance>`
+- Scope / non-goals: `<in>` / `<out>`
+- Canonical requirement owner: `<REQ-ID @ StatusProject/file.md#section>`
+- Canonical architecture/decision owners: `<DEC/CTX-ID @ StatusProject/file.md#section>`
+- Acceptance / evidence: `<AC/EV-ID @ StatusProject/file.md#section>`
+- Exact planning read set: `<stable IDs with project-relative file#section pointers>`
 
 ## Stakeholders And Needs
 | Stakeholder | Need / Concern | Success measure | Priority |
@@ -64,9 +72,9 @@
 | --- | --- | --- | --- | --- |
 | `<agent>` | `<focus>` | `<idea>` | `<risk>` | `<yes/no/partly>` |
 
-| Block ID | Block | Goal | Inputs | Outputs | Allowed / prohibited scope | Depends on | Estimated effort | Estimated duration | Done criterion | Wave | Dedicated agent thread |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B01 | `<block>` | `<goal>` | `<inputs>` | `<outputs>` | `<allowed; prohibited>` | `<— or block ID>` | `<S/M/L or work units>` | `<approximate or unknown>` | `<criterion>` | `<1..n>` | `<unique agent>` |
+| Block ID | Block | Goal | Requirement / canonical owner | Inputs | Outputs | Allowed / prohibited scope | Depends on | Estimated effort | Estimated duration | Done criterion / evidence | Wave | Dedicated agent thread |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| B01 | `<block>` | `<goal>` | `<REQ/DEC-ID @ file#section>` | `<inputs>` | `<outputs>` | `<allowed; prohibited>` | `<— or block ID>` | `<S/M/L or work units>` | `<approximate or unknown>` | `<AC/EV-ID @ file#section>` | `<1..n>` | `<unique agent>` |
 
 ## Execution Waves
 | Wave | Blocks (parallel) | Integration owner | Integration / verification after wave | Status |

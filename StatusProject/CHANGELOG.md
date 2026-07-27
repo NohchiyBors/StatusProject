@@ -8,6 +8,19 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.9.0 - 2026-07-27
+
+### Added
+- Context Integrity v1 with L0-L3 context levels, Restart Capsule routing, canonical fact ownership, stable human-readable IDs, exact `file#section` pointers, portable soft budgets, and a no-chat-only dependency rule.
+- Optional routing-only `CONTEXT-INDEX` template, additive Restart Capsule/state schemas, whole-block archive envelopes, compaction receipts, and context-aware ignore rules.
+- Cross-platform state validation for current/legacy schemas, actionable restart fields, canonical read order, context budgets, optional-index duplicate IDs, and dangling file/anchor pointers.
+- Docker smoke fixtures covering current, legacy, unresolved-field, dangling-pointer, duplicate-ID, dry-run, injected rollback, whole-block, UTF-8/path-with-spaces, idempotence, Bash/PowerShell parity, and source immutability.
+
+### Changed
+- Replaced isolated-line TODO compaction with transactional completed-task whole-block compaction, staging, backup, SHA-256 archive evidence, exact rollback, explicit dry-run/apply, and idempotent repeated execution.
+- Installer/update documentation now preserves optional local context state, creates only the new template by default, and treats legacy migration as advisory and additive.
+- Documented transitional no-argument `compact-state` compatibility while requiring explicit target and mode for new automation.
+
 ## v0.8.0 - 2026-07-25
 
 ### Added

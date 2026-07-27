@@ -68,7 +68,10 @@ The installer creates missing required state files inside `StatusProject/` from 
 Add optional files only when needed:
 - `PLAN.md` for multi-phase work
 - `STATUS-LOG.md` for long/batch/release work
+- `CONTEXT-INDEX.md` only when a Context Integrity routing trigger applies
 - domain files for their domains: `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `MCP`, etc.
+
+New installs receive `templates/CONTEXT-INDEX.template.md`, but the installer does not create `StatusProject/CONTEXT-INDEX.md` automatically. The index is optional local state, not a shipped operating document.
 
 ## Update
 
@@ -103,6 +106,61 @@ Updater behavior:
 - updates root AI entry files only by explicit selection
 - reads the installed source version from `StatusProject/VERSION`
 
+## Context Integrity v1 Rollout
+
+- `CONTEXT-INDEX.md`, when present, is local state. Install, update, and replacement preserve it unchanged alongside `TODO`, `MEMORY`, `PROJECT-RESUME`, `PLAN`, history, logs, and domain state.
+- New installs copy the index template only; they do not create or populate an index until the routing triggers in `PROMPT.md` apply.
+- Existing state files use an additive migration path. Updating StatusProject refreshes shipped docs/templates but does not merge new headings into, rewrite, or overwrite current local state.
+- Legacy state remains valid. Add the Restart Capsule, stable pointers, archive envelope, and receipts during a later authorized state update or compaction; do not invent missing facts merely to match the new templates.
+
+### Verify State
+
+Run read-only verification from the StatusProject source:
+
+```powershell
+.\scripts\verify-state.ps1 -TargetPath <repo>
+```
+
+```bash
+bash scripts/verify-state.sh <repo>
+```
+
+`verify-state` checks required files, Context Integrity schema when present, canonical read order, soft budgets, stable IDs, and resolvable `file#section` pointers. A recognized legacy schema produces migration warnings, not a failure. Missing required files, malformed current-schema fields, or broken current pointers remain failures.
+
+### Compact State
+
+Preview the complete compaction block before changing state:
+
+```powershell
+.\scripts\compact-state.ps1 -TargetPath <repo> -DryRun
+```
+
+```bash
+bash scripts/compact-state.sh <repo> --dry-run
+```
+
+Apply only after reviewing the plan:
+
+```powershell
+.\scripts\compact-state.ps1 -TargetPath <repo> -Apply
+```
+
+```bash
+bash scripts/compact-state.sh <repo> --apply
+```
+
+Apply mode must create a timestamped backup under `StatusProject/.backup/compaction-*` before changing state, move the whole validated block, write its archive envelope/receipt, and print the backup path. If validation fails or the operation is interrupted, restore from that backup or run the reported rollback command:
+
+```powershell
+.\scripts\compact-state.ps1 -TargetPath <repo> -Rollback -BackupPath <backup>
+```
+
+```bash
+bash scripts/compact-state.sh <repo> --rollback <backup>
+```
+
+For one transition period, invoking `compact-state` with no arguments keeps the legacy behavior: target the current directory and apply completed-`TODO` compaction. It must emit a compatibility warning and still create a backup. New automation must use explicit target and `-DryRun`/`-Apply` or `--dry-run`/`--apply`.
+
 ## Rules
 - Check updates at most once per 7 days per target project.
 - Record update-check date in `MEMORY.md` or `PROJECT-RESUME.md`.
@@ -122,4 +180,5 @@ Before publication, require:
 1. Docker smoke checks for supported PowerShell and Bash flows.
 2. Relative-link validation.
 3. Install/update evidence that local state survives unchanged and shipped-file backups are created.
-4. Review of staged Git scope, ignored backups/state, and secrets.
+4. Context Integrity evidence that legacy verification warns without rewriting state, new installs receive only the index template, and compaction dry-run/apply/rollback preserve a recoverable whole block.
+5. Review of staged Git scope, ignored backups/state, and secrets.

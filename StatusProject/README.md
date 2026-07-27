@@ -20,7 +20,7 @@ Operating docs:
 `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
 
 Core state files:
-`PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
+`PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `CONTEXT-INDEX.md`, `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
 
 Required enabled state:
 `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`. If missing, create them from `StatusProject/templates/`.
@@ -49,6 +49,10 @@ Source resolution:
 Full rules for enabling, reading order, work rules, gitignore, and finish checks live in [`PROMPT.md`](PROMPT.md). Do not duplicate them here.
 
 State write rules live in [`PROMPT.md`](PROMPT.md): `TODO` tracks tasks/blockers/next action, `MEMORY` tracks durable rules/decisions, and `PROJECT-RESUME` tracks restart context. Domain files are updated only when their domain facts changed.
+
+## Context Integrity
+
+Context Integrity v1 keeps the always-read restart set compact while preserving project meaning in canonical domain owners and evidence/history. Start with `PROJECT-RESUME`, use its Restart Capsule and precise pointers, and add optional `CONTEXT-INDEX.md` only when routing becomes complex. The canonical L0-L3 levels, no-chat dependency rule, budgets, IDs, compaction transaction, and legacy migration contract live in [`PROMPT.md`](PROMPT.md#context-integrity-v1).
 
 ## Workflow
 1. Install with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy; see [`INSTALL.md`](INSTALL.md).

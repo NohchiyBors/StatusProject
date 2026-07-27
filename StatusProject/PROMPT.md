@@ -41,12 +41,81 @@ In every enabled target project:
 - Add `PLAN.md` for multi-phase work. Add `STATUS-LOG.md` for long/batch/repeated work. Add domain files only when the domain exists.
 
 ## Context Budget
-1. Always: `PROJECT-RESUME` → `TODO` → `MEMORY`.
-2. On demand: `PLAN` (multi-phase), `STATUS-LOG`/`STATE-HISTORY` (history needed), domain files when the task touches that domain.
-3. Architecture floor: if the request touches structure, services, interfaces, deployment, runtime environments, access, or `dev`/`staging`/`prod`/`local` differences, read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when present before planning or editing.
-4. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installer files, templates.
-5. Use `LINKS.md` instead of opening many docs to find paths.
-6. Skip completed items: when reading state files, ignore items marked `[x]` and archived sections unless the task needs history.
+Use the Context Integrity levels in order; a higher level is loaded only when the goal, a pointer, a conflict, or a verification need requires it.
+
+1. `L0 — restart`: always read `PROJECT-RESUME` → open `TODO` → `MEMORY`. Read `CONTEXT-INDEX` too when it exists. `PROJECT-RESUME` is always first.
+2. `L1 — active baseline`: read the current `PLAN` and the domain sources that own facts needed by the task, such as `REQUIREMENTS`, `ARCHITECTURE`, `SOFTWARE`, `INFRASTRUCTURE`, `TESTING`, or `MCP`.
+3. `L2 — scoped context`: read a referenced workstream file, ADR, topic capsule, or exact section selected by a stable ID or `file#section` pointer.
+4. `L3 — evidence and history`: read `STATUS-LOG`, `STATE-HISTORY`, changelog, release evidence, old decisions, or raw logs only to verify a claim, resolve a conflict, audit history, or recover a missing link.
+5. Architecture floor: if the request touches structure, services, interfaces, deployment, runtime environments, access, or `dev`/`staging`/`prod`/`local` differences, read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when present before planning or editing.
+6. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installer files, templates. Use `LINKS.md` instead of opening many docs to find paths.
+7. Skip completed items: when reading state files, ignore items marked `[x]` and archived sections unless the task needs history.
+
+### Context Integrity v1
+
+Context is complete when a new agent can resume from files without access to the previous chat. Chat may be a requirements source during the current turn, but it must not be the only durable source for any fact needed to continue, verify, operate, or explain the project.
+
+#### Restart Capsule
+
+`PROJECT-RESUME` owns the current Restart Capsule. Keep it concise and make these semantics recoverable even when an older template has no dedicated heading:
+- goal and current phase;
+- last verified result plus its evidence pointer;
+- one concrete next action;
+- blockers, unresolved decisions, and material unknowns;
+- an exact next read set using stable IDs and project-relative `file#section` pointers.
+
+Do not replace the capsule with a transcript or a generic list of every state file. At the end of meaningful work, externalize any chat-derived goal, decision, constraint, or acceptance condition that the next session needs.
+
+#### Canonical Owners And Pointers
+
+- Every durable fact has one canonical owner: requirements in `REQUIREMENTS`, architecture in `ARCHITECTURE`, runtime environments in `INFRASTRUCTURE`, implementation shape in `SOFTWARE`, verification in `TESTING`/`STATUS-LOG`, active work in `TODO`, durable project-specific decisions and constraints in `MEMORY`, and the restart checkpoint in `PROJECT-RESUME`.
+- Other files summarize a fact only when useful and link to its owner; do not maintain competing full copies. Canonical StatusProject rules belong in `PROMPT.md`, not duplicated in `MEMORY`.
+- Use stable, human-readable IDs for durable cross-file items, for example `REQ-context-restart`, `DEC-context-owner`, `RISK-index-drift`, or `CTX-release-history`. Keep an existing public/project ID when one already exists.
+- Use precise project-relative pointers such as `StatusProject/ARCHITECTURE.md#interfaces-and-contracts`. Do not use a machine-specific absolute path as a durable cross-file pointer.
+- When a heading or file moves, update inbound pointers in the same change. A summary without a resolvable owner pointer is incomplete.
+
+#### Optional Context Index
+
+`CONTEXT-INDEX.md` is an optional routing index, not another source of truth. Create it when any of these applies:
+- L0 cannot name a precise read set without searching;
+- relevant context is spread across three or more domain/archive files;
+- the same durable topic is referenced by two or more workstreams;
+- a restart required repeated broad searches or recovered a broken/missing pointer;
+- L0 remains over budget after normal compaction.
+
+Keep only stable ID, topic/question, canonical `file#section`, status, useful tags/environment, last verification date, and related IDs. Do not copy full decisions, evidence, or history into the index. If the file is absent and no trigger applies, use direct pointers from the Restart Capsule and existing navigation.
+
+#### Portable Soft Budgets
+
+Budgets are soft compaction triggers, not deletion targets or validity failures. Count physical lines and whitespace-separated words so the check is portable:
+
+| L0 file/set | Soft line budget | Soft word budget |
+| --- | ---: | ---: |
+| `PROJECT-RESUME` | 60 | 500 |
+| open `TODO` | 120 | 900 |
+| `MEMORY` | 150 | 1,200 |
+| combined L0, including `CONTEXT-INDEX` when present | — | 2,500 |
+
+Crossing either per-file budget triggers review. A high-risk task may temporarily exceed the budget when semantic completeness requires it; record why and compact after the risk or milestone closes.
+
+#### Semantic Completeness Invariants
+
+Compaction must preserve, or precisely point to, all current goals, open acceptance criteria, next actions, blockers, unresolved decisions, durable constraints, current architecture/interface contracts, environment distinctions, evidence supporting current claims, canonical ownership, and relationships between them. Size reduction is invalid if a cold-start agent would choose a different action, miss a material risk, or be unable to locate the supporting source.
+
+#### Transactional Whole-Block Compaction
+
+Treat one compaction scope as a whole block across affected active files, archive/evidence destinations, Restart Capsule, and `CONTEXT-INDEX` when present:
+1. Inventory facts and classify each as keep, move, supersede, or summarize-with-pointer; choose canonical destinations before editing.
+2. Write moved content and stable IDs to the destination first, then add/validate precise pointers and backlinks.
+3. Update every affected active summary, Restart Capsule read set, and index entry in the same compaction block.
+4. Validate semantic invariants, destinations, IDs, links, blockers, acceptance, and the portable budgets.
+5. Only after validation remove redundant active copies, rerun the final-state validation, and record the compaction date. If interrupted or either validation fails, keep/reinstate the active copy and report the block as incomplete; never finish with a half-moved fact.
+
+Compaction remains move-not-delete. Superseded decisions retain history and a `superseded-by` pointer.
+
+#### Legacy-Safe Rollout
+
+Existing projects remain readable without `CONTEXT-INDEX`, dedicated Restart Capsule headings, stable IDs, or the new budgets. Read their existing L0 in canonical order, infer capsule fields from current sections, and add missing structure incrementally during the next authorized state update or compaction. Do not rewrite all local state, invent unknown facts, or block unrelated work merely to migrate format. Once a durable item is touched, give it a canonical owner and stable pointer; preserve legacy text until the move validates.
 
 ## State Files
 Minimum when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
@@ -56,6 +125,7 @@ Minimum when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
 | `PLAN` | multi-phase, parallel workstreams, strategy decisions |
 | `STATUS-LOG` | long, batch, import, migration, sync, rollout |
 | `STATE-HISTORY` | archive completed details out of active files |
+| `CONTEXT-INDEX` | a Context Integrity routing trigger applies |
 | `REQUIREMENTS` | scope and acceptance need a durable source |
 | `ARCHITECTURE` | components, interfaces, dependencies, data flows |
 | `PROJECT-TREE` | repo/service/dependency tree |
@@ -79,6 +149,7 @@ When `StatusProject` is enabled, update state after every meaningful action:
 | `PLAN` | workstreams, priorities, do-not rules |
 | `STATUS-LOG` | chronological evidence, command results, batch/import/release steps |
 | `STATE-HISTORY` | completed phase details moved out of active files |
+| `CONTEXT-INDEX` | stable topic IDs and precise routes to canonical owners; never copied source content |
 | `REQUIREMENTS` | scope, acceptance, priorities, non-goals |
 | `ARCHITECTURE` | components, interfaces, dependencies, data flows |
 | `PROJECT-TREE` | repository/service/dependency tree |
@@ -95,7 +166,7 @@ Do not finish a substantial task with stale `TODO`, `MEMORY`, or `PROJECT-RESUME
 Active state files grow during work; compact them periodically so the context budget stays cheap.
 
 Triggers (any one is enough):
-- Size: an active state file exceeds ~150 lines, or `TODO` has more done items than open ones.
+- Size: a portable Context Integrity soft budget is exceeded, an active state file exceeds ~150 lines, or `TODO` has more done items than open ones.
 - Time: at most once per 7 days per project, alongside the update check.
 - Milestone: after a release, a completed phase, or a closed workstream.
 
@@ -106,6 +177,7 @@ Procedure:
 - Workstream-scoped state files (`TODO-<name>.md`, `MEMORY-<name>.md`, ...) archive into a matching `STATE-HISTORY-<name>.md`.
 - Keep only current facts in active files: open tasks, blockers, durable rules, current phase, next step.
 - Compact by moving, not deleting: never drop blockers, durable rules, or unresolved decisions.
+- Apply the Context Integrity transactional whole-block contract; every moved fact keeps a stable owner pointer and the Restart Capsule remains sufficient without chat.
 - Record the compaction date in `MEMORY` (`Last state compaction: YYYY-MM-DD`).
 
 ## Session Start
