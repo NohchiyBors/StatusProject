@@ -258,6 +258,8 @@ Select only relevant planning roles:
 Planning rules:
 - Run selected internal planning workers in parallel and wait for all results; apply the runtime-recovery contract instead of aborting when worker startup fails.
 - Give every subagent the same objective, sources, constraints, and output schema.
+- Assign each worker the least capable model sufficient for its role, complexity, ambiguity, risk, context volume, tool use, and required judgment. Use lightweight models for routine search, inventory, formatting, isolated edits, and deterministic checks; reserve stronger models for architecture synthesis, cross-system integration, security-sensitive work, destructive/production planning, difficult debugging, or conflict resolution.
+- Do not select a stronger, slower, or more expensive model merely because it is available. Escalate only from initial risk classification or concrete evidence that a lower tier is insufficient, and record a concise escalation reason. If per-worker model selection is unavailable, retain the configured model without adding workers or changing scope.
 - Planning subagents must remain read-only and must not implement or edit project files.
 - Workers must not create nested workers or separate user-visible Codex tasks/chats.
 - Each subagent returns: findings, proposal, assumptions, risks, unresolved questions, and acceptance evidence.
@@ -288,6 +290,7 @@ The integrated plan is approved, or `PM start <goal>`, `PM start all <goal>`, or
 As Architect / PM:
 - Convert the approved plan into dependency-ordered execution waves.
 - Launch one dedicated internal development worker for every ready block in the current wave when worker orchestration is available.
+- Select the least capable model sufficient for each block and record the tier/reason in the assignment. Reserve stronger models for demonstrated complexity or risk; do not upgrade by default. Keep the primary integration owner sufficiently capable to reason across the complete system.
 - Enforce one block per agent and one agent per block. An agent must not take a second block, expand scope, or delegate its block further.
 - Give each agent its block ID, goal, inputs, outputs, dependencies, allowed files, prohibited files, verification command, and done criterion.
 - Require each agent to return a concise handoff: block status, changed files, verification evidence, risks, blockers, and integration notes.

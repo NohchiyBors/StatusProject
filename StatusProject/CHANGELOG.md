@@ -8,6 +8,11 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.9.2 - 2026-09-20
+
+### Changed
+- Multi-agent planning and execution now require the least capable model sufficient for each role or block; stronger models require task-risk justification or concrete evidence that a lower tier is insufficient.
+
 ## v0.9.1 - 2026-09-20
 
 ### Added

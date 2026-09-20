@@ -10,6 +10,7 @@
   - **Logical Blocks**: Decompose the integrated plan into uniquely identified, atomic, and independently verifiable logical blocks.
   - **One Block, One Agent**: Assign every block to one dedicated development agent thread. An agent must not take another block, expand scope, or delegate the block further.
   - **Multi-Agent Optimization**: Design blocks to minimize coupling and enable independent blocks to run in parallel execution waves. Run non-isolatable blocks sequentially under the integration owner.
+  - **Model Economy**: Assign the least capable model sufficient for each planning role or development block. Record a short reason only when a stronger-than-default model is required by complexity, ambiguity, risk, context volume, tool use, or cross-system judgment.
   - **Integration Safety**: Avoid overlapping writes; define an integration owner and merge order when overlap cannot be avoided. The `Architect / PM` verifies all results after every wave.
 
 ## Life Cycle Scope
@@ -72,9 +73,9 @@
 | --- | --- | --- | --- | --- |
 | `<agent>` | `<focus>` | `<idea>` | `<risk>` | `<yes/no/partly>` |
 
-| Block ID | Block | Goal | Requirement / canonical owner | Inputs | Outputs | Allowed / prohibited scope | Depends on | Estimated effort | Estimated duration | Done criterion / evidence | Wave | Dedicated agent thread |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B01 | `<block>` | `<goal>` | `<REQ/DEC-ID @ file#section>` | `<inputs>` | `<outputs>` | `<allowed; prohibited>` | `<— or block ID>` | `<S/M/L or work units>` | `<approximate or unknown>` | `<AC/EV-ID @ file#section>` | `<1..n>` | `<unique agent>` |
+| Block ID | Block | Goal | Requirement / canonical owner | Inputs | Outputs | Allowed / prohibited scope | Depends on | Estimated effort | Estimated duration | Done criterion / evidence | Wave | Dedicated agent thread | Worker model / reason |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| B01 | `<block>` | `<goal>` | `<REQ/DEC-ID @ file#section>` | `<inputs>` | `<outputs>` | `<allowed; prohibited>` | `<— or block ID>` | `<S/M/L or work units>` | `<approximate or unknown>` | `<AC/EV-ID @ file#section>` | `<1..n>` | `<unique agent>` | `<minimum sufficient tier; escalation reason or default>` |
 
 ## Execution Waves
 | Wave | Blocks (parallel) | Integration owner | Integration / verification after wave | Status |
