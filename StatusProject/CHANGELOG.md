@@ -8,6 +8,22 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v0.9.1 - 2026-09-20
+
+### Added
+- Added `DEV_GUIDELINES.md` as the maintainer-machine environment guide for storage paths, the permitted remote Docker host, MCP access, and independent child repositories.
+
+### Changed
+- New project/repository creation now defaults to a GitHub-hosted source repository plus a connected local working copy instead of an unconnected local-only `git init`.
+- Repository owner, name, and visibility must be resolved before GitHub creation; agents must never assume public visibility or confuse a GitHub repository with a GitHub Projects board.
+- Local working copies continue to follow the separate Git metadata policy: ordinary clones under `D:\Data\repos`, or OneDrive worktrees with metadata mirrored under `D:\Data\git`.
+- Added a preventive OneDrive naming policy: validate every new path segment before file operations, normalize safe generated names, detect post-normalization collisions, and require an approved mapping before bulk-renaming existing synchronized content.
+- Remote Docker on `10.10.10.50` is the default development environment; local Docker requires explicit user authorization and is never an automatic fallback.
+
+### Fixed
+- Synchronized `SOURCE.md` with canonical version `v0.9.1` and removed contradictions between OneDrive/ordinary clone placement, required split Git metadata, GPO defense in depth, and Docker environment selection.
+- Ignored local OneDrive conflict/deployment copies and nested child repositories so they cannot be accidentally published as part of the StatusProject source repository.
+
 ## v0.9.0 - 2026-07-27
 
 ### Added

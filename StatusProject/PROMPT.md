@@ -396,13 +396,36 @@ For projects in this directory:
 4. All project dependency installations, executions, builds, tests, language servers, and project linters must run strictly inside the respective Docker containers. Configure the host IDE to use a container/remote interpreter or container-executed tooling; being ignored by Git does not permit project-local `.venv`, `node_modules`, or vendor directories on the host.
 5. Cross-platform StatusProject bootstrap scripts and the host IDE application itself are host tools, not project dependency execution. They must not install project dependencies or create project-local dependency directories. Verify bootstrap behavior in Docker; native Windows `.bat` and macOS runtime certification require native runners.
 
-## Git Metadata Placement
-On the maintainer machine, physical Git metadata must not be created inside OneDrive.
+## Workspace and Storage Policy
+Use these portable storage rules. Machine-specific paths, permitted runtime hosts, and connection methods belong in `DEV_GUIDELINES.md` or the active environment instructions and must not be duplicated here.
 
-- OneDrive working trees: `D:\Data\OneDrive\source`.
-- Mirrored metadata root for those working trees: `D:\Data\git`.
-- Default location for new ordinary working clones outside OneDrive: `D:\Data\repos`.
-- `D:\Data\git` is metadata-only; never use it as a working-copy or clone destination.
+1. **OneDrive Working Trees:** Projects that require OneDrive synchronization use `D:\Data\OneDrive\source`. Ordinary clones that do not require OneDrive use `D:\Data\repos`.
+2. **Metadata Protection:** OneDrive must not contain physical `.git`, `node_modules`, `venv`, or `vendor` directories. OS/GPO exclusions are defense in depth and never replace this repository-level rule.
+3. **Split Git Strategy:** For every working tree under `D:\Data\OneDrive\source`, store its physical Git metadata at the mirrored path under `D:\Data\git` and connect it with `--separate-git-dir`/an absolute `gitdir:` pointer. This is the required mode, not a fallback. `D:\Data\git` is metadata-only and must never be used as a working-copy destination.
+4. **Environment Selection:** Use the development/runtime environment permitted by the active machine instructions. Never start or substitute local Docker merely because a remote or configured environment is unavailable; report the blocker or request explicit authorization.
+
+### OneDrive-Safe File And Folder Names
+
+Before creating, generating, copying, moving, or renaming any file or directory inside a OneDrive-synchronized path, validate every new path segment against the Windows and OneDrive naming rules. Do not knowingly create a name that OneDrive cannot synchronize.
+
+- Reject the characters `"`, `*`, `:`, `<`, `>`, `?`, `/`, `\`, and `|`, ASCII control characters, leading or trailing spaces, and a trailing period.
+- Reject case-insensitive reserved names even when an extension is present: `.lock`, `CON`, `PRN`, `AUX`, `NUL`, `COM0` through `COM9`, `LPT0` through `LPT9`, `desktop.ini`; reject any name containing `_vti_` and any file name beginning with `~$`. At a SharePoint/OneDrive library root, also reject `forms`.
+- For a newly generated name, preserve a meaningful extension, replace each run of invalid characters with `-`, trim prohibited leading/trailing whitespace and trailing periods, and prefix a reserved base name with `_`. Collapse repeated separators where practical.
+- After normalization, require a non-empty result and check for a case-insensitive collision with existing sibling items. Never overwrite or merge because normalization produced the same name.
+- When the user supplied an invalid exact name, use the normalized safe name only when the intended identity remains unambiguous and report the change. Ask before proceeding when normalization could change meaning, break a public path/import/link, or collide with another item.
+- Do not bulk-rename existing synchronized content without explicit authorization. First produce an old-to-new mapping, identify link/import/reference impacts, and use a reversible rename plan.
+- Validate the complete destination path as well as the leaf name before the write. If platform or tenant rules are stricter than this baseline, follow the stricter rule and record the blocker or chosen safe fallback.
+
+### GitHub Repository Default
+
+When the user asks to create a new project or repository, create a repository for the project on GitHub as the default durable remote, then create the local working copy from that GitHub repository. Do not stop at an unconnected local `git init` unless the user explicitly asks for a local-only/offline repository or GitHub access is unavailable and the blocker has been reported.
+
+- "GitHub repository" means a source-code repository hosted on GitHub, not a GitHub Projects board unless the user explicitly requests the board too.
+- Resolve the GitHub owner or organization, repository name, and visibility before creation. Use an existing documented project policy when available; otherwise ask for the missing choice. Never make a repository public by assumption.
+- Prefer creating an empty GitHub repository first and cloning it so `origin` is configured from the start. For an existing non-empty project directory, create the GitHub repository, initialize the local repository with the required separate metadata location, add `origin`, and verify the intended first push scope.
+- If the working copy does not need OneDrive, place it under `D:\Data\repos`. If it must remain under `D:\Data\OneDrive\source`, clone or initialize it with `--separate-git-dir` pointing to the mirrored path under `D:\Data\git`.
+- GitHub does not replace local Git metadata. All metadata-placement, working-tree-preservation, verification, commit, push, visibility, and publication safety rules still apply.
+- Creating the GitHub repository is an external state change. Perform it only when the user's goal authorizes repository/project creation; a planning, audit, or documentation-only request does not authorize creation.
 
 Before `git clone` or `git init`, resolve the absolute destination path. If the working tree must remain under `D:\Data\OneDrive\source`, calculate the mirrored metadata path under `D:\Data\git` first and use `--separate-git-dir`. A working tree inside OneDrive may contain only a `.git` file with an absolute `gitdir:` pointer; a physical `.git` directory there is a policy violation.
 

@@ -16,4 +16,5 @@ Do not duplicate rules. When configuring an AI tool, point it at `StatusProject/
 - After meaningful progress, update state before finishing.
 - If the task touches architecture, services, deployment, environments, or dev/prod differences, also read `StatusProject/ARCHITECTURE`, `StatusProject/INFRASTRUCTURE`, and `StatusProject/SOFTWARE` when present before changing files.
 - For development planning, use hierarchical multi-agent planning: independent planning agents first, `Architect / PM` synthesis and approval second, development agents only afterward.
+- Read `DEV_GUIDELINES.md` for maintainer-machine paths, permitted runtime hosts, and connection defaults; do not duplicate those values into this compatibility entry.
 - Dockerized directory policy: do not run host package managers (`npm install`, `yarn`, `pip install`, etc.) or create host `node_modules`, `venv`, or vendor directories; install and run dependencies only inside the respective Docker containers.

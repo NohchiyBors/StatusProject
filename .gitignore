@@ -69,6 +69,14 @@ temp/
 
 # Child repositories
 SysEng/
+sphub24.com/
+sphub24-mcp/
+sphub24-web/
+
+# Local OneDrive conflict/deployment copies
+*-win11-VH1.*
+/SOURCE.md
+/templates/
 
 # Local archive of removed docs
 .statusproject-archive/

@@ -2,7 +2,7 @@
 
 ## Canonical Source
 
-- Source version: `v0.6.0`
+- Source version: `v0.9.1`
 - Source type: `repository`
 - Source repo: `https://github.com/NohchiyBors/StatusProject`
 - Release URL: `https://github.com/NohchiyBors/StatusProject/releases/latest`
