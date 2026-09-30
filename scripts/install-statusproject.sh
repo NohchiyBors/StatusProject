@@ -32,7 +32,7 @@ SOURCE_TEMPLATES="$SOURCE_STATUS_PROJECT/templates"
 VERSION_FILE="$SOURCE_STATUS_PROJECT/VERSION"
 REPO_PATH="$(cd "$TARGET_PATH" && pwd -P)"
 ENTRY_KEYS=(AGENTS.md CLAUDE.md GEMINI.md COPILOT_INSTRUCTIONS.md)
-COPY_FILES=(PROMPT.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md)
+COPY_FILES=(PROMPT.md PROMPT-PLANNING.md PROMPT-DEV-TEST.md PROMPT-PROD.md PROMPT-DEPLOY.md PROMPT-CONTEXT.md PROMPT-WORKSPACE.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MIGRATIONS.md)
 MANAGED_FILES=("${COPY_FILES[@]}" VERSION SOURCE.md LINKS.md)
 STATE_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md MCP.md)
 
@@ -236,7 +236,11 @@ for state in "${STATE_FILES[@]}"; do
   dest="$DEPLOY_PATH/$state"
   if [[ ! -e "$dest" ]]; then
     APPLIED_PATHS+=("$dest"); APPLIED_BACKUPS+=(""); APPLIED_HAD+=(0); APPLIED_DIR+=(0)
-    cp -- "$SOURCE_TEMPLATES/${state%.md}.template.md" "$dest"
+    if [[ "$state" == PROJECT-RESUME.md ]]; then
+      sed "s|<state-version>|$VERSION|g" "$SOURCE_TEMPLATES/${state%.md}.template.md" > "$dest"
+    else
+      cp -- "$SOURCE_TEMPLATES/${state%.md}.template.md" "$dest"
+    fi
     chmod u+rw "$dest"
   fi
 done

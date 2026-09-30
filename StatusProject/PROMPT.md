@@ -1,365 +1,174 @@
 # Prompt: StatusProject
 
-Canonical operating rules. Short compatibility entries in this StatusProject source repository (`AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`) are pointers — do not duplicate rules into them. A deployed target has the narrower root contract below. Links/paths live in `LINKS.md` and `StatusProject/SOURCE.md`.
+Canonical operating rules — core. Read it for every substantial task; it routes to on-demand modules. AI entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`) are pointers plus a minimal safety floor — never copy rules into them. Paths and links: `LINKS.md`, `StatusProject/SOURCE.md`. Per-user paths, hosts, and defaults: [User Settings](#user-settings) — never hard-code them in rules or state.
 
 ## Enable When
 One answer is not enough: multi-step or multi-session work, blockers/dependencies/critical files, imports, migrations, publication, integration, infrastructure, or support. Skip short one-off tasks.
 
-## Init Command
-The user command `StatusProject` (alone or as "StatusProject init/инициализация") triggers initialization:
-1. Resolve the template source (see Source Resolution / `StatusProject/SOURCE.md`).
-2. Verify layout: `StatusProject/` contains operating docs, `templates/`, `SOURCE.md`; repo root has only short AI entries.
-3. Create missing required state files (`TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`) in `StatusProject/` from templates; add optional files per the State Files table when their triggers apply.
-4. For existing state files, sync structure with the current templates: add missing sections, keep all local content; never overwrite local state without approval.
-5. Run Session Start checks (update check, compaction trigger) as part of the same command.
-6. Report per file: created / updated / unchanged / needs approval.
+## Modules
+Modules sit next to this file in `StatusProject/`. Read the whole matching module before acting on its trigger, and no other module. A module is canonical for its topics; the core does not override it there. If a required module is missing, stop that action and report an incomplete deployment (fix: `PM update-statusproject`).
+
+| Module | Read before |
+| --- | --- |
+| `PROMPT-PLANNING.md` | `PM plan`, `PM start` / `PM start all` / `PM all`, `PM multiagent`, `PM status`, launching an internal worker, choosing a worker model |
+| `PROMPT-DEV-TEST.md` | `PM env`, `PM dev`, `PM test` |
+| `PROMPT-PROD.md` | `PM prod`, `PM rollback`, `PM commit`, `PM release`, any production change, tag, or GitHub Release |
+| `PROMPT-DEPLOY.md` | `StatusProject` / `PM init`, `PM doctor`, `PM update-statusproject`, install/update, post-update migration (with `MIGRATIONS.md`), `.gitignore` setup |
+| `PROMPT-CONTEXT.md` | any compaction, legacy-state migration, creating or editing `CONTEXT-INDEX`, a `verify-state` budget failure |
+| `PROMPT-WORKSPACE.md` | renaming existing items or accepting a user-supplied name under a OneDrive path, a name collision, creating a repository, `git clone` / `git init`, Git metadata checks or repairs |
+
+## Project Profiles
+Declare `Profile: lite | standard | strict` in `PROJECT-RESUME.md`. If absent, infer it: static site, landing page, script, CLI, small utility → `lite`; web service, API, full-stack app → `standard`; financial, healthcare, security-critical, audited compliance → `strict`.
+
+| Profile | Active state files | Evidence | L0 budget |
+| --- | --- | --- | --- |
+| `lite` | exactly `TODO`, `MEMORY`, `PROJECT-RESUME`; no other state file, no `docs/evidence/` | successful command execution (exit 0, clean build/tests); no receipts, file-tree hashes, or custom Git trailers | total ≤ 100 lines and ≤ 1,000 words |
+| `standard` | the 3 required files; other files from [State Files](#state-files) when their trigger applies | normal tests, lint, build; durable receipts only for irreversible actions (schema migration, credential rotation) | per-file budgets below |
+| `strict` | all applicable domain files | full provenance, formal gates, signed attestations, Git trailers, transactional receipts | per-file budgets below — rigor lives in `STATUS-LOG` and evidence files, never in L0 |
+
+Additional `lite` rules:
+- Never create `STATUS-LOG`, `STATE-HISTORY`, evidence files, or `*.receipt.json`; git history is the archive. Test output, logs, and curl responses go to the user report only.
+- If file integrity must be checked, hash contents only; ignore OS attributes, NTFS/DrvFS permission bits, and false executable bits.
 
 ## Layout
-- StatusProject source-repository root: short compatibility entries `AGENTS.md`, `CLAUDE.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, optional `GEMINI.md` / `COPILOT_INSTRUCTIONS.md`, plus normal source-project files.
-- Deployed target root: only selectable AI adapters `AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md` / `COPILOT_INSTRUCTIONS.md`, plus the target project's normal files. Deployed `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` belong inside `StatusProject/`, matching installer behavior.
-- `StatusProject/`: operating docs, `templates/`, state files. Do not put state files in repo root.
-- Templates stay English. Update `StatusProject/` docs by default; replace root entries only when explicitly selected.
-
-## Source Resolution
-Installation and update details live in `INSTALL.md`.
-
-Use this order to find StatusProject files:
-1. Deployed project source: `StatusProject/SOURCE.md`.
-2. Local source path recorded in `SOURCE.md`.
-3. Maintainer local default source, when working on this machine: `D:\Data\OneDrive\source\StatusProject`.
-4. Default global source: `%USERPROFILE%\.statusproject\source\StatusProject` on Windows, `~/.statusproject/source/StatusProject` on Linux/macOS.
-5. GitHub latest release: `https://github.com/NohchiyBors/StatusProject/releases/latest`.
-
-Templates are taken from `<source>/StatusProject/templates/` and deployed to `<repo>/StatusProject/templates/`. If a required state file is missing, create it from the matching template instead of silently continuing.
-
-## Deployment Contract
-In every enabled target project:
-- Root gets only short AI entries: `AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.
-- `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` are deployed under `StatusProject/`, not duplicated into the target root.
-- `StatusProject/` must contain operating docs, `templates/`, `SOURCE.md`, and active state files.
-- Required state files: `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`.
-- Add `PLAN.md` for multi-phase work. Add `STATUS-LOG.md` for long/batch/repeated work. Add domain files only when the domain exists.
+- StatusProject source-repository root: AI entry files plus normal source-project files.
+- Deployed target root: only the selected AI adapters `AGENTS.md`, `CLAUDE.md`, optional `GEMINI.md` / `COPILOT_INSTRUCTIONS.md`, plus the project's own files. `AI-INSTRUCTION.md` and `AI-SETTINGS-INSTRUCTION.md` live inside `StatusProject/`.
+- `StatusProject/`: operating docs and modules, `templates/`, `SOURCE.md`, state files, optional Git-ignored `USER-SETTINGS.local.md`; work artifacts in `StatusProject/work/<track>/`. Never put state files in the repository root.
+- Templates stay English. Updates replace `StatusProject/` docs by default; root entries only when explicitly selected.
 
 ## Context Budget
-Use the Context Integrity levels in order; a higher level is loaded only when the goal, a pointer, a conflict, or a verification need requires it.
+Load a higher level only when the goal, a pointer, a conflict, or a verification need requires it.
 
-1. `L0 — restart`: always read `PROJECT-RESUME` → open `TODO` → `MEMORY`. Read `CONTEXT-INDEX` too when it exists. `PROJECT-RESUME` is always first.
-2. `L1 — active baseline`: read the current `PLAN` and the domain sources that own facts needed by the task, such as `REQUIREMENTS`, `ARCHITECTURE`, `SOFTWARE`, `INFRASTRUCTURE`, `TESTING`, or `MCP`.
-3. `L2 — scoped context`: read a referenced workstream file, ADR, topic capsule, or exact section selected by a stable ID or `file#section` pointer.
-4. `L3 — evidence and history`: read `STATUS-LOG`, `STATE-HISTORY`, changelog, release evidence, old decisions, or raw logs only to verify a claim, resolve a conflict, audit history, or recover a missing link.
-5. Architecture floor: if the request touches structure, services, interfaces, deployment, runtime environments, access, or `dev`/`staging`/`prod`/`local` differences, read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when present before planning or editing.
-6. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installer files, templates. Use `LINKS.md` instead of opening many docs to find paths.
-7. Skip completed items: when reading state files, ignore items marked `[x]` and archived sections unless the task needs history.
+1. `L0 — restart`: `PROJECT-RESUME` → open `TODO` → `MEMORY`, plus `CONTEXT-INDEX` when it exists. `PROJECT-RESUME` is always first.
+2. `L1 — active baseline`: current `PLAN` and the domain files that own facts the task needs (`REQUIREMENTS`, `ARCHITECTURE`, `SOFTWARE`, `INFRASTRUCTURE`, `TESTING`, `MCP`).
+3. `L2 — scoped context`: a workstream file, ADR, or exact section selected by a stable ID or `file#section` pointer.
+4. `L3 — evidence and history`: `STATUS-LOG`, `STATE-HISTORY`, changelog, release evidence, raw logs — only to verify a claim, resolve a conflict, audit history, or recover a missing link.
+5. Architecture floor: when the request touches structure, services, interfaces, deployment, environments, access, or `dev`/`staging`/`prod`/`local` differences, read `ARCHITECTURE`, `INFRASTRUCTURE`, and `SOFTWARE` when present before planning or editing.
+6. Skip unless directly relevant: `README`, `CHANGELOG`, `VERSIONING`, installers, templates, and modules whose trigger does not apply. Use `LINKS.md` to find paths.
+7. Skip `[x]` items and archived sections unless the task needs history.
 
 ### Context Integrity v1
-
-Context is complete when a new agent can resume from files without access to the previous chat. Chat may be a requirements source during the current turn, but it must not be the only durable source for any fact needed to continue, verify, operate, or explain the project.
+Context is complete when a new agent can resume from files alone. Chat may supply requirements during the current turn but must never be the only durable source of a fact needed to continue, verify, operate, or explain the project.
 
 #### Restart Capsule
+`PROJECT-RESUME` holds exactly one current Restart Capsule, rewritten in place: goal and phase; last verified result with its evidence pointer; one concrete next action; blockers, unresolved decisions, and material unknowns; an exact next read set of stable IDs and project-relative `file#section` pointers. Parallel workstreams are one line each inside it (ID → status → next action → pointer). It is not a transcript or a list of every state file. At the end of meaningful work, externalize every chat-derived goal, decision, constraint, or acceptance condition the next session needs.
 
-`PROJECT-RESUME` owns the current Restart Capsule. Keep it concise and make these semantics recoverable even when an older template has no dedicated heading:
-- goal and current phase;
-- last verified result plus its evidence pointer;
-- one concrete next action;
-- blockers, unresolved decisions, and material unknowns;
-- an exact next read set using stable IDs and project-relative `file#section` pointers.
+#### Canonical Owners
+Every durable fact has one owner; other files may summarize it only with a pointer to that owner. Canonical StatusProject rules live in `PROMPT.md` and its modules, never in `MEMORY` or `TODO`.
 
-Do not replace the capsule with a transcript or a generic list of every state file. At the end of meaningful work, externalize any chat-derived goal, decision, constraint, or acceptance condition that the next session needs.
+| File | Owns | Add when (`standard` / `strict`) |
+| --- | --- | --- |
+| `PROJECT-RESUME` | the Restart Capsule, `Profile`, `State version` (the StatusProject version the state files follow), canonical read order | always |
+| `TODO` | open tasks, blockers, next action; `Rules`/`Standing Risks` sections for project-specific items only | always |
+| `MEMORY` | durable project-specific rules, decisions, constraints (one line each, stable ID), `Last state compaction` | always |
+| `PLAN` | workstreams, priorities, do-not rules, approved block plan | multi-phase work, parallel workstreams, strategy decisions |
+| `STATUS-LOG` | chronological evidence, command results, batch/import/release steps | long, batch, import, migration, sync, rollout work |
+| `STATE-HISTORY` | completed and superseded details moved out of active files | first compaction |
+| `CONTEXT-INDEX` | stable IDs routed to canonical `file#section`; never copied content | a trigger in `PROMPT-CONTEXT.md` applies |
+| `REQUIREMENTS` | scope, acceptance, priorities, non-goals | scope/acceptance needs a durable source |
+| `ARCHITECTURE` | components, interfaces, dependencies, data flows | components, interfaces, dependencies, or data flows need a durable description |
+| `PROJECT-TREE` | repository/service/dependency tree | a repository/service/dependency tree needs tracking |
+| `INFRASTRUCTURE` | `prod`/`staging`/`dev`/`local` (label every env), owners, access, deployment, backups | environments need `prod`/`staging`/`dev`/`local` clarity |
+| `SOFTWARE` | entrypoints, modules, commands, config, data, build/test/release | entrypoints, modules, or commands need a durable description |
+| `DEVELOPMENT-STATUS` | progress tree, percentages, blockers, release readiness | tree-based progress with percentages and blockers is needed |
+| `TESTING` | quality gates, scenarios, coverage gaps, release checks | quality gates, critical scenarios, or release checks exist |
+| `MCP` | tool canonical name, when to use, access, limits, fallback | external tools/connectors are used |
+| `IMPORT-SOP` | procedure for imports, migrations, syncs, bulk processing | such work starts (`templates/IMPORT-SOP.template.md`) |
+| `VERSIONING` | release, tag, changelog, GitHub Release policy | releases are published |
+| `LINKS` | file/repo/service/update-source navigation | links are scattered |
 
-#### Canonical Owners And Pointers
+Use stable, human-readable IDs for cross-file items (`REQ-…`, `DEC-…`, `RISK-…`, `CTX-…`; keep existing project IDs) and precise project-relative pointers such as `StatusProject/ARCHITECTURE.md#interfaces-and-contracts`, never machine-specific absolute paths. When a heading or file moves, update inbound pointers in the same change. A summary without a resolvable owner pointer is incomplete.
 
-- Every durable fact has one canonical owner: requirements in `REQUIREMENTS`, architecture in `ARCHITECTURE`, runtime environments in `INFRASTRUCTURE`, implementation shape in `SOFTWARE`, verification in `TESTING`/`STATUS-LOG`, active work in `TODO`, durable project-specific decisions and constraints in `MEMORY`, and the restart checkpoint in `PROJECT-RESUME`.
-- Other files summarize a fact only when useful and link to its owner; do not maintain competing full copies. Canonical StatusProject rules belong in `PROMPT.md`, not duplicated in `MEMORY`.
-- Use stable, human-readable IDs for durable cross-file items, for example `REQ-context-restart`, `DEC-context-owner`, `RISK-index-drift`, or `CTX-release-history`. Keep an existing public/project ID when one already exists.
-- Use precise project-relative pointers such as `StatusProject/ARCHITECTURE.md#interfaces-and-contracts`. Do not use a machine-specific absolute path as a durable cross-file pointer.
-- When a heading or file moves, update inbound pointers in the same change. A summary without a resolvable owner pointer is incomplete.
+#### Semantic Completeness Invariants
+Compaction must preserve, or precisely point to, all current goals, open acceptance criteria, next actions, blockers, unresolved decisions, durable constraints, current architecture/interface contracts, environment distinctions, evidence supporting current claims, canonical ownership, and the relationships between them. A size reduction is invalid if a cold-start agent would choose a different action, miss a material risk, or be unable to locate the supporting source.
 
-#### Optional Context Index
+#### Budgets
+Soft budgets (physical lines / whitespace-separated words) trigger compaction review; they are not deletion targets.
 
-`CONTEXT-INDEX.md` is an optional routing index, not another source of truth. Create it when any of these applies:
-- L0 cannot name a precise read set without searching;
-- relevant context is spread across three or more domain/archive files;
-- the same durable topic is referenced by two or more workstreams;
-- a restart required repeated broad searches or recovered a broken/missing pointer;
-- L0 remains over budget after normal compaction.
-
-Keep only stable ID, topic/question, canonical `file#section`, status, useful tags/environment, last verification date, and related IDs. Do not copy full decisions, evidence, or history into the index. If the file is absent and no trigger applies, use direct pointers from the Restart Capsule and existing navigation.
-
-#### Portable Soft Budgets
-
-Budgets are soft compaction triggers, not deletion targets or validity failures. Count physical lines and whitespace-separated words so the check is portable:
-
-| L0 file/set | Soft line budget | Soft word budget |
+| L0 file/set | Lines | Words |
 | --- | ---: | ---: |
 | `PROJECT-RESUME` | 60 | 500 |
 | open `TODO` | 120 | 900 |
 | `MEMORY` | 150 | 1,200 |
-| combined L0, including `CONTEXT-INDEX` when present | — | 2,500 |
+| combined L0 incl. `CONTEXT-INDEX` | — | 2,500 |
+| `lite` combined L0 | 100 | 1,000 |
 
-Crossing either per-file budget triggers review. A high-risk task may temporarily exceed the budget when semantic completeness requires it; record why and compact after the risk or milestone closes.
+A high-risk task may exceed a soft budget temporarily when semantic completeness requires it; record why and compact after the risk closes. Three times any budget is the hard cap: the file can no longer be read whole, so facts are silently lost. `scripts/verify-state` fails at the hard cap until compaction restores the budget or `PROJECT-RESUME` records `Budget exception: <reason>; review by YYYY-MM-DD`.
 
-#### Semantic Completeness Invariants
-
-Compaction must preserve, or precisely point to, all current goals, open acceptance criteria, next actions, blockers, unresolved decisions, durable constraints, current architecture/interface contracts, environment distinctions, evidence supporting current claims, canonical ownership, and relationships between them. Size reduction is invalid if a cold-start agent would choose a different action, miss a material risk, or be unable to locate the supporting source.
-
-#### Transactional Whole-Block Compaction
-
-Treat one compaction scope as a whole block across affected active files, archive/evidence destinations, Restart Capsule, and `CONTEXT-INDEX` when present:
-1. Inventory facts and classify each as keep, move, supersede, or summarize-with-pointer; choose canonical destinations before editing.
-2. Write moved content and stable IDs to the destination first, then add/validate precise pointers and backlinks.
-3. Update every affected active summary, Restart Capsule read set, and index entry in the same compaction block.
-4. Validate semantic invariants, destinations, IDs, links, blockers, acceptance, and the portable budgets.
-5. Only after validation remove redundant active copies, rerun the final-state validation, and record the compaction date. If interrupted or either validation fails, keep/reinstate the active copy and report the block as incomplete; never finish with a half-moved fact.
-
-Compaction remains move-not-delete. Superseded decisions retain history and a `superseded-by` pointer.
-
-#### Legacy-Safe Rollout
-
-Existing projects remain readable without `CONTEXT-INDEX`, dedicated Restart Capsule headings, stable IDs, or the new budgets. Read their existing L0 in canonical order, infer capsule fields from current sections, and add missing structure incrementally during the next authorized state update or compaction. Do not rewrite all local state, invent unknown facts, or block unrelated work merely to migrate format. Once a durable item is touched, give it a canonical owner and stable pointer; preserve legacy text until the move validates.
-
-## State Files
-Minimum when enabled: `TODO`, `MEMORY`, `PROJECT-RESUME`.
-
-| Add | When |
-| --- | --- |
-| `PLAN` | multi-phase, parallel workstreams, strategy decisions |
-| `STATUS-LOG` | long, batch, import, migration, sync, rollout |
-| `STATE-HISTORY` | archive completed details out of active files |
-| `CONTEXT-INDEX` | a Context Integrity routing trigger applies |
-| `REQUIREMENTS` | scope and acceptance need a durable source |
-| `ARCHITECTURE` | components, interfaces, dependencies, data flows |
-| `PROJECT-TREE` | repo/service/dependency tree |
-| `INFRASTRUCTURE` | `prod`/`staging`/`dev`/`local` clarity (label every env) |
-| `SOFTWARE` | entrypoints, modules, commands |
-| `DEVELOPMENT-STATUS` | tree-based progress with % and blockers |
-| `TESTING` | quality gates, critical scenarios, release checks |
-| `MCP` | external tools/connectors |
-| `IMPORT-SOP` | imports, migrations, syncs, bulk processing |
-| `VERSIONING` | releases, tags, changelog, GitHub Release |
-| `LINKS` | scattered repo/doc/service links |
-
-## State Write Contract
-When `StatusProject` is enabled, update state after every meaningful action:
-
-| File | Record |
-| --- | --- |
-| `TODO` | current tasks, done items, blockers, next action |
-| `MEMORY` | durable rules, decisions, constraints, source/update facts |
-| `PROJECT-RESUME` | current phase/status, last result, next step, restart read order |
-| `PLAN` | workstreams, priorities, do-not rules |
-| `STATUS-LOG` | chronological evidence, command results, batch/import/release steps |
-| `STATE-HISTORY` | completed phase details moved out of active files |
-| `CONTEXT-INDEX` | stable topic IDs and precise routes to canonical owners; never copied source content |
-| `REQUIREMENTS` | scope, acceptance, priorities, non-goals |
-| `ARCHITECTURE` | components, interfaces, dependencies, data flows |
-| `PROJECT-TREE` | repository/service/dependency tree |
-| `INFRASTRUCTURE` | `prod`/`staging`/`dev`/`local`, owners, access, deployment, backups |
-| `SOFTWARE` | entrypoints, modules, commands, config, data, build/test/release |
-| `DEVELOPMENT-STATUS` | progress tree, percentages, blockers, release readiness |
-| `TESTING` | quality gates, scenarios, coverage gaps, release checks |
-| `MCP` | canonical tool names, when to use, access, limits, fallback |
-| `LINKS` | file/repo/service/update-source navigation |
-
-Do not finish a substantial task with stale `TODO`, `MEMORY`, or `PROJECT-RESUME`.
+### Token Economy
+1. **Overwrite, don't append, L0.** Rewrite the Restart Capsule in place. Before rewriting, move facts that are not carried forward to `STATE-HISTORY` (`lite`: drop them; git history is the archive). Never add dated result, capsule, or run sections to `PROJECT-RESUME`, `TODO`, or `MEMORY`.
+2. **One home per fact kind.** Evidence, command output, hashes, test counts, and per-run results go to `STATUS-LOG` or evidence files (`lite`: the user report only); L0 keeps at most a one-line summary with a pointer.
+3. **Done means moved.** A `[x]` task stays in `TODO` at most until the next checkpoint, then moves to `STATE-HISTORY` as a whole block (`lite`: it is removed).
+4. **Rotate logs.** When `STATUS-LOG` or `STATE-HISTORY` exceeds ~400 lines or ~50 KB, move closed months to `status-log/YYYY-MM.md` or `state-history/YYYY-MM.md`, leaving one pointer line per month.
+5. **Work artifacts out of the root.** Plans, audits, designs, appendices, runbooks, and packets go to `StatusProject/work/<track>/`, one `CONTEXT-INDEX` line each (ID → path → status).
+6. **Read narrowly.** For a file above ~300 lines, locate the target by search or heading list and read only that section. Workers receive their exact read set, not the whole L0.
+7. **Scripts count, models reason.** Run `scripts/verify-state` (`.sh` or `.ps1`) at the start of `PM status` and `PM doctor` and at the Finish Check, and use its summary instead of re-deriving counts, budgets, and pointer checks by reading files.
+8. **Duplicates are not state.** OneDrive conflict and machine-suffixed copies (`MEMORY-<HOSTNAME>.md`, `<name>-<HOSTNAME>-2.md`) are never read as state; `PM doctor` reports them, and they are reconciled or archived only with approval.
 
 ## State Compaction
-Active state files grow during work; compact them periodically so the context budget stays cheap.
+Triggers, any one is enough:
+- Size: a soft budget is exceeded, an active state file exceeds ~150 lines, or `TODO` has more done than open items.
+- Time: 7 days since `Last state compaction` in `MEMORY`.
+- Milestone: a release, a completed phase, or a closed workstream.
 
-Triggers (any one is enough):
-- Size: a portable Context Integrity soft budget is exceeded, an active state file exceeds ~150 lines, or `TODO` has more done items than open ones.
-- Time: at most once per 7 days per project, alongside the update check.
-- Milestone: after a release, a completed phase, or a closed workstream.
-
-Procedure:
-- Mark finished tasks `[x]` immediately; `[x]` marks tell agents to skip the item on later reads.
-- Move completed phases, `[x]` tasks, old checkpoints, and superseded decisions from `TODO`, `MEMORY`, `PLAN`, and `PROJECT-RESUME` into `STATE-HISTORY` (create it from the template if missing).
-- Move verbose evidence (command output, batch/import/release steps) into `STATUS-LOG`.
-- Workstream-scoped state files (`TODO-<name>.md`, `MEMORY-<name>.md`, ...) archive into a matching `STATE-HISTORY-<name>.md`.
-- Keep only current facts in active files: open tasks, blockers, durable rules, current phase, next step.
-- Compact by moving, not deleting: never drop blockers, durable rules, or unresolved decisions.
-- Apply the Context Integrity transactional whole-block contract; every moved fact keeps a stable owner pointer and the Restart Capsule remains sufficient without chat.
-- Record the compaction date in `MEMORY` (`Last state compaction: YYYY-MM-DD`).
+When a trigger fires, compact before starting new work by following `PROMPT-CONTEXT.md`. Compaction moves, never deletes (`lite` excepted, per Token Economy); blockers, durable rules, and unresolved decisions are never dropped.
 
 ## Session Start
-1. Read in context-budget order. Identify goal, next step, blockers.
-2. Check `StatusProject` updates at most once per 7 days per project; compare the version recorded in `StatusProject/SOURCE.md` with the canonical source `StatusProject/VERSION`, then GitHub latest release if needed. Record the check date in `MEMORY` or `PROJECT-RESUME`.
-3. If templates are newer, list affected files and propose an update. Never overwrite local state without approval. For existing deployments, use `update-statusproject.ps1` or `update-statusproject.sh`.
-4. If a compaction trigger fires (see State Compaction), compact state before starting new work.
+Run on every project open (new session or restart), before new work:
+1. Read L0 in order; identify goal, next step, blockers.
+2. **Update check.** Run `scripts/check-update` (`.sh` / `.ps1` / `.bat`) from the StatusProject source resolved via `StatusProject/SOURCE.md`, with `--target <repo>` / `-TargetPath <repo>`. It compares `StatusProject/VERSION` with the latest GitHub release, using the per-user cache `~/.statusproject/UPDATE-CHECK.md`: GitHub is queried only when the last successful check is older than *StatusProject update check interval (days)* from User Settings (default `1`), so every open is checked and the network is used at most once a day. The script writes only the cache — never project files. Without a shell, do the same by hand: read the cache; if stale, read the GitHub latest release and rewrite the cache in the same format.
+3. Act on its `STATUS:` and `STATE:` lines. A `STATE:` older than `INSTALLED:` (or `unknown`) means the state files lag the deployed rules: run the PM Preflight below before new work. `update-available`: tell the user the installed and latest versions once per session and propose `PM update-statusproject`; never update or overwrite local state without approval. `check-failed`: mention it once and continue. `up-to-date` / `ahead-of-release`: say nothing.
+4. Run the compaction check above.
+
+## PM Preflight
+Every `PM` command (except `PM help`) starts with this version reconciliation; `PM update-statusproject` performs it as its own body. It keeps the project's `StatusProject/` folder aligned with the StatusProject source.
+1. **Compare.** Run `scripts/check-update` for the project (cached; GitHub at most once a day). It yields the latest release, the deployed `StatusProject/VERSION`, and the `State version` of the state files.
+2. **Docs behind the release.** Report the two versions once. Update the deployment only when the command is `PM update-statusproject` or the user confirms the offered update; a stale deployment never blocks the command.
+3. **State behind the docs** (`State version` older than `StatusProject/VERSION`, or unknown). Build the migration plan from `MIGRATIONS.md` and the post-update report (`PROMPT-DEPLOY.md#post-update-migration`), show it, and apply it on the user's approval — or at once when the user has pre-approved it (`Auto-migrate state after update: yes` in User Settings). Apply moves only, never deletions. Then set `State version`.
+4. **Continue** the requested command on the reconciled state. If the migration is declined, continue anyway and keep the warning in the report; never silently drop the difference.
+5. Under `Profile: lite`, the plan is usually a few edits; still show it in one line before applying.
 
 ## Development Planning
-When forming a development plan:
-- Reusable launch prompt: `templates/CODEX-MULTI-AGENT-PROMPT.template.md`.
-- PM commands are AI instruction commands, not shell executables. `PM help` shows concise command, goal, role, phase, alias, and safety help without actions. `PM doctor [goal]` audits StatusProject wiring, required files, templates, links, Git metadata policy, and Docker policy without product implementation. `PM env [goal]` performs an environment readiness check for local tools, Git, Docker, network/update access, filesystem policy, and configured StatusProject source without product implementation. `PM multiagent <goal>` prepares the project for hierarchical multi-agent planning by checking prompts, templates, state files, worker boundaries, and progress telemetry; it does not start implementation by itself. `PM status [goal]` performs an evidence-backed progress audit and reconciles state without implementation. `PM plan <goal>` analyzes relevant project files plus current chat context, attempts bounded read-only internal planning workers in parallel, and synthesizes one multi-agent plan containing requirements and sources, atomic blocks, dependencies, waves, acceptance/evidence, risks, and unresolved decisions; it never implements and stops for approval. `PM <goal>` is its backward-compatible alias. `PM start <goal>`, `PM start all <goal>`, or `PM all <goal>` runs the complete local planning -> synthesis -> all required block execution -> integration -> verification -> state/status -> report cycle. `PM test <goal> [target]` runs verification only for the supplied goal and target; it may update evidence/state but must not implement, deploy, or mutate runtime data. `PM dev <goal> [target]` prepares, builds, starts, and verifies the project development environment through Docker; when the target location cannot be resolved, it asks the user where to deploy before changing or starting anything. `PM prod <goal> [target]` prepares and verifies an explicit production deployment or production operations goal using the documented production environment; when the production target, credentials path, release artifact, rollback plan, or approval boundary is unclear, it asks before changing anything. `PM rollback <goal> [target]` executes an explicit rollback goal using a documented rollback procedure and verifies the restored service state. `PM update-statusproject <goal> [target]` force-checks GitHub for the StatusProject source and updates the selected target from the latest project release or source repository, bypassing the normal 7-day update interval while still preserving local state. A working command without `<goal>` asks for the goal and stops before actions. Build execution assigns one atomic block per internal worker when worker orchestration is available. Neither `PM start`, `PM start all`, `PM all`, `PM env`, `PM multiagent`, `PM test`, nor `PM dev` implicitly authorizes commit, push, tag, GitHub Release, production deployment, destructive actions, or scope expansion. `PM prod`, `PM rollback`, and `PM update-statusproject` authorize only the actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM commit` is the separate publication command: it runs a status preflight, updates canonical `StatusProject/VERSION` and `CHANGELOG.md` according to SemVer, creates a detailed scoped commit, and pushes to the configured GitHub repository. If no repository exists, request repository name, personal or organization ownership, organization name when applicable, and visibility before creation. Explicit `PM commit patch|minor|major|vX.Y.Z` overrides automatic version selection. `PM release <goal>` is the separate public release command for tag and GitHub Release publication from an already committed version; it must verify the intended commit, version, changelog, tag, release notes, and remote state before publishing.
+PM commands are AI instructions, not shell executables. Read the command's module first and run the PM Preflight above. A working command without a usable `<goal>` asks one concise goal question and stops before any worker, edit, build, deployment, or state update. Reusable launch prompt: `templates/CODEX-MULTI-AGENT-PROMPT.template.md`.
 
-## PM Goal Contract
+| Command | Purpose | Module |
+| --- | --- | --- |
+| `PM help` | concise command, goal, role, phase, alias, and safety help; no actions | core |
+| `PM status [goal]` | evidence-backed progress audit and state reconciliation | `PROMPT-PLANNING.md` |
+| `PM plan <goal>` (alias `PM <goal>`) | one synthesized plan; never implements; stops for approval | `PROMPT-PLANNING.md` |
+| `PM start <goal>` / `PM start all <goal>` / `PM all <goal>` | full cycle to a verified Definition of Done or an exact blocker | `PROMPT-PLANNING.md` |
+| `PM multiagent <goal>` | prepare multi-agent readiness; launches no workers | `PROMPT-PLANNING.md` |
+| `PM doctor [goal]` | StatusProject health audit and safe scaffolding | `PROMPT-DEPLOY.md` |
+| `PM update-statusproject <goal> [target]` | forced update from GitHub, local state preserved | `PROMPT-DEPLOY.md` |
+| `PM env [goal]` | read-only environment readiness check | `PROMPT-DEV-TEST.md` |
+| `PM dev <goal> [target]` | development-only Docker deploy and verification | `PROMPT-DEV-TEST.md` |
+| `PM test <goal> [target]` | verification only | `PROMPT-DEV-TEST.md` |
+| `PM prod <goal> [target]` | explicit production deployment or operations | `PROMPT-PROD.md` |
+| `PM rollback <goal> [target]` | explicit rollback and verification | `PROMPT-PROD.md` |
+| `PM commit [patch\|minor\|major\|vX.Y.Z]` | SemVer bump, scoped commit, push | `PROMPT-PROD.md` |
+| `PM release <goal>` | tag and GitHub Release from a committed version | `PROMPT-PROD.md` |
 
-- Planning and execution commands require an explicit `<goal>`: `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM update-statusproject <goal> [target]`, `PM multiagent <goal>`, and `PM release <goal>`.
-- If `<goal>` is missing or too vague to define completion, ask one concise goal question and stop before starting internal workers, editing files, building, deploying, or updating state.
-- Convert the goal into a stable objective, scope, acceptance criteria, constraints, and Definition of Done. Record conversation-derived requirements as `from context`.
-- Treat the goal and Definition of Done as the completion baseline. Do not silently reduce scope, omit difficult blocks, or report completion from task labels alone.
-- `PM start <goal>` (and its `PM start all` / `PM all` aliases) explicitly requires every necessary plan block, integration step, verification gate, and state update. Continue until the Definition of Done is verified or progress is genuinely blocked.
-- A full-cycle result must be either `verified complete` with evidence or `blocked` with the exact unmet criterion, cause, completed work, and smallest unblocking action. Never present partial or unverified work as complete.
-- New requirements discovered during execution are added only when required to satisfy the stated goal or explicitly approved by the user; unrelated expansion remains prohibited.
-- Goal completion does not bypass command boundaries. Environment checks, multi-agent setup, forced StatusProject updates, verification, commit/push, production deployment, rollback, destructive operations, tag, and release still require their dedicated explicit commands.
-- Requirements source: use the specification file named in the task, other relevant project files, and/or the current conversation. Record the exact sources in the plan; mark conversation-derived requirements "from context". Do not replace missing facts with unverified assumptions.
-- Prefer hierarchical multi-agent planning for Codex development work:
-  1. Use bounded internal subagent workers inside the current Codex task; do not create separate user-visible tasks or chats unless the user explicitly requests them. Each planning worker designs a solution from the same sources without implementing.
-  2. The `Architect / PM` (primary agent) compares their plans, resolves conflicts, merges the strongest parts, and produces one integrated plan.
-  3. Launch development agents only after user approval, or automatically when `PM start` (or its `PM all` alias) explicitly pre-authorized implementation and synthesis found no unresolved scope or architecture decisions.
-- Select the least capable worker model that is still sufficient for the assigned role and block. Do not choose a more capable, slower, or more expensive model merely because it is available.
-- Base model selection on task complexity, ambiguity, risk, context volume, tool use, and required judgment. Routine searches, inventories, formatting, isolated edits, and deterministic tests should use a lightweight model; architecture synthesis, cross-system integration, security-sensitive work, destructive/production planning, difficult debugging, and conflict resolution may justify a stronger model.
-- Escalate a worker to a stronger model only when the initial classification requires it or a lower-tier attempt produces specific evidence of insufficiency. Record a short reason for every non-default escalation. Never lower model capability below what is needed for correctness or safety, and never weaken the primary `Architect / PM` or integration owner when they must reason across the full system.
-- When the runtime does not support per-worker model selection, keep the configured model and continue; do not create extra workers or change scope to imitate model tiers.
-- The `Architect / PM` owns requirements alignment, architecture coherence, plan approval, task boundaries, execution waves, integration decisions, and final verification; planning and development agents remain bounded contributors.
-- Split the integrated plan into separate atomic logical blocks (e.g., data, logic, UI, infrastructure, tests). Each block has a unique ID and records: goal, inputs, outputs, dependencies, allowed and prohibited files or subsystem, owner, and done criterion.
-- Build a dependency graph; mark blocks with no mutual dependencies as parallelizable.
-- When internal worker orchestration is available, enforce `one block = one dedicated internal development worker`. A worker receives only its assigned block, must not take another block or expand scope, and returns a concise handoff with changed files, verification evidence, risks, and blockers.
-- Execute ready blocks in waves (wave 1 = independent blocks, wave 2 = blocks depending on wave 1, ...). Run independent blocks in parallel; run blocks that cannot be safely isolated sequentially under the integration owner.
-- Avoid overlapping writes by different agents. If overlap is unavoidable, define the integration owner and merge order before execution.
-- Always present the plan (blocks + dependency graph + waves). Wait for user approval before launching development agents unless `PM start` (or its `PM all` alias) explicitly authorized the full cycle; even then, stop if scope, architecture, destructive, production, deployment, or publication approval is required.
-- After each wave, the `Architect / PM` reviews every result and runs an integration/verification step before starting the next wave.
-- Record the approved plan in `PLAN` and current execution in `TODO`.
+### Authorization Boundary
+Each module ends every contract with an `Authorizes:` line — the complete list of what that command may do. Everything else needs its own command or explicit user confirmation, in particular: commit, push, force push, tag, GitHub Release, production deployment, rollback, destructive operations (data deletion, destructive migrations, destructive cleanup), secret changes or publication, DNS/TLS changes, dependency installation outside containers, creation of user-visible tasks/chats, and scope expansion.
 
-## PM Agent Runtime Recovery
+### Command Pattern
+Operational commands (`PM doctor`, `env`, `update-statusproject`, `dev`, `test`, `prod`, `rollback`, `release`) share this pattern; their modules state only the specifics.
+1. **Resolve.** Turn the goal into acceptance criteria. Resolve the target from the explicit argument, then chat context, then the owning state file.
+2. **Ask and stop** when the target, environment, artifact/version, credentials path, healthcheck, rollback path, or approval boundary is missing or ambiguous — before editing, building, deploying, or touching data. Ask only for the missing facts.
+3. **Read** the files the module names, when present. Label every environment `local` / `dev` / `staging` / `prod`; never act on an environment the command does not target.
+4. **Preflight, then act** within the `Authorizes:` line. Prefer documented scripts, Compose files, CI workflows, and runbooks; if they are missing or inconsistent, stop with a `PM plan` recommendation instead of inventing a path.
+5. **Verify** with health, smoke, URL/API, and version checks where they exist; an exit code or container state alone is not success when a service check exists.
+6. **Record** target, commands or workflows, evidence, and remaining risk in the owning state files (`lite`: `TODO`, `MEMORY`, `PROJECT-RESUME` only). Never record or print secret values.
+7. **Report** the result (`passed` / `failed` / `partial` / `blocked` or the module's equivalent), evidence, elapsed time, and the smallest next action.
 
-- This recovery contract applies after the primary turn starts. If logs show that the task's `agent loop` already received `shutdown` and the UI then sends a turn to that terminated process, the task is no longer reusable even if the Codex WebSocket reconnects. Do not diagnose this sequence as VPN/DNS failure and do not keep retrying the dead loop: open a new Codex task and rerun `PM plan <goal>` there. Restart/reopen Codex first only when the UI cannot create the new task.
-- Keep the primary `Architect / PM` in the current Codex task. Internal planning/build workers are optional execution aids, not required user-visible tasks.
-- Start only the relevant workers: normally 2-3 for medium work and at most 5 for large or high-risk work. Close completed workers before starting another wave.
-- If an internal worker fails to start, returns `internal error`, or its agent loop dies, record the failed role/block and retry once with fewer concurrent workers.
-- If the retry fails, do not abort `PM plan` or lose the goal. Continue in the primary agent by analyzing the missing roles sequentially, clearly label this as fallback mode, and synthesize the same required plan structure.
-- Never recursively ask a worker to create more workers. Never loop on worker creation, and never create a separate user-visible Codex task/chat as an automatic fallback.
-- A worker-runtime failure is a tooling degradation, not automatically a project blocker. Mark the command blocked only when the primary agent also cannot produce required evidence or continue safely.
-- A transient WebSocket warm-up timeout followed by a successful reconnect does not revive a loop that already shut down. Recovery evidence is a completion from a newly running loop, not connectivity restoration alone.
-
-## PM Doctor Contract
-
-For `PM doctor [goal]`:
-1. Audit StatusProject wiring without product implementation: root AI entries, `StatusProject/` layout, required state files, templates, `SOURCE.md`, `VERSION`, `LINKS`, update-source resolution, Git metadata placement, `.gitignore`, Dockerized directory policy, and obvious stale references.
-2. If `[goal]` is present, focus the audit on that project area; otherwise run a general StatusProject health audit.
-3. Create missing required state files only when initialization rules allow it. Do not overwrite local state, secrets, product files, deployment files, or user changes.
-4. Report findings as `pass`, `warning`, or `fail`, with exact files, smallest corrective action, and whether the agent can fix it safely.
-5. Update `TODO`, `MEMORY`, and `PROJECT-RESUME` only for durable state-system facts, detected blockers, and performed safe repairs.
-
-`PM doctor` authorizes StatusProject health inspection and safe state scaffolding. It does not authorize product implementation, dependency installation, deployment, commit, push, tag, release, destructive cleanup, or secret changes.
-
-## PM Env Contract
-
-For `PM env [goal]`:
-1. Audit the current execution environment without product implementation: shell, OS, current workspace, filesystem permissions, Git status/remotes, Git metadata placement policy, Docker availability/context, network access required for StatusProject updates, GitHub CLI/auth when present, and configured StatusProject source/version.
-2. If `[goal]` is present, focus the check on the tools and access needed for that goal; otherwise run a general readiness check.
-3. Prefer read-only checks. Do not install dependencies, start services, create containers, change Docker context, edit product files, deploy, commit, push, tag, release, or mutate secrets.
-4. If a required check needs network, Docker, or elevated access and the tool policy requires approval, request approval with the exact reason before running it.
-5. Classify each item as `ready`, `warning`, `blocked`, or `unknown`, with evidence and the smallest safe fix.
-6. Update `MCP`, `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `TODO`, `MEMORY`, and `PROJECT-RESUME` only for durable environment facts, blockers, and safe diagnostic results. Do not record secret values.
-
-`PM env` authorizes environment inspection and state/evidence updates only. It does not authorize dependency installation, service startup, product changes, deployment, commit, push, tag, GitHub Release, destructive cleanup, or secret changes.
-
-## PM Multiagent Contract
-
-For `PM multiagent <goal>`:
-1. Require `<goal>` and derive the multi-agent readiness criteria from it: expected work type, required planning roles, allowed worker count, file ownership boundaries, integration owner, verification gates, and progress telemetry.
-2. Read `PROMPT`, `PLAN`, `TODO`, `PROJECT-RESUME`, `DEVELOPMENT-STATUS`, `ARCHITECTURE`, `SOFTWARE`, `TESTING`, `MCP`, and `templates/CODEX-MULTI-AGENT-PROMPT.template.md` when present.
-3. Verify that the project has the required state files, a reusable multi-agent prompt, role selection rules, one-block-per-worker rules, non-overlapping write scopes, wave/integration rules, runtime recovery rules, and final evidence requirements.
-4. Create or update only StatusProject planning/state scaffolding needed for multi-agent readiness: `PLAN`, `TODO`, `DEVELOPMENT-STATUS`, `TESTING`, and `MCP` sections. Preserve local content and never overwrite state without approval.
-5. Do not launch planning workers or development workers unless the command is combined with or followed by `PM plan`, `PM start`, or `PM all`. `PM multiagent` prepares the runway; it does not fly the plane.
-6. Report readiness as `ready`, `partial`, or `blocked`, with missing roles, missing files, unsafe overlaps, unresolved architecture decisions, and recommended next command.
-
-`PM multiagent` authorizes multi-agent planning setup and state updates only. It does not authorize product implementation, dependency installation, deployment, commit, push, tag, release, destructive operations, or creation of separate user-visible tasks/chats.
-
-## PM Update StatusProject Contract
-
-For `PM update-statusproject <goal> [target]`:
-1. Require `<goal>` and resolve `[target]` from the explicit argument, current workspace, current chat context, or the deployed target recorded in `StatusProject/SOURCE.md`.
-2. This command is a forced StatusProject update check: it intentionally bypasses the normal once-per-7-days update interval, but must still record the check/update date and evidence in `MEMORY` or `PROJECT-RESUME`.
-3. Resolve the update source in this order: GitHub project `https://github.com/NohchiyBors/StatusProject` latest release; configured remote/source repository when explicitly requested; maintainer local source only as a fallback when GitHub is unreachable and the user accepts local fallback.
-4. Before changing files, run preflight: target path, current `StatusProject/SOURCE.md`, current version, latest GitHub version/tag/release, working tree status, local state files, backup destination, root AI entry selection, and network/tool access.
-5. If GitHub/latest release cannot be verified, the target is ambiguous, local state would be overwritten, or the working tree contains unrelated changes that would be touched, ask for confirmation or stop with a blocked report.
-6. Use the documented updater from the resolved StatusProject source when possible. Update shipped operating docs and templates; preserve `TODO`, `MEMORY`, `PROJECT-RESUME`, `PLAN`, `STATUS-LOG`, domain state files, secrets, `.env`, logs, and local tool state.
-7. Update root AI entry files only when explicitly selected by the user or when the target's existing entry is clearly a StatusProject-managed compatibility file and replacement has been approved by the command goal.
-8. Create backups for every replaced shipped file under the target's StatusProject backup area. Do not delete local state or user files.
-9. Verify after update: version/source record, required files, template presence, root entry pointers, state preservation, changelog/release notes, and `git status` scope.
-10. Report target, source URL/tag/version, files updated, files preserved, backup path, verification evidence, and remaining blockers.
-
-`PM update-statusproject` authorizes a forced StatusProject docs/templates update from GitHub for the resolved target. It does not authorize product implementation, dependency installation, production deployment, destructive cleanup, commit, push, tag, GitHub Release, secret changes, or overwriting local state without approval.
-
-## PM Dev Contract
-
-For `PM dev <goal> [target]`:
-1. Require `<goal>` and derive development acceptance criteria from it. Resolve the deployment location in this order: explicit `[target]` argument; current chat context; the `dev`/`local` entry in `StatusProject/INFRASTRUCTURE.md`; active Docker context when it is clearly documented for this project.
-2. If the location is still missing or ambiguous, ask the user where to deploy and stop before editing files, building images, creating volumes, or starting containers. Request only missing facts such as local versus remote Docker host/context, project path, and required URL/ports.
-3. Read `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `ENV`, `PROJECT-TREE`, and existing Docker/Compose files when present. Clearly distinguish `local`, `dev`, `staging`, and `prod`.
-4. `PM dev` targets only `local` or `dev`. Reject an inferred production target and require a separate explicit production/deployment workflow.
-5. Verify Docker availability, selected context/host, target path, port conflicts, volumes, networks, required environment variables, and secret sources. Local development secrets may use ignored `.env` files; never commit or echo secret values.
-6. Use existing Dockerfiles and Compose definitions when possible. If development Docker assets are missing, create the minimum project-consistent assets only when no unresolved architecture decision is required; otherwise stop with a `PM plan` recommendation.
-7. Install dependencies, build, migrate non-destructively, and run the project strictly inside the selected containers. Never run host package managers or create host dependency directories.
-8. Start the development stack, run container health/smoke checks, and verify expected ports/URLs. Do not claim success from container state alone when an application health endpoint or equivalent check exists.
-9. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `TODO`, and `PROJECT-RESUME` with the resolved dev location, Docker context, services, ports/URLs, verification evidence, and stop/restart commands. Do not record secret values.
-10. Report target, containers/services, health, URLs, logs command, stop/restart command, elapsed time, and remaining blockers.
-
-`PM dev` authorizes development-only Docker configuration, build, start, and verification at the resolved target. It does not authorize production/staging deployment, external DNS or TLS changes, destructive migrations, data deletion, commit, push, tag, release, or secret publication.
-
-## PM Test Contract
-
-For `PM test <goal> [target]`:
-1. Require `<goal>` and derive verification acceptance criteria from it. Resolve `[target]` from the explicit argument, current chat context, `StatusProject/TESTING.md`, `SOFTWARE.md`, or `INFRASTRUCTURE.md`.
-2. If the test target, environment, command, expected URL/API, credentials path, or acceptance evidence is missing or ambiguous, ask for the missing fact and stop before running tests that touch external systems.
-3. Read `REQUIREMENTS`, `PLAN`, `TODO`, `ARCHITECTURE`, `SOFTWARE`, `INFRASTRUCTURE`, `TESTING`, and relevant test/CI files when present.
-4. Run only verification commands appropriate to the resolved target. Follow the Docker policy: project dependencies, linters, test runners, and application commands run inside containers unless the command is a StatusProject host bootstrap/check.
-5. `PM test` must not implement product changes, deploy, restart production services, mutate runtime data, run destructive migrations, publish secrets, commit, push, tag, or release.
-6. Prefer non-destructive checks: unit/integration/e2e tests, smoke checks, healthchecks, read-only API checks, logs, and build verification. For production, use read-only health/smoke checks unless the user explicitly authorizes a broader production test.
-7. Record exact commands, target, environment, pass/fail/skip status, evidence, coverage gaps, and blockers in `TESTING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME`.
-8. Report result as `passed`, `failed`, `partial`, or `blocked`, with evidence and the smallest next action.
-
-`PM test` authorizes verification and state/evidence updates only. It does not authorize implementation, deployment, runtime mutation, commit, push, tag, GitHub Release, or destructive operations.
-
-## PM Prod Contract
-
-For `PM prod <goal> [target]`:
-1. Require `<goal>` and derive production acceptance criteria from it. Resolve the production target in this order: explicit `[target]` argument; current chat context; the `prod` entry in `StatusProject/INFRASTRUCTURE.md`; deployment records in `StatusProject/SOFTWARE.md`, `StatusProject/VERSIONING.md`, or `StatusProject/STATUS-LOG.md`.
-2. If the production target, release artifact/version, credentials path, healthcheck, rollback method, or approval boundary is missing or ambiguous, ask the user for the missing fact and stop before editing files, changing infrastructure, deploying, restarting services, or touching data.
-3. Read `ARCHITECTURE`, `INFRASTRUCTURE`, `SOFTWARE`, `ENV`, `TESTING`, `VERSIONING`, `PROJECT-TREE`, and deployment manifests/scripts when present. Clearly distinguish `prod` from `staging`, `dev`, and `local`.
-4. `PM prod` targets only `prod`. Reject inferred `dev`, `local`, or `staging` targets unless the user explicitly changes the command or goal.
-5. Run a production preflight before changes: repository status/scope, intended artifact/version, Docker or runtime context, current service health, backups/restore posture, migration risk, environment variables and secret sources, access, DNS/TLS impact, and rollback command or procedure. Never print or commit secret values.
-6. Prefer documented deployment scripts, Compose files, CI/CD workflows, and runbooks. If production deployment assets are missing or inconsistent, stop with a `PM plan` recommendation instead of inventing an unsafe production path.
-7. Apply only non-destructive production changes that are explicitly within the goal and approval boundary. Destructive migrations, data deletion, secret rotation, DNS/TLS changes, public release/tag creation, force push, or rollback require separate explicit confirmation.
-8. Verify production after the action with healthchecks, smoke tests, logs, and user-visible URL/API checks where available. Do not claim success from command exit code alone when service verification exists.
-9. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `VERSIONING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with target, artifact/version, commands or workflow names, health evidence, rollback path, timestamp, and remaining risk. Do not record secret values.
-10. Report target, artifact/version, production services, health evidence, URLs, logs command, rollback command/procedure, elapsed time, and remaining blockers.
-
-`PM prod` authorizes production-scoped preparation, deployment or operations, and verification only as explicitly described by the goal and confirmed boundaries. It does not authorize unrelated feature work, unapproved destructive operations, secret publication, commit, push, tag, GitHub Release, DNS/TLS changes, or scope expansion.
-
-## PM Rollback Contract
-
-For `PM rollback <goal> [target]`:
-1. Require `<goal>` and derive rollback acceptance criteria from it. Resolve the target from the explicit `[target]`, current chat context, `StatusProject/INFRASTRUCTURE.md`, `SOFTWARE.md`, `VERSIONING.md`, `STATUS-LOG.md`, or documented deployment records.
-2. If the target, current version/state, rollback artifact/version, rollback command/procedure, backup/restore status, healthcheck, or approval boundary is missing or ambiguous, ask for the missing fact and stop before changing services or data.
-3. Read `INFRASTRUCTURE`, `SOFTWARE`, `VERSIONING`, `TESTING`, `STATUS-LOG`, deployment manifests/scripts, and runbooks when present. Clearly distinguish rollback target: `prod`, `staging`, `dev`, or `local`.
-4. Prefer documented rollback procedures. If rollback assets are missing, inconsistent, or unverified for the requested target, stop with a `PM plan` or `PM prod` recommendation instead of inventing a rollback path.
-5. Run preflight checks: current health, active version/artifact, desired previous version/artifact, backups, migrations, data compatibility, access, logs, rollback command, and forward-fix option.
-6. Apply only the rollback explicitly described by the goal and approval boundary. Data deletion, destructive migrations, secret rotation, DNS/TLS changes, force pushes, tags, and public release changes require separate explicit confirmation.
-7. Verify the restored state with healthchecks, smoke tests, logs, URL/API checks, and version checks where available.
-8. Update `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `VERSIONING`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with rollback target, from/to versions, commands or workflow names, evidence, timestamp, and remaining risk. Do not record secret values.
-9. Report target, from/to version or artifact, services affected, health evidence, logs command, forward-fix path, elapsed time, and blockers.
-
-`PM rollback` authorizes only the explicitly requested rollback and verification. It does not authorize unrelated feature work, unapproved destructive operations, secret publication, commit, push, tag, GitHub Release, DNS/TLS changes, or scope expansion.
-
-## PM Release Contract
-
-For `PM release <goal>`:
-1. Require `<goal>` and derive release acceptance criteria from it. Resolve the intended version from `StatusProject/VERSION`, `CHANGELOG.md`, current Git commit, tags, and the conversation.
-2. If the release version, commit SHA, branch, changelog entry, release notes, target repository, remote authentication, or public/private release boundary is missing or ambiguous, ask for the missing fact and stop before tagging or publishing.
-3. Run release preflight: clean/intended working tree, no secrets, version/changelog consistency, relevant verification evidence, current branch, remote URL, existing tags/releases, and protected-branch status.
-4. `PM release` requires an already committed release candidate. If required files are uncommitted, recommend `PM commit` first unless the user explicitly changes the goal.
-5. Create or verify the annotated Git tag and GitHub Release only for the resolved version and commit. Do not change product files, deploy, rotate secrets, alter DNS/TLS, or force push as part of release.
-6. If a tag or release already exists, compare it with the intended commit and notes. Do not overwrite, delete, or recreate it without explicit confirmation.
-7. Verify the published tag/release remotely, then update `VERSIONING`, `CHANGELOG`, `STATUS-LOG`, `TODO`, and `PROJECT-RESUME` with version, commit SHA, tag, release URL, evidence, and remaining post-release actions.
-8. Report version, commit, tag, release URL, verification, and blockers.
-
-`PM release` authorizes tag and GitHub Release publication for an already committed version. It does not authorize product implementation, dependency installation, deployment, production changes, destructive operations, commit, unrelated push, force push, or secret publication.
+### PM Goal Contract
+Full contract: `PROMPT-PLANNING.md#pm-goal-contract`. Invariants that hold for every command:
+- The goal becomes objective, scope, acceptance criteria, constraints, and a Definition of Done; scope is never silently reduced.
+- A full-cycle result is either `verified complete` with evidence or `blocked` with the unmet criterion and the smallest unblocking action; partial or unverified work is never presented as complete.
+- Workers use the least capable model that is sufficient for their role or block; escalation needs a recorded reason.
 
 ## Execution Progress Display
-
-For every substantial task, including `PM plan`, `PM start` / `PM all`, `PM doctor`, `PM env`, `PM multiagent`, `PM status`, `PM test`, `PM dev`, `PM prod`, `PM rollback`, `PM update-statusproject`, `PM commit`, and `PM release`, the primary agent emits a compact, fixed-layout progress block in the user's language. Show it at the start, after each completed block or wave, when the current operation, ETA, or blocker changes, every 30-60 seconds while active when new evidence is available, and in the final report. Do not repeat unchanged status or stream raw worker logs.
+For every substantial task, show this block in the user's language at the start, after each block or wave, when the operation, ETA, or blocker changes, and in the final report. Do not repeat an unchanged block or stream raw worker logs.
 
 ```text
 PM PROGRESS [############--------] 60%
@@ -372,76 +181,48 @@ Elapsed: 12m 40s | ETA: ~8m
 Next: <next block or gate>
 ```
 
-- Keep the bar at 20 characters. Use `#` for complete and `-` for remaining.
-- Show a percentage only when a stable denominator exists in an approved plan, manifest, or discovered item list. Otherwise use `[--------------------] --%`, report known counts, and set ETA to `unknown`.
-- Use weighted work units when known blocks differ materially in size; state the progress basis in `PLAN` or `DEVELOPMENT-STATUS`.
-- Include `Items` and `Rate` only for measurable batch work. Calculate rate from observed item deltas and elapsed time; never estimate it from intuition.
-- Recalculate approximate ETA from observed rate, dependencies, integration, and verification. Use `unknown` instead of false precision.
-- Add `Blocked: <reason>` only when blocked. Aggregate internal-worker results into the task counts.
-- Progress is telemetry, not completion evidence. Reserve `100%` for a verified Definition of Done; use at most `99%` while final integration, verification, or required state updates remain.
+- 20-character bar. Show a percentage only with a stable denominator (approved plan, manifest, or discovered item list); otherwise `[--------------------] --%` and `ETA: unknown`. State the basis in `PLAN` or `DEVELOPMENT-STATUS` when blocks are weighted.
+- `Items` and `Rate` only for measurable batch work, computed from observed deltas and elapsed time. Derive ETA from the observed rate plus remaining dependencies, integration, and verification; prefer `unknown` to false precision.
+- Aggregate internal-worker results into the task counts. Add `Blocked: <reason>` only when blocked.
+- Progress is telemetry, not evidence: `100%` only for a verified Definition of Done, at most `99%` before that.
 
 ## Work Rules
-- Update state files after meaningful progress; prefer concise deltas over rewrites.
-- `TODO` ← current work; `MEMORY` ← durable rules/decisions; `PLAN` ← workstream changes; `PROJECT-RESUME` ← session checkpoint; `STATE-HISTORY` ← archived details.
+- Update state after meaningful progress with concise deltas; the Restart Capsule is rewritten, not appended.
+- Mark a finished task `[x]` immediately; agents skip `[x]` items on later reads.
 - Cross-file triggers:
   - scope/acceptance change → `REQUIREMENTS` → `ARCHITECTURE`, `SOFTWARE`, `TODO`
   - architecture change → `ARCHITECTURE` → `SOFTWARE`, `TESTING`, `INFRASTRUCTURE`
   - env/deploy change → `INFRASTRUCTURE` → `TESTING`, `VERSIONING`
-  - toolchain/connectors change → `MCP`
-  - release flow change → `TESTING`, `VERSIONING`
-- In `MCP`, record canonical name, when to use, access, constraints, fallback.
-- For imports/migrations/syncs use `templates/IMPORT-SOP.template.md`. For releases use `VERSIONING.md`.
+  - toolchain/connector change → `MCP`
+  - release-flow change → `TESTING`, `VERSIONING`
+
+- **Tool resilience:** when a tool (MCP server, browser automation) hangs, fails, or lacks an action, switch at once to an equivalent shell/CLI path (SSH, `docker exec`, native CLI) instead of stopping. This never overrides environment selection, the Docker policy, or the Authorization Boundary.
 
 ## Dockerized Directory Policy
-For projects in this directory:
-1. All projects are Dockerized.
-2. Do not run `npm install`, `yarn`, `pip install`, or other package managers locally on the host machine.
-3. Do not create local `node_modules`, `venv`, or vendor directories on the host disk.
-4. All project dependency installations, executions, builds, tests, language servers, and project linters must run strictly inside the respective Docker containers. Configure the host IDE to use a container/remote interpreter or container-executed tooling; being ignored by Git does not permit project-local `.venv`, `node_modules`, or vendor directories on the host.
-5. Cross-platform StatusProject bootstrap scripts and the host IDE application itself are host tools, not project dependency execution. They must not install project dependencies or create project-local dependency directories. Verify bootstrap behavior in Docker; native Windows `.bat` and macOS runtime certification require native runners.
+Every project run under StatusProject is Dockerized:
+1. Project dependency installation, execution, builds, tests, language servers, and linters run only inside the project's containers. Never run `npm install`, `yarn`, `pip install`, or other package managers on the host, and never create host `node_modules`, `venv`, `.venv`, or vendor directories — being Git-ignored is no exception. Point the host IDE at container/remote tooling.
+2. StatusProject bootstrap scripts and the IDE itself are host tools; they must not install project dependencies. Verify bootstrap behavior in Docker; native Windows `.bat` and macOS runtime certification need native runners.
+
+## User Settings
+Machine- and user-specific values live in one settings file per user, never in `PROMPT.md`, modules, AI entry files, or shared state:
+1. `StatusProject/USER-SETTINGS.local.md` — optional per-project override of single keys (Git-ignored);
+2. `~/.statusproject/USER-SETTINGS.md` (Windows: `%USERPROFILE%\.statusproject\USER-SETTINGS.md`) — the user's settings for all projects on this machine.
+
+The first file that defines a key wins. Create the user file from `templates/USER-SETTINGS.template.md` with `scripts/init-user-settings` (`.ps1` / `.sh` / `.bat`), which never overwrites an existing file. Rules below refer to settings by key name (for example *Sync root*, *Remote Docker host*). When a needed key is unset, ask the user once, suggest recording the answer in the settings file, and never guess. Settings hold no secrets — only where credentials live.
 
 ## Workspace and Storage Policy
-Use these portable storage rules. Machine-specific paths, permitted runtime hosts, and connection methods belong in `DEV_GUIDELINES.md` or the active environment instructions and must not be duplicated here.
+Storage roles are set in User Settings: *Sync root* (working trees that need cloud sync), *Clone root* (ordinary clones), *Metadata root* (physical Git metadata of sync-root working trees; mirrored paths; never a working copy).
 
-1. **OneDrive Working Trees:** Projects that require OneDrive synchronization use `D:\Data\OneDrive\source`. Ordinary clones that do not require OneDrive use `D:\Data\repos`.
-2. **Metadata Protection:** OneDrive must not contain physical `.git`, `node_modules`, `venv`, or `vendor` directories. OS/GPO exclusions are defense in depth and never replace this repository-level rule.
-3. **Split Git Strategy:** For every working tree under `D:\Data\OneDrive\source`, store its physical Git metadata at the mirrored path under `D:\Data\git` and connect it with `--separate-git-dir`/an absolute `gitdir:` pointer. This is the required mode, not a fallback. `D:\Data\git` is metadata-only and must never be used as a working-copy destination.
-4. **Environment Selection:** Use the development/runtime environment permitted by the active machine instructions. Never start or substitute local Docker merely because a remote or configured environment is unavailable; report the blocker or request explicit authorization.
+1. The sync root never contains physical `.git`, `node_modules`, `venv`, or `vendor` directories; OS/GPO exclusions are defense in depth only.
+2. Every working tree under the sync root keeps its Git metadata at the mirrored path under the metadata root, connected by `--separate-git-dir` / an absolute `gitdir:` pointer. This is required, not a fallback.
+3. Use the *Default development environment* from User Settings. Never substitute local Docker because the configured environment is unavailable, unless *Local Docker allowed without asking* is `yes`; otherwise report the blocker or ask for explicit authorization.
+4. **Ignore DrvFS quirks:** In WSL/Docker, operations like `chmod` or `chown` may fail with permission denied on DrvFS mounts. Ignore these non-fatal permission errors if the file is readable/writable.
 
 ### OneDrive-Safe File And Folder Names
-
-Before creating, generating, copying, moving, or renaming any file or directory inside a OneDrive-synchronized path, validate every new path segment against the Windows and OneDrive naming rules. Do not knowingly create a name that OneDrive cannot synchronize.
-
-- Reject the characters `"`, `*`, `:`, `<`, `>`, `?`, `/`, `\`, and `|`, ASCII control characters, leading or trailing spaces, and a trailing period.
-- Reject case-insensitive reserved names even when an extension is present: `.lock`, `CON`, `PRN`, `AUX`, `NUL`, `COM0` through `COM9`, `LPT0` through `LPT9`, `desktop.ini`; reject any name containing `_vti_` and any file name beginning with `~$`. At a SharePoint/OneDrive library root, also reject `forms`.
-- For a newly generated name, preserve a meaningful extension, replace each run of invalid characters with `-`, trim prohibited leading/trailing whitespace and trailing periods, and prefix a reserved base name with `_`. Collapse repeated separators where practical.
-- After normalization, require a non-empty result and check for a case-insensitive collision with existing sibling items. Never overwrite or merge because normalization produced the same name.
-- When the user supplied an invalid exact name, use the normalized safe name only when the intended identity remains unambiguous and report the change. Ask before proceeding when normalization could change meaning, break a public path/import/link, or collide with another item.
-- Do not bulk-rename existing synchronized content without explicit authorization. First produce an old-to-new mapping, identify link/import/reference impacts, and use a reversible rename plan.
-- Validate the complete destination path as well as the leaf name before the write. If platform or tenant rules are stricter than this baseline, follow the stricter rule and record the blocker or chosen safe fallback.
+Every new file or folder name under the sync root must avoid `"`, `*`, `:`, `<`, `>`, `?`, `/`, `\`, `|`, control characters, leading/trailing spaces, a trailing period, the reserved names `.lock`, `CON`, `PRN`, `AUX`, `NUL`, `COM0`-`COM9`, `LPT0`-`LPT9`, `desktop.ini` (case-insensitive, even with an extension), any name containing `_vti_`, and a file name beginning with `~$`. Never overwrite on a collision. Normalization, collision, user-supplied-name, and bulk-rename rules: `PROMPT-WORKSPACE.md#onedrive-safe-file-and-folder-names`.
 
 ### GitHub Repository Default
-
-When the user asks to create a new project or repository, create a repository for the project on GitHub as the default durable remote, then create the local working copy from that GitHub repository. Do not stop at an unconnected local `git init` unless the user explicitly asks for a local-only/offline repository or GitHub access is unavailable and the blocker has been reported.
-
-- "GitHub repository" means a source-code repository hosted on GitHub, not a GitHub Projects board unless the user explicitly requests the board too.
-- Resolve the GitHub owner or organization, repository name, and visibility before creation. Use an existing documented project policy when available; otherwise ask for the missing choice. Never make a repository public by assumption.
-- Prefer creating an empty GitHub repository first and cloning it so `origin` is configured from the start. For an existing non-empty project directory, create the GitHub repository, initialize the local repository with the required separate metadata location, add `origin`, and verify the intended first push scope.
-- If the working copy does not need OneDrive, place it under `D:\Data\repos`. If it must remain under `D:\Data\OneDrive\source`, clone or initialize it with `--separate-git-dir` pointing to the mirrored path under `D:\Data\git`.
-- GitHub does not replace local Git metadata. All metadata-placement, working-tree-preservation, verification, commit, push, visibility, and publication safety rules still apply.
-- Creating the GitHub repository is an external state change. Perform it only when the user's goal authorizes repository/project creation; a planning, audit, or documentation-only request does not authorize creation.
-
-Before `git clone` or `git init`, resolve the absolute destination path. If the working tree must remain under `D:\Data\OneDrive\source`, calculate the mirrored metadata path under `D:\Data\git` first and use `--separate-git-dir`. A working tree inside OneDrive may contain only a `.git` file with an absolute `gitdir:` pointer; a physical `.git` directory there is a policy violation.
-
-After clone, init, submodule, worktree, IDE, or agent Git operations under OneDrive, verify that:
-1. `<worktree>\.git` is a file, not a directory.
-2. Its `gitdir:` target is absolute, exists, and is under `D:\Data\git`.
-3. `git -C <worktree> rev-parse --git-dir`, `rev-parse --show-toplevel`, and `status --short --branch` succeed.
-
-If a physical `.git` is found in OneDrive, preserve `HEAD`, index, staged state, and working-tree changes. Do not use `reset`, `clean`, destructive checkout/restore, or blind replacement. Inspect each repository and any submodule/worktree separately; move metadata only when the user authorized correction and verify status before and after. If the request was audit-only, report the violation without moving or deleting data.
-
-## Gitignore
-When deploying, check or create `.gitignore` from `templates/GITIGNORE.template`. Never overwrite an existing file without review. Ignore: local state (`TODO*.md`, `MEMORY*.md`, ...), secrets (`.env`, `.env.*`, keys, `secrets/`, `private/`), logs/tmp, local tool state (`.claude/`, `.codex/`, `.cursor/`). Local systems may use `.env`/`.env.*`; staging/prod use environment variables or a secret manager. Commit only `.env.example`.
+New projects/repositories default to a GitHub-hosted repository (owner and visibility from User Settings, else ask) plus a connected local working copy placed per the storage roles above; creation is an external change that needs an authorizing goal. Contract and post-clone checks: `PROMPT-WORKSPACE.md#github-repository-default`.
 
 ## Finish Check
-Before responding: required state files exist in `StatusProject/`; `TODO` has the next step; `MEMORY` has new durable rules; `PROJECT-RESUME` can restart the work; `STATUS-LOG` is current for long processes.
+Before responding: the required state files exist in `StatusProject/`; `TODO` names the next step; `MEMORY` reflects any new durable rule or decision (nothing is added when there is none); `PROJECT-RESUME` holds one current capsule that can restart the work; `STATUS-LOG` is current for long processes (`standard` / `strict`); `scripts/verify-state` reports no failure when the scripts are available.

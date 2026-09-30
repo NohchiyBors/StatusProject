@@ -1,16 +1,11 @@
 # GEMINI.md
 
-- Always respond in Russian.
-- Canonical operating rules: [`StatusProject/PROMPT.md`](StatusProject/PROMPT.md). Do not duplicate them here.
-- For substantial work, read `StatusProject/PROMPT.md`.
-- Read `StatusProject/SOURCE.md` to resolve install source and update path.
-- Read `StatusProject/PROJECT-RESUME` → `StatusProject/TODO` → `StatusProject/MEMORY` first; add `StatusProject/PLAN`, history, domain files only when needed. Skip items marked `[x]` unless the task needs history.
-- If the task touches architecture, services, deployment, environments, or dev/prod differences, also read `StatusProject/ARCHITECTURE`, `StatusProject/INFRASTRUCTURE`, and `StatusProject/SOFTWARE` when present before changing files.
-- Enable `StatusProject` when the task is complex; minimum state is `StatusProject/TODO`, `StatusProject/MEMORY`, `StatusProject/PROJECT-RESUME`.
-- The user command `StatusProject` triggers initialization: create or update state files from templates per `StatusProject/PROMPT.md` → Init Command.
-- Working commands require a goal: `PM plan <goal>` (`PM <goal>` alias), `PM start <goal>` / `PM start all <goal>` / `PM all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM release <goal>`, `PM update-statusproject <goal> [target]`, `PM env [goal]`, and `PM multiagent <goal>`; ask for a missing goal before acting. `PM help`, `PM doctor [goal]`, `PM status [goal]`, and `PM commit` follow `StatusProject/PROMPT.md`.
-- During substantial work, show and refresh the compact progress display defined in `StatusProject/PROMPT.md`.
-- Keep StatusProject state files inside `StatusProject/`; keep root entries short and stable.
-- Check template updates at most once per 7 days per project; never overwrite local state without approval.
-- For development planning, use hierarchical multi-agent planning: independent planning agents first, `Architect / PM` synthesis and approval second, development agents only afterward.
-- Dockerized directory policy: do not run host package managers (`npm install`, `yarn`, `pip install`, etc.) or create host `node_modules`, `venv`, or vendor directories; install and run dependencies only inside the respective Docker containers.
+- Reply in the *Reply language* from User Settings (`~/.statusproject/USER-SETTINGS.md`, override `StatusProject/USER-SETTINGS.local.md`); if unset, in the user's language.
+- Operating rules: `StatusProject/PROMPT.md` (core). Read it before any substantial or multi-step task; it names the `StatusProject/PROMPT-*.md` module to read for each command. Do not copy rules into this file.
+- Restart context: `StatusProject/PROJECT-RESUME.md` → `StatusProject/TODO.md` → `StatusProject/MEMORY.md`.
+- On every project open and before every `PM` command, run the version reconciliation (`StatusProject/PROMPT.md#pm-preflight`: `scripts/check-update` from the source in `StatusProject/SOURCE.md`; GitHub is queried at most once a day; lagging state files get the migration plan from `StatusProject/MIGRATIONS.md`).
+- Safety floor, valid even before the core is read:
+  - `PM …` commands need a `<goal>`; ask for a missing one before acting.
+  - Project dependencies run only inside Docker: no host package managers, no host `node_modules`, `venv`, or `vendor`.
+  - Never overwrite local state files without approval.
+  - Never hard-code paths, hosts, or connection names in rules or shared files; they belong in User Settings.

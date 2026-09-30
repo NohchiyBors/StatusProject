@@ -72,8 +72,7 @@ if ($errors.Count -eq 0) {
         $capsuleFields = @(
             "Goal ID / goal:", "Why now / provenance:", "Scope:", "Non-goals:",
             "Phase / status:", "Last verified result:", "Next action:", "Blockers:",
-            "Unresolved decisions / unknowns:", "Acceptance / evidence still required:",
-            "### Exact Read Set"
+            "Unresolved decisions / unknowns:", "Acceptance / evidence still required:"
         )
         foreach ($field in $capsuleFields) {
             if (-not $resume.Contains($field)) { Fail "Restart Capsule is missing field: $field" }
@@ -104,17 +103,48 @@ if ($errors.Count -eq 0) {
         Warn "Legacy PROJECT-RESUME has no canonical read-order declaration"
     }
 
+    $docsVersion = ""
+    $versionFile = Join-Path $statusDir "VERSION"
+    if (Test-Path -LiteralPath $versionFile -PathType Leaf) { $docsVersion = (Get-Content -LiteralPath $versionFile -Raw).Trim() }
+    $stateMatch = [regex]::Match($resume, "(?m)^[-*\s]*State version:\s*(.+)$")
+    $stateVersion = if ($stateMatch.Success) { $stateMatch.Groups[1].Value.Replace('`', '').Trim() } else { "" }
+    $sv = $null; $dv = $null
+    if ([string]::IsNullOrWhiteSpace($stateVersion) -or $stateVersion.StartsWith("<")) {
+        Warn "State version unknown (no 'State version:' in PROJECT-RESUME): state predates v1.0.0; apply StatusProject/MIGRATIONS.md via Post-Update Migration"
+    } elseif ($docsVersion -and $stateVersion -ne $docsVersion -and [version]::TryParse($stateVersion.TrimStart("v"), [ref]$sv) -and [version]::TryParse($docsVersion.TrimStart("v"), [ref]$dv) -and $sv -lt $dv) {
+        Warn "State version $stateVersion is behind deployed StatusProject $docsVersion; apply StatusProject/MIGRATIONS.md via Post-Update Migration"
+    } else {
+        Pass "State version $stateVersion (deployed StatusProject $(if ($docsVersion) { $docsVersion } else { 'unknown' }))"
+    }
+
     $budgets = @(
         @{ Name = "PROJECT-RESUME.md"; Text = $resume; Lines = 60; Words = 500 },
         @{ Name = "TODO.md"; Text = $todo; Lines = 120; Words = 900 },
         @{ Name = "MEMORY.md"; Text = $memory; Lines = 150; Words = 1200 }
     )
     $combinedWords = 0
+    $combinedLines = 0
+    $profileLite = $resume -match "(?im)^[-*\s]*Profile:\s*``?lite``?(\s|$)"
+    $budgetException = $resume -match "(?m)^[-*\s]*Budget exception:\s*[^<\s]"
+    function Invoke-HardCap([string]$What) {
+        if ($budgetException) {
+            Warn "$What exceeds the hard cap (3x soft budget); allowed by the recorded Budget exception in PROJECT-RESUME"
+        } else {
+            Fail "$What exceeds the hard cap (3x soft budget); compact per StatusProject/PROMPT-CONTEXT.md or record 'Budget exception: <reason>; review by YYYY-MM-DD'"
+        }
+    }
+    $capsuleCount = @([regex]::Matches($resume, "(?im)^#{1,6}\s.*restart capsule")).Count
+    if ($capsuleCount -gt 1) {
+        Fail "PROJECT-RESUME has $capsuleCount Restart Capsule headings; keep exactly one current capsule and move older ones to STATE-HISTORY"
+    }
     foreach ($budget in $budgets) {
         $lineCount = @($budget.Text -split "\r?\n").Count
         $wordCount = Get-WordCount $budget.Text
         $combinedWords += $wordCount
-        if ($lineCount -gt $budget.Lines -or $wordCount -gt $budget.Words) {
+        $combinedLines += $lineCount
+        if ($lineCount -gt (3 * $budget.Lines) -or $wordCount -gt (3 * $budget.Words)) {
+            Invoke-HardCap "$($budget.Name) ($lineCount/$($budget.Lines) lines; $wordCount/$($budget.Words) words)"
+        } elseif ($lineCount -gt $budget.Lines -or $wordCount -gt $budget.Words) {
             Warn "$($budget.Name) exceeds the soft context budget ($lineCount/$($budget.Lines) lines; $wordCount/$($budget.Words) words)"
         } else {
             Pass "$($budget.Name) context budget ($lineCount lines; $wordCount words)"
@@ -131,6 +161,7 @@ if ($errors.Count -eq 0) {
         $index = Get-Content -LiteralPath $indexPath -Raw
         $pointerSources += @{ Name = "CONTEXT-INDEX.md"; Text = $index }
         $combinedWords += Get-WordCount $index
+        $combinedLines += @($index -split "\r?\n").Count
         if ($index -notmatch "(?m)^# CONTEXT INDEX:") { Fail "CONTEXT-INDEX.md is missing its schema heading" }
         if (-not $index.Contains($canonicalOrder)) { Fail "CONTEXT-INDEX.md has inconsistent canonical read order" }
         $declaredIds = [regex]::Matches($index, "(?m)^\|\s*([A-Z][A-Z0-9]*-[a-z0-9][a-z0-9-]*)\s*\|") |
@@ -139,7 +170,17 @@ if ($errors.Count -eq 0) {
         foreach ($duplicate in $duplicates) { Fail "CONTEXT-INDEX.md declares duplicate ID: $($duplicate.Name)" }
         Pass "Optional CONTEXT-INDEX.md detected"
     }
-    if ($combinedWords -gt 2500) {
+    if ($profileLite) {
+        if ($combinedWords -gt 3000 -or $combinedLines -gt 300) {
+            Invoke-HardCap "lite combined L0 ($combinedLines/100 lines; $combinedWords/1000 words)"
+        } elseif ($combinedWords -gt 1000 -or $combinedLines -gt 100) {
+            Warn "lite combined L0 exceeds the soft budget ($combinedLines/100 lines; $combinedWords/1000 words)"
+        } else {
+            Pass "lite combined L0 context budget ($combinedLines lines; $combinedWords words)"
+        }
+    } elseif ($combinedWords -gt 7500) {
+        Invoke-HardCap "Combined L0 ($combinedWords/2500 words)"
+    } elseif ($combinedWords -gt 2500) {
         Warn "Combined L0 exceeds the 2500-word soft budget ($combinedWords words)"
     } else {
         Pass "Combined L0 context budget ($combinedWords words)"
@@ -153,6 +194,13 @@ if ($errors.Count -eq 0) {
             "StatusProject/[A-Za-z0-9._/-]+\.md#[A-Za-z0-9._-]+"
         ) | ForEach-Object Value | Sort-Object -Unique
         foreach ($pointer in $pointers) { Test-MarkdownPointer $pointer $source.Name }
+    }
+}
+
+if (Test-Path -LiteralPath $statusDir -PathType Container) {
+    $rootDocs = @(Get-ChildItem -LiteralPath $statusDir -File -Filter "*.md").Count
+    if ($rootDocs -gt 40) {
+        Warn "StatusProject/ root holds $rootDocs Markdown files; move work artifacts to StatusProject/work/<track>/ and register them in CONTEXT-INDEX"
     }
 }
 

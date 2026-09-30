@@ -16,7 +16,7 @@
 - Compare deployed `StatusProject/` against this recorded source first.
 - If local source is unavailable or outdated, compare against the latest GitHub release.
 - Run updater scripts from `<source>/scripts/`; they are not copied into the target project.
-- Check updates at most once per 7 days per target project.
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings).
 
 ## Notes
 - Root entry files may exist in repo root: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`.

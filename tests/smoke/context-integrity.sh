@@ -186,6 +186,37 @@ printf '| CTX-restart | duplicate | StatusProject/PROJECT-RESUME.md#restart-caps
   >> "$duplicate/StatusProject/CONTEXT-INDEX.md"
 run_validator_pair "$duplicate" fail 'duplicate ID' duplicate
 
+soft_over="$WORK_ROOT/soft budget over"
+cp -R -- "$current" "$soft_over"
+for i in $(seq 1 150); do printf -- '- [ ] TASK-soft-%s: keep open\n' "$i"; done \
+  >> "$soft_over/StatusProject/TODO.md"
+run_validator_pair "$soft_over" pass 'soft context budget' soft-budget
+
+hard_cap="$WORK_ROOT/hard cap"
+cp -R -- "$current" "$hard_cap"
+for i in $(seq 1 400); do printf -- '- [ ] TASK-hard-%s: keep open\n' "$i"; done \
+  >> "$hard_cap/StatusProject/TODO.md"
+run_validator_pair "$hard_cap" fail 'hard cap' hard-cap
+
+budget_exception="$WORK_ROOT/budget exception"
+cp -R -- "$hard_cap" "$budget_exception"
+printf '\nBudget exception: smoke fixture keeps a large open queue; review by 2026-12-31\n' \
+  >> "$budget_exception/StatusProject/PROJECT-RESUME.md"
+run_validator_pair "$budget_exception" pass 'Budget exception' budget-exception
+
+two_capsules="$WORK_ROOT/two capsules"
+cp -R -- "$current" "$two_capsules"
+printf '\n## Restart Capsule — previous checkpoint\n- Next action: older step\n' \
+  >> "$two_capsules/StatusProject/PROJECT-RESUME.md"
+run_validator_pair "$two_capsules" fail 'Restart Capsule headings' two-capsules
+
+lite_over="$WORK_ROOT/lite budget"
+cp -R -- "$current" "$lite_over"
+printf '\nProfile: lite\n' >> "$lite_over/StatusProject/PROJECT-RESUME.md"
+for i in $(seq 1 110); do printf -- '- [ ] TASK-lite-%s: keep this small site task open for now\n' "$i"; done \
+  >> "$lite_over/StatusProject/TODO.md"
+run_validator_pair "$lite_over" pass 'lite combined L0 exceeds' lite-budget
+
 bash_dry="$WORK_ROOT/bash dry run"
 make_compactor_fixture "$bash_dry"
 snapshot_core "$bash_dry" "$bash_dry.before"
@@ -258,5 +289,91 @@ grep -Fq 'No completed peer tasks found' "$bash_apply.second.out" \
   || fail "Bash second apply did not report idempotent no-op"
 grep -Fq 'No completed peer tasks found' "$ps_apply.second.out" \
   || fail "PowerShell second apply did not report idempotent no-op"
+
+
+settings_root="$WORK_ROOT/user settings"
+settings_template="$SOURCE_ROOT/StatusProject/templates/USER-SETTINGS.template.md"
+STATUSPROJECT_HOME="$settings_root/bash" bash "$SOURCE_ROOT/scripts/init-user-settings.sh" > "$settings_root.bash.out" 2>&1 \
+  || fail "Bash init-user-settings failed"
+cmp -s "$settings_template" "$settings_root/bash/USER-SETTINGS.md" || fail "Bash user settings differ from template"
+printf 'SENTINEL-bash\n' > "$settings_root/bash/USER-SETTINGS.md"
+STATUSPROJECT_HOME="$settings_root/bash" bash "$SOURCE_ROOT/scripts/init-user-settings.sh" > /dev/null 2>&1
+grep -Fq 'SENTINEL-bash' "$settings_root/bash/USER-SETTINGS.md" || fail "Bash init-user-settings overwrote an existing file"
+printf '# seeded\n' > "$settings_root/seed.md"
+bash "$SOURCE_ROOT/scripts/init-user-settings.sh" --from "$settings_root/seed.md" --target "$settings_root/seeded/USER-SETTINGS.md" > /dev/null 2>&1
+cmp -s "$settings_root/seed.md" "$settings_root/seeded/USER-SETTINGS.md" || fail "Bash --from seeding failed"
+
+STATUSPROJECT_HOME="$settings_root/ps" pwsh -NoLogo -NoProfile -NonInteractive -File \
+  "$SOURCE_ROOT/scripts/init-user-settings.ps1" > "$settings_root.ps.out" 2>&1 \
+  || fail "PowerShell init-user-settings failed"
+cmp -s "$settings_template" "$settings_root/ps/USER-SETTINGS.md" || fail "PowerShell user settings differ from template"
+printf 'SENTINEL-ps\n' > "$settings_root/ps/USER-SETTINGS.md"
+STATUSPROJECT_HOME="$settings_root/ps" pwsh -NoLogo -NoProfile -NonInteractive -File \
+  "$SOURCE_ROOT/scripts/init-user-settings.ps1" > /dev/null 2>&1
+grep -Fq 'SENTINEL-ps' "$settings_root/ps/USER-SETTINGS.md" || fail "PowerShell init-user-settings overwrote an existing file"
+pwsh -NoLogo -NoProfile -NonInteractive -File "$SOURCE_ROOT/scripts/init-user-settings.ps1" \
+  -From "$settings_root/seed.md" -Target "$settings_root/ps-seeded/USER-SETTINGS.md" > /dev/null 2>&1
+cmp -s "$settings_root/seed.md" "$settings_root/ps-seeded/USER-SETTINGS.md" || fail "PowerShell -From seeding failed"
+printf 'PASS: init-user-settings Bash/PowerShell create, no-overwrite, and seeding checks.\n'
+
+
+update_root="$WORK_ROOT/update check"
+mkdir -p "$update_root/target/StatusProject"
+printf 'v0.9.2\n' > "$update_root/target/StatusProject/VERSION"
+printf '{"tag_name": "v0.10.0"}\n' > "$update_root/newer.json"
+for runtime in bash ps; do
+  home="$update_root/home-$runtime"
+  run_check() {
+    if [[ "$runtime" == bash ]]; then
+      STATUSPROJECT_HOME="$home" bash "$SOURCE_ROOT/scripts/check-update.sh" --target "$update_root/target" "$@"
+    else
+      local args=(-TargetPath "$update_root/target")
+      [[ "${1:-}" == --release-json ]] && args+=(-ReleaseJson "$2")
+      [[ "${1:-}" == --force ]] && args+=(-Force -ReleaseJson "$3")
+      STATUSPROJECT_HOME="$home" pwsh -NoLogo -NoProfile -NonInteractive -File "$SOURCE_ROOT/scripts/check-update.ps1" "${args[@]}"
+    fi
+  }
+  out="$(run_check --release-json "$update_root/newer.json")"
+  grep -Fq 'STATUS: update-available' <<< "$out" || fail "$runtime check-update did not report update-available"
+  grep -Fq '(fresh)' <<< "$out" || fail "$runtime first check was not fresh"
+  grep -Fq 'Latest release: `v0.10.0`' "$home/UPDATE-CHECK.md" || fail "$runtime cache lacks latest release"
+  out="$(run_check --release-json "$update_root/missing.json")"
+  grep -Fq '(cached)' <<< "$out" || fail "$runtime second check within interval did not use the cache"
+  out="$(run_check --force --release-json "$update_root/missing.json")"
+  grep -Fq '(check-failed)' <<< "$out" || fail "$runtime forced failed check was not reported"
+  grep -Fq 'STATUS: update-available' <<< "$out" || fail "$runtime failed check lost the cached latest release"
+done
+cmp -s <(printf 'v0.9.2\n') "$update_root/target/StatusProject/VERSION" || fail "check-update modified project files"
+printf 'PASS: check-update Bash/PowerShell fresh, cached, forced, and failure checks.\n'
+
+
+versions_root="$WORK_ROOT/state versions"
+make_validator_fixture "$versions_root/unknown" current
+run_validator_pair "$versions_root/unknown" pass 'State version unknown' state-version-unknown
+cp -R -- "$versions_root/unknown" "$versions_root/behind"
+printf 'v0.10.0\n' > "$versions_root/behind/StatusProject/VERSION"
+printf '\nState version: `v0.9.2`\n' >> "$versions_root/behind/StatusProject/PROJECT-RESUME.md"
+run_validator_pair "$versions_root/behind" pass 'is behind deployed StatusProject v0.10.0' state-version-behind
+cp -R -- "$versions_root/behind" "$versions_root/current"
+sed -i 's/^State version: `v0.9.2`$/State version: `v0.10.0`/' "$versions_root/current/StatusProject/PROJECT-RESUME.md"
+run_validator_pair "$versions_root/current" pass 'State version v0.10.0' state-version-current
+for runtime in bash ps; do
+  home="$versions_root/home-$runtime"
+  mkdir -p "$home"
+  printf -- '- Latest release: `v0.10.0`\n' > "$home/UPDATE-CHECK.md"
+  if [[ "$runtime" == bash ]]; then
+    STATUSPROJECT_HOME="$home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --register "$versions_root/behind"
+    STATUSPROJECT_HOME="$home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --register "$versions_root/current"
+    STATUSPROJECT_HOME="$home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --register "$versions_root/behind"
+    out="$(STATUSPROJECT_HOME="$home" bash "$SOURCE_ROOT/scripts/list-projects.sh")"
+  else
+    STATUSPROJECT_HOME="$home" pwsh -NoLogo -NoProfile -NonInteractive -File "$SOURCE_ROOT/scripts/list-projects.ps1" -Register "$versions_root/behind" "$versions_root/current" "$versions_root/behind" > /dev/null
+    out="$(STATUSPROJECT_HOME="$home" pwsh -NoLogo -NoProfile -NonInteractive -File "$SOURCE_ROOT/scripts/list-projects.ps1")"
+  fi
+  [[ "$(grep -c '^| `' "$home/PROJECTS.md")" -eq 2 ]] || fail "$runtime registry does not hold exactly one row per project"
+  grep -q 'behind .*state behind' <<< "$out" || fail "$runtime list-projects did not flag the lagging state"
+  grep -q 'current .* ok$' <<< "$out" || fail "$runtime list-projects did not report the current project as ok"
+done
+printf 'PASS: state version checks and list-projects Bash/PowerShell registry checks.\n'
 
 printf 'PASS: Context Integrity validator and compactor parity smoke checks.\n'

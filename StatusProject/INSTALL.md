@@ -6,8 +6,7 @@ This guide defines bootstrap and update behavior. AI operating rules remain cano
 Resolve StatusProject source in this order:
 1. `StatusProject/SOURCE.md` in the target project.
 2. Recorded local source path from `SOURCE.md`.
-3. Maintainer local default source, when working on this machine:
-   - Windows: `D:\Data\OneDrive\source\StatusProject`
+3. *Local StatusProject source* from User Settings (see User Settings below).
 4. Default global source:
    - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
    - Linux/macOS: `~/.statusproject/source/StatusProject`
@@ -58,6 +57,15 @@ Installer behavior:
 - never overwrites existing state files
 - checks or creates `.gitignore` from `StatusProject/templates/GITIGNORE.template`; an existing `.gitignore` is never silently overwritten
 - replacement preserves state and user files and backs up shipped files before changing them
+
+## User Settings
+Paths, hosts, connection names, reply language, and GitHub defaults are per user, not per project. Once per user and machine, run `scripts/init-user-settings.ps1`, `.sh`, or double-click `.bat` from the source repository: it creates `~/.statusproject/USER-SETTINGS.md` (Windows: `%USERPROFILE%\.statusproject\USER-SETTINGS.md`) from `templates/USER-SETTINGS.template.md` and never overwrites an existing file. Pass `--from FILE` / `-From FILE` (or drag a filled file onto the `.bat`) to seed it from an existing settings file. A project can override single keys in the Git-ignored `StatusProject/USER-SETTINGS.local.md`. Rules: `PROMPT.md#user-settings`.
+
+Updates never touch settings (covered by the Bash and PowerShell smoke tests):
+- `~/.statusproject/USER-SETTINGS.md` lives outside every project and outside the global source folder `~/.statusproject/source/`, so install, update, `PM update-statusproject`, or re-cloning the source leave it alone.
+- `StatusProject/USER-SETTINGS.local.md` is not a shipped file: install/update replace only the shipped docs, modules, `VERSION`, `SOURCE.md`, `LINKS.md`, and the `templates/` folder.
+- Do not edit `templates/USER-SETTINGS.template.md` inside a project — `templates/` is replaced on update.
+- In a Git working copy the local file is Git-ignored, so `git pull` keeps it, but `git clean -x` would delete it.
 
 ## First State
 The installer creates missing required state files inside `StatusProject/` from templates:
@@ -162,7 +170,7 @@ bash scripts/compact-state.sh <repo> --rollback <backup>
 For one transition period, invoking `compact-state` with no arguments keeps the legacy behavior: target the current directory and apply completed-`TODO` compaction. It must emit a compatibility warning and still create a backup. New automation must use explicit target and `-DryRun`/`-Apply` or `--dry-run`/`--apply`.
 
 ## Rules
-- Check updates at most once per 7 days per target project.
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings).
 - Record update-check date in `MEMORY.md` or `PROJECT-RESUME.md`.
 - Never overwrite local state without approval.
 - Never put StatusProject state files in repository root.

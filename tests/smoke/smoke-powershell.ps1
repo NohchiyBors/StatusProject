@@ -8,11 +8,13 @@ $sourceRoot = "/opt/statusproject"
 $deployPath = Join-Path $TargetPath "StatusProject"
 $version = (Get-Content -LiteralPath (Join-Path $sourceRoot "StatusProject/VERSION") -Raw).Trim()
 $stateFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md")
-$preservedFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "MCP.md")
+$preservedFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "MCP.md", "USER-SETTINGS.local.md")
 $requiredDocs = @(
     "PROMPT.md", "INSTALL.md", "START-HERE.md", "README.md",
+    "PROMPT-PLANNING.md", "PROMPT-DEV-TEST.md", "PROMPT-PROD.md",
+    "PROMPT-DEPLOY.md", "PROMPT-CONTEXT.md", "PROMPT-WORKSPACE.md",
     "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md", "CHANGELOG.md",
-    "VERSIONING.md", "MCP.md", "LINKS.md", "SOURCE.md", "VERSION"
+    "VERSIONING.md", "MIGRATIONS.md", "MCP.md", "LINKS.md", "SOURCE.md", "VERSION"
 )
 
 function Fail([string]$Message) {
@@ -103,13 +105,29 @@ Assert-InstallLayout
 Assert-GeneratedFiles
 Invoke-Verifiers
 
+if (-not (Get-Content -LiteralPath (Join-Path $deployPath "PROJECT-RESUME.md") -Raw).Contains("State version: ``$version``")) { Fail "install did not stamp State version $version" }
 Add-Content -LiteralPath (Join-Path $deployPath "TODO.md") -Value "POWERSHELL_STATE_SENTINEL"
 Add-Content -LiteralPath (Join-Path $deployPath "MCP.md") -Value "POWERSHELL_MCP_SENTINEL"
+Set-Content -LiteralPath (Join-Path $deployPath "USER-SETTINGS.local.md") -Value "POWERSHELL_PROJECT_SETTINGS_SENTINEL"
+Add-Content -LiteralPath (Join-Path $deployPath "MEMORY.md") -Value "- Last StatusProject update check: 2026-01-01"
+Set-Content -LiteralPath (Join-Path $TargetPath "CLAUDE.md") -Value "# CLAUDE.md`n`n- Always respond in Russian."
+$userSettingsDir = Join-Path $HOME ".statusproject"
+New-Item -ItemType Directory -Path $userSettingsDir -Force | Out-Null
+$userSettingsFile = Join-Path $userSettingsDir "USER-SETTINGS.md"
+Set-Content -LiteralPath $userSettingsFile -Value "POWERSHELL_USER_SETTINGS_SENTINEL"
+$userSettingsHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $userSettingsFile).Hash
 $stateHashes = Get-StateHashes
 Set-Content -LiteralPath (Join-Path $deployPath "PROMPT.md") -Value "POWERSHELL_OLD_PROMPT_SENTINEL"
 
-& "$sourceRoot/scripts/update-statusproject.ps1" -TargetPath $TargetPath -Yes -AiEntries none
+$updateOut = (& "$sourceRoot/scripts/update-statusproject.ps1" -TargetPath $TargetPath -Yes -AiEntries none 6>&1 | Out-String)
 Assert-StateHashes $stateHashes
+if (-not $updateOut.Contains("Post-update report for")) { Fail "update did not print the post-update report" }
+if (-not $updateOut.Contains("Versions: StatusProject $version, state $version")) { Fail "report did not show StatusProject and state versions" }
+if (-not $updateOut.Contains("CLAUDE.md predates prompt modules")) { Fail "report missed the stale CLAUDE.md" }
+if (-not $updateOut.Contains("obsolete 'Last StatusProject update check'")) { Fail "report missed the obsolete MEMORY line" }
+if (-not $updateOut.Contains("Post-Update Migration")) { Fail "report did not point to Post-Update Migration" }
+if (-not (Get-Content -LiteralPath (Join-Path $TargetPath "CLAUDE.md") -Raw).Contains("Always respond in Russian")) { Fail "update replaced an unselected root entry" }
+if ((Get-FileHash -Algorithm SHA256 -LiteralPath $userSettingsFile).Hash -ne $userSettingsHash) { Fail "user settings changed after update" }
 $sourcePromptHash = (Get-FileHash -Algorithm SHA256 -LiteralPath "$sourceRoot/StatusProject/PROMPT.md").Hash
 $deployedPromptHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $deployPath "PROMPT.md")).Hash
 if ($sourcePromptHash -ne $deployedPromptHash) { Fail "PROMPT.md was not replaced from source" }

@@ -17,7 +17,7 @@ Templates in `templates/` are English by design for compact, consistent agent-fa
 - `StatusProject/`: operating docs, `templates/`, state files.
 
 Operating docs:
-`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
+`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md` with on-demand modules `PROMPT-PLANNING.md`, `PROMPT-DEV-TEST.md`, `PROMPT-PROD.md`, `PROMPT-DEPLOY.md`, `PROMPT-CONTEXT.md`, `PROMPT-WORKSPACE.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
 
 Core state files:
 `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `CONTEXT-INDEX.md`, `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
@@ -26,7 +26,7 @@ Required enabled state:
 `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`. If missing, create them from `StatusProject/templates/`.
 
 Source resolution:
-`StatusProject/SOURCE.md` -> recorded local source -> maintainer local default `D:\Data\OneDrive\source\StatusProject` when on this machine -> default global source -> GitHub latest release. Templates come from `<source>/templates/`.
+`StatusProject/SOURCE.md` -> recorded local source -> *Local StatusProject source* from User Settings -> default global source -> GitHub latest release. Templates come from `<source>/templates/`.
 
 ## When To Apply Templates
 
@@ -62,6 +62,9 @@ Context Integrity v1 keeps the always-read restart set compact while preserving 
 5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
 6. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
 7. Each session: read `PROJECT-RESUME` → `TODO` → `MEMORY`, then `PLAN` and optional files as needed.
+
+## User Settings
+Every user keeps personal paths, hosts, connection names, reply language, and GitHub defaults in `~/.statusproject/USER-SETTINGS.md`, created from `templates/USER-SETTINGS.template.md` by `scripts/init-user-settings`. Nothing machine-specific is hard-coded in the rules. Details: [`INSTALL.md`](INSTALL.md#user-settings).
 
 ## Installer
 - Default global source: `%USERPROFILE%\.statusproject\source\StatusProject` (Windows) or `~/.statusproject/source/StatusProject` (Linux/macOS).

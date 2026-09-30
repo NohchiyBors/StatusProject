@@ -186,14 +186,17 @@ For `PM prod <goal> [target]`:
 
 For `PM update-statusproject <goal> [target]`:
 1. Require the goal and resolve target from explicit argument, current workspace, chat context, or deployed `StatusProject/SOURCE.md`.
-2. Force-check GitHub project `https://github.com/NohchiyBors/StatusProject` for the latest release/source and bypass the normal 7-day interval while recording date and evidence.
+2. Force-check GitHub project `https://github.com/NohchiyBors/StatusProject` for the latest release/source with `scripts/check-update --force`, bypassing the daily interval and refreshing the per-user cache `~/.statusproject/UPDATE-CHECK.md`.
 3. Preflight target path, source record, current version, latest GitHub version/tag/release, working tree, local state files, backup destination, root AI entry selection, and network/tool access.
 4. Stop or ask if GitHub cannot be verified, target is ambiguous, local state would be overwritten, or unrelated changes would be touched.
-5. Use the documented updater when possible. Update shipped operating docs and templates; preserve state files, secrets, `.env`, logs, and local tool state.
+5. Use the documented updater when possible. Update shipped operating docs, modules, and templates; preserve state files, user settings (`~/.statusproject/USER-SETTINGS.md`, `StatusProject/USER-SETTINGS.local.md`), secrets, `.env`, logs, and local tool state.
 6. Update root AI entries only when explicitly selected or approved as StatusProject-managed compatibility files.
 7. Back up every replaced shipped file and verify version/source, required files, templates, root entry pointers, state preservation, release notes, and Git scope.
+8. Finish with the Post-Update Migration: read the post-update report, build the plan from `StatusProject/MIGRATIONS.md` for every section newer than the state `State version`, apply it on approval (moves only), and set `State version`.
 
-`PM update-statusproject` authorizes a forced StatusProject docs/templates update from GitHub only.
+`PM update-statusproject` authorizes a forced StatusProject docs/templates update from GitHub and the approved state migration only.
+
+Every other `PM` command starts with the PM Preflight from `StatusProject/PROMPT.md#pm-preflight`: compare latest release, deployed `VERSION`, and state `State version`; report a stale deployment; migrate lagging state on approval (or automatically when User Settings allow it) before doing the command's own work.
 
 ## PM Rollback Contract
 

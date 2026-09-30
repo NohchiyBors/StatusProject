@@ -40,6 +40,7 @@ validation-output/
 .env
 .env.*
 !.env.example
+USER-SETTINGS.local.md
 *.pem
 *.key
 *.p12

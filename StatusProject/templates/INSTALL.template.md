@@ -7,7 +7,7 @@
 - Templates: `<source>/StatusProject/templates/`
 - Bootstrap scripts: `<source>/scripts/`
 - Remote fallback: `<latest-release-url>`
-- Update check frequency: at most once per 7 days per target project
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings)
 
 Installer and updater scripts run from the StatusProject source/global repository. They are not copied into the target project.
 

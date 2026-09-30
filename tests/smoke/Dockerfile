@@ -3,8 +3,10 @@ FROM mcr.microsoft.com/powershell:7.4-ubuntu-22.04
 WORKDIR /opt/statusproject
 
 COPY scripts/ ./scripts/
-COPY StatusProject/PROMPT.md StatusProject/INSTALL.md StatusProject/START-HERE.md \
-    StatusProject/README.md StatusProject/CHANGELOG.md StatusProject/VERSIONING.md \
+COPY StatusProject/PROMPT.md StatusProject/PROMPT-PLANNING.md StatusProject/PROMPT-DEV-TEST.md \
+    StatusProject/PROMPT-PROD.md StatusProject/PROMPT-DEPLOY.md StatusProject/PROMPT-CONTEXT.md \
+    StatusProject/PROMPT-WORKSPACE.md StatusProject/INSTALL.md StatusProject/START-HERE.md \
+    StatusProject/README.md StatusProject/CHANGELOG.md StatusProject/VERSIONING.md StatusProject/MIGRATIONS.md \
     StatusProject/LINKS.md StatusProject/VERSION ./StatusProject/
 COPY StatusProject/templates/ ./StatusProject/templates/
 COPY AGENTS.md CLAUDE.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md ./

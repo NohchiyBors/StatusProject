@@ -9,8 +9,10 @@ $ErrorActionPreference = "Stop"
 $entryKeys = @("AGENTS.md", "CLAUDE.md", "GEMINI.md", "COPILOT_INSTRUCTIONS.md")
 $copyFiles = @(
     "PROMPT.md", "INSTALL.md", "START-HERE.md", "README.md",
+    "PROMPT-PLANNING.md", "PROMPT-DEV-TEST.md", "PROMPT-PROD.md",
+    "PROMPT-DEPLOY.md", "PROMPT-CONTEXT.md", "PROMPT-WORKSPACE.md",
     "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md",
-    "CHANGELOG.md", "VERSIONING.md"
+    "CHANGELOG.md", "VERSIONING.md", "MIGRATIONS.md"
 )
 $managedFiles = @($copyFiles + @("VERSION", "SOURCE.md", "LINKS.md"))
 
@@ -258,3 +260,9 @@ try {
 Write-Host "Updated StatusProject to $version at $deployPath"
 Write-Host "Backup created at $backupRoot"
 if ($effectiveEntries.Count -gt 0) { Write-Host "AI entry selection: $($effectiveEntries -join ', ')" }
+Write-Host ""
+try {
+    & (Join-Path $PSScriptRoot "post-update-report.ps1") -TargetPath $repoPath | ForEach-Object { Write-Host $_ }
+} catch {
+    Write-Host "Post-update report unavailable: $($_.Exception.Message)"
+}

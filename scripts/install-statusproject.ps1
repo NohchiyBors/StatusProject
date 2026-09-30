@@ -11,8 +11,10 @@ $ErrorActionPreference = "Stop"
 $entryKeys = @("AGENTS.md", "CLAUDE.md", "GEMINI.md", "COPILOT_INSTRUCTIONS.md")
 $copyFiles = @(
     "PROMPT.md", "INSTALL.md", "START-HERE.md", "README.md",
+    "PROMPT-PLANNING.md", "PROMPT-DEV-TEST.md", "PROMPT-PROD.md",
+    "PROMPT-DEPLOY.md", "PROMPT-CONTEXT.md", "PROMPT-WORKSPACE.md",
     "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md",
-    "CHANGELOG.md", "VERSIONING.md"
+    "CHANGELOG.md", "VERSIONING.md", "MIGRATIONS.md"
 )
 $stateFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "MCP.md")
 $managedFiles = @($copyFiles + @("VERSION", "SOURCE.md", "LINKS.md"))
@@ -289,7 +291,13 @@ try {
     foreach ($state in $stateFiles) {
         $dest = Join-Path $deployPath $state
         if (-not (Test-Path -LiteralPath $dest)) {
-            Copy-Item -LiteralPath (Join-Path $sourceTemplates ($state.Replace(".md", ".template.md"))) -Destination $dest
+            $stateTemplate = Join-Path $sourceTemplates ($state.Replace(".md", ".template.md"))
+            if ($state -eq "PROJECT-RESUME.md") {
+                $resumeText = (Get-Content -LiteralPath $stateTemplate -Raw).Replace("<state-version>", $version)
+                [System.IO.File]::WriteAllText($dest, $resumeText)
+            } else {
+                Copy-Item -LiteralPath $stateTemplate -Destination $dest
+            }
             Set-OwnerWritableRecursive $dest
             $applied.Add([pscustomobject]@{ Path = $dest; Backup = $null; HadOriginal = $false; Directory = $false })
         }

@@ -8,7 +8,8 @@
 │   ├── GEMINI.md                         optional
 │   └── COPILOT_INSTRUCTIONS.md           optional
 └── StatusProject/
-    ├── PROMPT.md                         canonical AI operating contract
+    ├── PROMPT.md                         canonical AI operating contract (core, always read)
+    ├── PROMPT-*.md                       on-demand modules, read only on their trigger
     ├── START-HERE.md                     Start Here guide
     ├── INSTALL.md                        install/update guide
     ├── SOURCE.md                         deployed-source metadata
@@ -17,6 +18,7 @@
     ├── MEMORY.md                         local state
     ├── PROJECT-RESUME.md                 local state
     ├── CONTEXT-INDEX.md                  optional routing-only index
+    ├── work/                             work artifacts by track (plans, audits, designs)
     └── templates/                        canonical English templates
 ```
 
@@ -36,7 +38,7 @@
 - Latest release: `<latest-release-url>`
 - Local project: `<local-project-path>`
 - Deployed source metadata: `StatusProject/SOURCE.md`
-- Canonical operating contract: `StatusProject/PROMPT.md`
+- Canonical operating contract: `StatusProject/PROMPT.md` (core); on-demand modules `StatusProject/PROMPT-*.md`
 - Start Here guide: `StatusProject/START-HERE.md`
 - Install/update guide: `StatusProject/INSTALL.md`
 
@@ -50,9 +52,10 @@ Installer and updater scripts remain in the StatusProject source/global reposito
 - Bash installer: `<source>/scripts/install-statusproject.sh`
 - PowerShell updater: `<source>/scripts/update-statusproject.ps1`
 - Bash updater: `<source>/scripts/update-statusproject.sh`
+- User settings: `~/.statusproject/USER-SETTINGS.md` (create with `<source>/scripts/init-user-settings.*`); project override `StatusProject/USER-SETTINGS.local.md` (Git-ignored)
 - OS default global source: `<os-default-global-source-path>`
 - Remote fallback: `<latest-release-url>`
-- Update check: at most once per 7 days per target project
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings)
 
 ## Systems Engineering Trace
 

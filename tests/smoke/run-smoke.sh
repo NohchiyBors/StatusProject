@@ -37,7 +37,7 @@ printf '\n[3/5] Context Integrity validator/compactor flow\n'
 bash "$SOURCE_ROOT/tests/smoke/context-integrity.sh"
 
 printf '\n[4/5] BAT wrapper static coverage\n'
-for wrapper in install-statusproject update-statusproject; do
+for wrapper in install-statusproject update-statusproject init-user-settings check-update; do
   bat="$SOURCE_ROOT/scripts/$wrapper.bat"
   ps1="$SOURCE_ROOT/scripts/$wrapper.ps1"
   [[ -f "$bat" && -f "$ps1" ]] || fail "missing BAT wrapper pair: $wrapper"

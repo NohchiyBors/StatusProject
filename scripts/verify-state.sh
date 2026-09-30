@@ -57,7 +57,6 @@ if [[ "$FAILURES" -eq 0 ]]; then
       'Goal ID / goal:' 'Why now / provenance:' 'Scope:' 'Non-goals:'
       'Phase / status:' 'Last verified result:' 'Next action:' 'Blockers:'
       'Unresolved decisions / unknowns:' 'Acceptance / evidence still required:'
-      '### Exact Read Set'
     )
     for field in "${fields[@]}"; do
       grep -Fq "$field" "$RESUME" || fail "Restart Capsule is missing field: $field"
@@ -74,6 +73,16 @@ if [[ "$FAILURES" -eq 0 ]]; then
     warn "Legacy state schema detected; Context Integrity migration is additive and not required for this verification"
   fi
 
+  DOCS_VERSION="$(tr -d '\r\n[:space:]' < "$STATUS_DIR/VERSION" 2>/dev/null || true)"
+  STATE_VERSION="$(grep -m1 -E '^[-*[:space:]]*State version:' "$RESUME" | sed -E 's/^[^:]*:[[:space:]]*//; s/`//g; s/[[:space:]]+$//' || true)"
+  if [[ -z "$STATE_VERSION" || "$STATE_VERSION" == \<* ]]; then
+    warn "State version unknown (no 'State version:' in PROJECT-RESUME): state predates v1.0.0; apply StatusProject/MIGRATIONS.md via Post-Update Migration"
+  elif [[ -n "$DOCS_VERSION" && "$STATE_VERSION" != "$DOCS_VERSION" && "$(printf '%s\n%s\n' "${STATE_VERSION#v}" "${DOCS_VERSION#v}" | sort -V | head -n 1)" == "${STATE_VERSION#v}" ]]; then
+    warn "State version $STATE_VERSION is behind deployed StatusProject $DOCS_VERSION; apply StatusProject/MIGRATIONS.md via Post-Update Migration"
+  else
+    pass "State version $STATE_VERSION (deployed StatusProject ${DOCS_VERSION:-unknown})"
+  fi
+
   CANONICAL_ORDER='PROJECT-RESUME -> TODO -> MEMORY'
   order_line="$(grep -E '^(Canonical read order:|- Read:)' "$RESUME" | head -n 1 || true)"
   if [[ -n "$order_line" ]]; then
@@ -86,17 +95,37 @@ if [[ "$FAILURES" -eq 0 ]]; then
   fi
 
   combined_words=0
+  combined_lines=0
+  PROFILE_LITE=false
+  grep -Eqi '^[-*[:space:]]*Profile:[[:space:]]*`?lite`?([[:space:]]|$)' "$RESUME" && PROFILE_LITE=true
+  BUDGET_EXCEPTION=false
+  grep -Eq '^[-*[:space:]]*Budget exception:[[:space:]]*[^<[:space:]]' "$RESUME" && BUDGET_EXCEPTION=true
+  over_hard_cap() {
+    local what=$1
+    if [[ "$BUDGET_EXCEPTION" == true ]]; then
+      warn "$what exceeds the hard cap (3x soft budget); allowed by the recorded Budget exception in PROJECT-RESUME"
+    else
+      fail "$what exceeds the hard cap (3x soft budget); compact per StatusProject/PROMPT-CONTEXT.md or record 'Budget exception: <reason>; review by YYYY-MM-DD'"
+    fi
+  }
   check_budget() {
     local name=$1 path=$2 max_lines=$3 max_words=$4 lines words
     lines=$(line_count "$path")
     words=$(word_count "$path")
     combined_words=$((combined_words + words))
-    if (( lines > max_lines || words > max_words )); then
+    combined_lines=$((combined_lines + lines))
+    if (( lines > 3 * max_lines || words > 3 * max_words )); then
+      over_hard_cap "$name ($lines/$max_lines lines; $words/$max_words words)"
+    elif (( lines > max_lines || words > max_words )); then
       warn "$name exceeds the soft context budget ($lines/$max_lines lines; $words/$max_words words)"
     else
       pass "$name context budget ($lines lines; $words words)"
     fi
   }
+  capsules=$(grep -Eci '^#{1,6}[[:space:]].*restart capsule' "$RESUME" || true)
+  if (( capsules > 1 )); then
+    fail "PROJECT-RESUME has $capsules Restart Capsule headings; keep exactly one current capsule and move older ones to STATE-HISTORY"
+  fi
   check_budget PROJECT-RESUME.md "$RESUME" 60 500
   check_budget TODO.md "$TODO" 120 900
   check_budget MEMORY.md "$MEMORY" 150 1200
@@ -106,6 +135,7 @@ if [[ "$FAILURES" -eq 0 ]]; then
   if [[ -f "$INDEX" ]]; then
     POINTER_SOURCES+=("$INDEX")
     combined_words=$((combined_words + $(word_count "$INDEX")))
+    combined_lines=$((combined_lines + $(line_count "$INDEX")))
     grep -Eq '^# CONTEXT INDEX:' "$INDEX" || fail "CONTEXT-INDEX.md is missing its schema heading"
     grep -Fq "$CANONICAL_ORDER" "$INDEX" || fail "CONTEXT-INDEX.md has inconsistent canonical read order"
     duplicates="$(
@@ -116,7 +146,14 @@ if [[ "$FAILURES" -eq 0 ]]; then
     while IFS= read -r id; do [[ -z "$id" ]] || fail "CONTEXT-INDEX.md declares duplicate ID: $id"; done <<< "$duplicates"
     pass "Optional CONTEXT-INDEX.md detected"
   fi
-  if (( combined_words > 2500 )); then warn "Combined L0 exceeds the 2500-word soft budget ($combined_words words)"
+  if [[ "$PROFILE_LITE" == true ]]; then
+    if (( combined_words > 3000 || combined_lines > 300 )); then
+      over_hard_cap "lite combined L0 ($combined_lines/100 lines; $combined_words/1000 words)"
+    elif (( combined_words > 1000 || combined_lines > 100 )); then
+      warn "lite combined L0 exceeds the soft budget ($combined_lines/100 lines; $combined_words/1000 words)"
+    else pass "lite combined L0 context budget ($combined_lines lines; $combined_words words)"; fi
+  elif (( combined_words > 7500 )); then over_hard_cap "Combined L0 ($combined_words/2500 words)"
+  elif (( combined_words > 2500 )); then warn "Combined L0 exceeds the 2500-word soft budget ($combined_words words)"
   else pass "Combined L0 context budget ($combined_words words)"; fi
 
   for source in "${POINTER_SOURCES[@]}"; do
@@ -126,6 +163,13 @@ if [[ "$FAILURES" -eq 0 ]]; then
       | grep -oE 'StatusProject/[A-Za-z0-9._/-]+\.md#[A-Za-z0-9._-]+' \
       | sort -u || true)
   done
+fi
+
+if [[ -d "$STATUS_DIR" ]]; then
+  root_docs=$(find "$STATUS_DIR" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d '[:space:]')
+  if (( root_docs > 40 )); then
+    warn "StatusProject/ root holds $root_docs Markdown files; move work artifacts to StatusProject/work/<track>/ and register them in CONTEXT-INDEX"
+  fi
 fi
 
 LINKS_FILE="$STATUS_DIR/LINKS.md"

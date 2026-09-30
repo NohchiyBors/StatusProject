@@ -8,6 +8,34 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v1.0.0 - 2026-09-30
+
+First major release: modular prompt, token economy, per-user settings, versioned state migrations, and PM Preflight. Deployed projects update with `PM update-statusproject`; their state files follow `MIGRATIONS.md`.
+
+### Added
+- Token Economy rules in `PROMPT.md#token-economy`: one overwritten Restart Capsule, no dated append sections in L0, completed tasks moved at the next checkpoint, monthly log rotation, work artifacts in `StatusProject/work/<track>/`, narrow section reads, script-first status checks, and conflict copies excluded from state.
+- On-demand prompt modules `PROMPT-PLANNING.md`, `PROMPT-DEV-TEST.md`, `PROMPT-PROD.md`, `PROMPT-DEPLOY.md`, `PROMPT-CONTEXT.md`, and `PROMPT-WORKSPACE.md`, deployed by install/update scripts and covered by smoke checks.
+- Daily update check on every project open: `scripts/check-update` (`.sh`, `.ps1`, `.bat`) compares the deployed `VERSION` with the latest GitHub release through the per-user cache `~/.statusproject/UPDATE-CHECK.md`, querying GitHub at most once per *StatusProject update check interval (days)* (User Settings, default 1); `--force` for `PM update-statusproject`. It writes no project files; the per-project `Last StatusProject update check` field is removed from `MEMORY`. Compaction keeps its own 7-day cadence from `Last state compaction`.
+- `templates/USER-SETTINGS.template.md` and `scripts/init-user-settings` (`.ps1`, `.sh`, `.bat`; never overwrites; `--from` / `-From` / drag-and-drop seeding); `USER-SETTINGS.local.md` added to `.gitignore` and `templates/GITIGNORE.template`.
+- `verify-state` (Bash and PowerShell) now fails at the L0 hard cap (3x any per-file soft budget or 7,500 combined words) unless `PROJECT-RESUME` records `Budget exception: <reason>; review by YYYY-MM-DD`, fails on more than one Restart Capsule heading, and warns when the `StatusProject/` root holds more than 40 Markdown files.
+- Project complexity profiles (`lite`, `standard`, `strict`) to prevent governance and evidence bloat on websites and smaller tools.
+- `lite` profile for websites, landing pages, and small utilities: strictly restricts state to 3 files (`TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`), prohibits `STATUS-LOG.md` and `docs/evidence/` JSON receipts, verifies via clean command execution (exit 0), and removes custom Git trailer / cryptographic tree hashing requirements.
+
+### Changed
+- `PROMPT.md` is now the always-read core; command contracts, deployment, compaction procedure, and workspace details live in the modules above. Headings referenced by existing pointers (`#context-integrity-v1`, `#development-planning`, `#pm-goal-contract`, `#state-compaction`, `#onedrive-safe-file-and-folder-names`, `#github-repository-default`) remain in the core.
+- Removed repetition: one Canonical Owners table replaces the separate state-file, write-contract, and work-rule role lists; one Command Pattern and one Authorization Boundary replace per-command preflight/report/"does not authorize" boilerplate; compaction triggers live only in the core; `PM commit` has its own contract.
+- Resolved contradictions: `lite` token-economy and compaction rules (no `STATE-HISTORY`/`STATUS-LOG`; git history is the archive); `lite` tool fallback never overrides environment, Docker, or approval rules; `lite` no longer stores credentials in `MEMORY`; machine paths are named maintainer defaults of portable storage roles instead of contradicting "no machine paths"; the update-check date is recorded only in `MEMORY`; Finish Check no longer implies adding to `MEMORY` every time.
+- Trimmed detail: Codex-specific dead-loop recovery now lives only in `templates/CODEX-MULTI-AGENT-PROMPT.template.md`; progress display rules condensed.
+- AI entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT_INSTRUCTIONS.md`, `AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, and adapter templates) are unified pointers with a short safety floor instead of divergent rule copies; the reply language comes from User Settings instead of being hard-coded.
+- Machine-specific values moved out of the rules into per-user User Settings (`PROMPT.md#user-settings`): `~/.statusproject/USER-SETTINGS.md` with an optional Git-ignored project override `StatusProject/USER-SETTINGS.local.md`. Storage roots, the remote Docker host, SSH/deployment connection names, local-Docker permission, reply language, and GitHub owner/visibility defaults are now settings keys. `DEV_GUIDELINES.md` is removed; its child-repository rule is project state of the source repository.
+- One general tool-resilience rule for every profile (switch to an equivalent shell/CLI path when a tool fails) that never overrides environment selection, the Docker policy, or the Authorization Boundary; DrvFS `chmod`/`chown` failures are non-fatal.
+- PM Preflight (`PROMPT.md#pm-preflight`): every `PM` command starts by comparing the latest release, the deployed `StatusProject/VERSION`, and the state `State version`; a stale deployment is reported (updated only on `PM update-statusproject` or confirmation), and lagging state triggers the Post-Update Migration plan — applied on approval, or automatically when User Settings set `Auto-migrate state after update: yes`.
+- State version tracking: `PROJECT-RESUME` records `State version:` (set by the installer and by each Post-Update Migration); `verify-state`, `check-update` (`STATE:` line), and the post-update report flag state that lags the deployed rules.
+- `MIGRATIONS.md` (deployed): per-version, idempotent, move-only steps to bring state files up to a version (v0.9.0 Context Integrity, v0.10.0 token economy / modules / user settings); the post-update report lists pending sections.
+- `scripts/list-projects` (`.sh`, `.ps1`, `.bat`) and the per-user registry `~/.statusproject/PROJECTS.md`: every project opened (via `check-update`) or found with `--scan` under the User Settings roots, with its StatusProject version, state version, and what lags.
+- Post-update migration is part of every update: `update-statusproject` ends with the read-only `scripts/post-update-report` (`.sh` / `.ps1`: `verify-state` summary, AI entries that predate the prompt modules, the obsolete `MEMORY` update-check line, missing User Settings or `.gitignore` entry, workstream/dated/machine-suffixed files, leftover root `templates/`, unreadable cloud-only files), and `PROMPT-DEPLOY.md#post-update-migration` defines the approval-gated, move-only migration. `CLEANUP-GUIDE.md` is now a short pointer to it.
+- `verify-state` enforces the `lite` combined L0 budget (100 lines / 1,000 words; hard cap 3x).
+
 ## v0.9.2 - 2026-09-20
 
 ### Changed

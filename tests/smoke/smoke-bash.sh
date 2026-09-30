@@ -6,8 +6,8 @@ TARGET_PATH="${1:?target path is required}"
 DEPLOY_PATH="$TARGET_PATH/StatusProject"
 VERSION="$(tr -d '\r\n' < "$SOURCE_ROOT/StatusProject/VERSION")"
 STATE_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md)
-PRESERVED_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md MCP.md)
-REQUIRED_DOCS=(PROMPT.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MCP.md LINKS.md SOURCE.md VERSION)
+PRESERVED_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md MCP.md USER-SETTINGS.local.md)
+REQUIRED_DOCS=(PROMPT.md PROMPT-PLANNING.md PROMPT-DEV-TEST.md PROMPT-PROD.md PROMPT-DEPLOY.md PROMPT-CONTEXT.md PROMPT-WORKSPACE.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MIGRATIONS.md MCP.md LINKS.md SOURCE.md VERSION)
 
 fail() {
   printf 'FAIL [bash]: %s\n' "$*" >&2
@@ -99,14 +99,27 @@ assert_install_layout
 assert_generated_files
 run_verifiers
 
+grep -Fq "State version: \`$VERSION\`" "$DEPLOY_PATH/PROJECT-RESUME.md" || fail "install did not stamp State version $VERSION"
 printf '\nBASH_STATE_SENTINEL\n' >> "$DEPLOY_PATH/TODO.md"
 printf '\nBASH_MCP_SENTINEL\n' >> "$DEPLOY_PATH/MCP.md"
+printf 'BASH_PROJECT_SETTINGS_SENTINEL\n' > "$DEPLOY_PATH/USER-SETTINGS.local.md"
+printf -- '- Last StatusProject update check: 2026-01-01\n' >> "$DEPLOY_PATH/MEMORY.md"
+printf '# CLAUDE.md\n\n- Always respond in Russian.\n' > "$TARGET_PATH/CLAUDE.md"
+mkdir -p "$HOME/.statusproject"
+printf 'BASH_USER_SETTINGS_SENTINEL\n' > "$HOME/.statusproject/USER-SETTINGS.md"
+sha256sum "$HOME/.statusproject/USER-SETTINGS.md" > "$TARGET_PATH/user-settings.before"
 sha256sum "${PRESERVED_FILES[@]/#/$DEPLOY_PATH/}" > "$TARGET_PATH/state.before"
 printf 'BASH_OLD_PROMPT_SENTINEL\n' > "$DEPLOY_PATH/PROMPT.md"
 
 bash "$SOURCE_ROOT/scripts/update-statusproject.sh" \
-  --yes --ai-entries none "$TARGET_PATH"
+  --yes --ai-entries none "$TARGET_PATH" > "$TARGET_PATH/update1.out" 2>&1 || { cat "$TARGET_PATH/update1.out" >&2; fail "first update failed"; }
 sha256sum -c "$TARGET_PATH/state.before" >/dev/null || fail "state changed after first update"
+grep -Fq 'Post-update report for' "$TARGET_PATH/update1.out" || fail "update did not print the post-update report"
+grep -Fq "Versions: StatusProject $VERSION, state $VERSION" "$TARGET_PATH/update1.out" || fail "report did not show StatusProject and state versions"
+grep -Fq 'CLAUDE.md predates prompt modules' "$TARGET_PATH/update1.out" || fail "report missed the stale CLAUDE.md"
+grep -Fq "obsolete 'Last StatusProject update check'" "$TARGET_PATH/update1.out" || fail "report missed the obsolete MEMORY line"
+grep -Fq 'Post-Update Migration' "$TARGET_PATH/update1.out" || fail "report did not point to Post-Update Migration"
+grep -Fq 'Always respond in Russian' "$TARGET_PATH/CLAUDE.md" || fail "update replaced an unselected root entry"
 cmp -s "$DEPLOY_PATH/PROMPT.md" "$SOURCE_ROOT/StatusProject/PROMPT.md" \
   || fail "PROMPT.md was not replaced from source"
 assert_generated_files
@@ -121,6 +134,7 @@ second_count="$(find "$DEPLOY_PATH/.backup" -mindepth 1 -maxdepth 1 -type d -nam
 [[ "$first_count" -eq 1 && "$second_count" -eq 2 ]] \
   || fail "updates did not create two unique backups ($first_count -> $second_count)"
 sha256sum -c "$TARGET_PATH/state.before" >/dev/null || fail "state changed after repeated update"
+sha256sum -c "$TARGET_PATH/user-settings.before" >/dev/null || fail "user settings changed after update"
 assert_generated_files
 run_verifiers
 

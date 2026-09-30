@@ -3,12 +3,13 @@
 ## Identity
 - Owner: `<person/team>`
 - Workspace: `<path>`
+- Profile: `<lite|standard|strict>`
 - Systems: `<services/APIs/envs>`
 - System of interest: `<system/product/service>`
 - Life cycle stage: `<concept|development|production|utilization|support|retirement>`
-- Last StatusProject update check: `<YYYY-MM-DD|unknown>`
 - Last state compaction: `<YYYY-MM-DD|never>`
 
+<!-- [standard/strict profile only] -->
 ## Stakeholders
 | Stakeholder | Role | Durable need / concern |
 | --- | --- | --- |
@@ -17,8 +18,7 @@
 ## Rules
 - `<durable rule>`
 - `<durable rule>`
-- Dockerized directory policy: do not run host package managers (`npm install`, `yarn`, `pip install`, etc.) or create host `node_modules`, `venv`, or vendor directories; install and run dependencies only inside the respective Docker containers.
-- Canonical StatusProject operating rules stay in `StatusProject/PROMPT.md`; record only project-specific durable facts or precise owner pointers here.
+- Canonical StatusProject operating rules stay in `StatusProject/PROMPT.md` and its modules; record only project-specific durable rules, one line each with a stable ID.
 
 ## Decisions
 - `DEC-<human-stable-name>` — `<YYYY-MM-DD: decision>`; provenance: `<source>`; rationale: `<reason>`; impacted process: `<process area>`; canonical owner: `StatusProject/MEMORY.md#decisions`; related: `<REQ/RISK/CTX-ID @ file#section>`
@@ -31,6 +31,7 @@
 - Verified: `<EV-ID; date; evidence/result; canonical evidence owner @ StatusProject/file.md#section>`
 - Known gap: `<gap/risk>`
 
+<!-- [standard/strict profile only] -->
 ## Durable Context Records
 Use one canonical owner per fact. Rows owned elsewhere are pointers, not copied content.
 

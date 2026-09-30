@@ -5,7 +5,7 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 ## Sources
 - GitHub: https://github.com/NohchiyBors/StatusProject
 - Latest release: https://github.com/NohchiyBors/StatusProject/releases/latest
-- Maintainer local default source on this machine: `D:\Data\OneDrive\source\StatusProject`
+- Local source: *Local StatusProject source* in your User Settings (`~/.statusproject/USER-SETTINGS.md`)
 - Default global source:
   - Windows: `%USERPROFILE%\.statusproject\source\StatusProject`
   - Linux/macOS: `~/.statusproject/source/StatusProject`
@@ -14,13 +14,13 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 
 ## Layout
 - Repo root: short `AGENTS.md` / `CLAUDE.md`.
-- `StatusProject/`: `PROMPT.md`, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`, optional domain files, `templates/`.
+- `StatusProject/`: `PROMPT.md` (core) and `PROMPT-*.md` modules, `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`, optional domain files, `templates/`.
 - Required state files when enabled: `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`. Create missing files from `StatusProject/templates/`.
 
 ## Setup
 1. From the resolved source repository, install `StatusProject/` into the target with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy.
 2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`. Keep root AI entry files stable; replace them only when explicitly selected in the installer.
-3. Create state files from English templates in `templates/`.
+3. Create state files from English templates in `templates/`. Once per user and machine, create your User Settings with `scripts/init-user-settings` (see `INSTALL.md#user-settings`).
 4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
 5. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
 6. Each session: read `PROJECT-RESUME` first, then open `TODO` and `MEMORY`; follow its Restart Capsule and precise pointers into active/domain context, and open evidence/history only when required.
@@ -28,7 +28,7 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 8. Use optional `CONTEXT-INDEX.md` only when context is dispersed or L0 cannot route precisely. Full L0-L3, budget, pointer, and transactional compaction rules live in [`PROMPT.md`](PROMPT.md#context-integrity-v1).
 
 ## Updates
-- Check at most once per 7 days per project. Record the check date in `MEMORY` or `PROJECT-RESUME`.
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings).
 - Compare against `StatusProject/SOURCE.md`, then GitHub latest release if needed. Propose updates; never overwrite local state without approval.
 - For existing deployments, run `scripts/update-statusproject.ps1` or `scripts/update-statusproject.sh` from the resolved StatusProject source repository.
 
