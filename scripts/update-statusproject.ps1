@@ -193,9 +193,10 @@ try {
     $sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
     $sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
     $sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
-    Set-Content -LiteralPath (Join-Path $stageDeploy "SOURCE.md") -Value $sourceContent -Encoding UTF8
 
     $projectName = Split-Path -Leaf $repoPath
+    $repoUrl = "<repo-url>"
+    try { $originUrl = (& git -C $repoPath remote get-url origin 2>$null); if ($LASTEXITCODE -eq 0 -and $originUrl) { $repoUrl = [string]$originUrl } } catch { }
     $linksContent = Get-Content -LiteralPath (Join-Path $sourceTemplates "LINKS.template.md") -Raw
     $linksContent = $linksContent.Replace("<Project>", $projectName)
     $linksContent = $linksContent.Replace("<project>", $projectName)
@@ -204,7 +205,13 @@ try {
     $linksContent = $linksContent.Replace("<source>", $sourceRoot)
     $linksContent = $linksContent.Replace("<latest-release-url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
     $linksContent = $linksContent.Replace("<os-default-global-source-path>", (Get-DefaultGlobalSourcePath))
-    Set-Content -LiteralPath (Join-Path $stageDeploy "LINKS.md") -Value $linksContent -Encoding UTF8
+    $linksContent = $linksContent.Replace("<repo-url>", $repoUrl)
+    if ($DeployFolderName -ne "StatusProject") {
+        $linksContent = [regex]::Replace($linksContent, '(?<!/)StatusProject/', ($DeployFolderName + "/"))
+        $sourceContent = [regex]::Replace($sourceContent, '(?<!/)StatusProject/', ($DeployFolderName + "/"))
+    }
+    [System.IO.File]::WriteAllText((Join-Path $stageDeploy "SOURCE.md"), $sourceContent, [System.Text.UTF8Encoding]::new($false))
+    [System.IO.File]::WriteAllText((Join-Path $stageDeploy "LINKS.md"), $linksContent, [System.Text.UTF8Encoding]::new($false))
     Set-OwnerWritableRecursive $stageDeploy
     Set-OwnerWritableRecursive $stageEntries
 

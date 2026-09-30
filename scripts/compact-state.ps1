@@ -63,7 +63,7 @@ if ($hadTrailingNewline -and $todoLines.Count -gt 0 -and $todoLines[-1] -eq "") 
 $openStart = -1
 $openEnd = $todoLines.Count
 for ($i = 0; $i -lt $todoLines.Count; $i++) {
-    if ($todoLines[$i] -match '^\s*##\s+Open\s*$') {
+    if ($todoLines[$i] -match '^\s*##\s+Open(\s.*)?$') {
         $openStart = $i + 1
         for ($j = $openStart; $j -lt $todoLines.Count; $j++) {
             if ($todoLines[$j] -match '^\s*##\s+') {

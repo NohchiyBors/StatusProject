@@ -20,8 +20,8 @@ Operating rules live in [`PROMPT.md`](PROMPT.md). This file is the install/setup
 ## Setup
 1. From the resolved source repository, install `StatusProject/` into the target with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy.
 2. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`. Keep root AI entry files stable; replace them only when explicitly selected in the installer.
-3. Create state files from English templates in `templates/`. Once per user and machine, create your User Settings with `scripts/init-user-settings` (see `INSTALL.md#user-settings`).
-4. Check or create `.gitignore` using `templates/GITIGNORE.template`.
+3. The installer creates `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`, and a missing `.gitignore`; add optional state files from `templates/` only when their trigger in `PROMPT.md` applies. Once per user and machine, create your User Settings with `scripts/init-user-settings` (see `INSTALL.md#user-settings`).
+4. If `.gitignore` already existed, make sure it lists `StatusProject/USER-SETTINGS.local.md` (see `templates/GITIGNORE.template`).
 5. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
 6. Each session: read `PROJECT-RESUME` first, then open `TODO` and `MEMORY`; follow its Restart Capsule and precise pointers into active/domain context, and open evidence/history only when required.
 7. After meaningful progress, update canonical fact owners plus `TODO`, `MEMORY`, and the `PROJECT-RESUME` Restart Capsule so the next session can continue without the previous chat.

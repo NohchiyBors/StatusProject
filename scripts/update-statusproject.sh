@@ -70,7 +70,7 @@ resolve_ai_entries() {
     [[ -n "$item" ]] || continue
     matched=0; for allowed in "${ENTRY_KEYS[@]}"; do [[ "$item" == "$allowed" ]] && matched=1; done
     [[ $matched -eq 1 ]] || { echo "Invalid AI entry: $item" >&2; return 1; }
-    case "\n$output\n" in *"\n$item\n"*) ;; *) output="${output}${output:+$'\n'}$item" ;; esac
+    case $'\n'"$output"$'\n' in *$'\n'"$item"$'\n'*) ;; *) output="${output}${output:+$'\n'}$item" ;; esac
   done
   [[ -n "$output" ]] || return 1
   printf '%s\n' "$output"
@@ -156,6 +156,8 @@ sed -e "s|<vX.Y.Z or manual>|$(sed_replacement "$VERSION")|g" \
   -e "s|<optional release url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
   "$SOURCE_TEMPLATES/SOURCE.template.md" > "$STAGE_DEPLOY/SOURCE.md"
 PROJECT_NAME="$(basename "$REPO_PATH")"
+REPO_URL="$(git -C "$REPO_PATH" remote get-url origin 2>/dev/null || true)"
+[[ -n "$REPO_URL" ]] || REPO_URL="<repo-url>"
 sed -e "s|<Project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<local-project-path>|$(sed_replacement "$REPO_PATH")|g" \
@@ -163,7 +165,11 @@ sed -e "s|<Project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<source>|$(sed_replacement "$SOURCE_ROOT")|g" \
   -e "s|<latest-release-url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
   -e "s|<os-default-global-source-path>|$(sed_replacement "$HOME/.statusproject/source/StatusProject")|g" \
+  -e "s|<repo-url>|$(sed_replacement "$REPO_URL")|g" \
   "$SOURCE_TEMPLATES/LINKS.template.md" > "$STAGE_DEPLOY/LINKS.md"
+if [[ "$DEPLOY_FOLDER_NAME" != StatusProject ]]; then
+  sed -i.bak -e "s|\([^/]\)StatusProject/|\1$(sed_replacement "$DEPLOY_FOLDER_NAME")/|g" "$STAGE_DEPLOY/LINKS.md" "$STAGE_DEPLOY/SOURCE.md" && rm -f "$STAGE_DEPLOY"/*.bak
+fi
 chmod -R u+rwX "$STAGE_DEPLOY" "$STAGE_ENTRIES"
 for f in "${MANAGED_FILES[@]}"; do [[ -f "$STAGE_DEPLOY/$f" ]] || { echo "Staging validation failed: $f" >&2; false; }; done
 [[ -d "$STAGE_DEPLOY/templates" ]] || { echo "Staging validation failed: templates" >&2; false; }

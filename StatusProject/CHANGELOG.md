@@ -8,6 +8,22 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v1.0.1 - 2026-09-30
+
+Maintenance release: installer/updater fixes and a lighter PM Preflight cadence. No state-file changes; `MIGRATIONS.md` has no section for it, so Post-Update Migration only sets `State version`.
+
+### Changed
+- Installers (`install-statusproject.sh` / `.ps1`) now create a missing `.gitignore` from `templates/GITIGNORE.template` as `INSTALL.md` already stated; an existing file is kept and reported when it lacks `StatusProject/USER-SETTINGS.local.md`. They no longer create the optional `MCP.md`; only `TODO.md`, `MEMORY.md`, and `PROJECT-RESUME.md` are scaffolded.
+- `LINKS.md` gets the project's `origin` URL when Git reports one, and `LINKS.md` / `SOURCE.md` use the actual deploy folder name when `--deploy-folder` / `-DeployFolderName` differs from `StatusProject`.
+- `compact-state` accepts `## Open <words>` headings (e.g. `## Open work`) as the open-task section.
+- PM Preflight runs once per session (at project open or before the first `PM` command) and again only when the daily update cache expires or after `PM update-statusproject`; a declined migration is not re-asked within the session. Previously it ran before every `PM` command.
+
+### Fixed
+- Bash installers/updaters de-duplicate `--ai-entries` selections (the previous check compared literal `\n`).
+- PowerShell installers/updaters write `SOURCE.md` and `LINKS.md` as UTF-8 without BOM, matching the Bash scripts and the other PowerShell writers.
+- `install-statusproject.bat` runs PowerShell with `-NoProfile` like the other wrappers.
+- Smoke tests cover the `.gitignore` creation and assert that `MCP.md` is not scaffolded.
+
 ## v1.0.0 - 2026-09-30
 
 First major release: modular prompt, token economy, per-user settings, versioned state migrations, and PM Preflight. Deployed projects update with `PM update-statusproject`; their state files follow `MIGRATIONS.md`.

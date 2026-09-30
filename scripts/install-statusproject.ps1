@@ -16,7 +16,7 @@ $copyFiles = @(
     "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md",
     "CHANGELOG.md", "VERSIONING.md", "MIGRATIONS.md"
 )
-$stateFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md", "MCP.md")
+$stateFiles = @("TODO.md", "MEMORY.md", "PROJECT-RESUME.md")
 $managedFiles = @($copyFiles + @("VERSION", "SOURCE.md", "LINKS.md"))
 
 function Ask-Choice {
@@ -116,7 +116,7 @@ function Assert-RequiredSources {
         (Join-Path $sourceTemplates "TODO.template.md"),
         (Join-Path $sourceTemplates "MEMORY.template.md"),
         (Join-Path $sourceTemplates "PROJECT-RESUME.template.md"),
-        (Join-Path $sourceTemplates "MCP.template.md")
+        (Join-Path $sourceTemplates "GITIGNORE.template")
     )
     foreach ($entry in $SelectedEntries) { $required += $rootEntryTemplates[$entry] }
     $missing = @($required | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) })
@@ -248,9 +248,10 @@ try {
     $sourceContent = $sourceContent.Replace("<repo-url>", "https://github.com/NohchiyBors/StatusProject")
     $sourceContent = $sourceContent.Replace("<optional local path>", $sourceRoot)
     $sourceContent = $sourceContent.Replace("<optional release url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
-    Set-Content -LiteralPath (Join-Path $stageDeploy "SOURCE.md") -Value $sourceContent -Encoding UTF8
 
     $projectName = Split-Path -Leaf $repoPath
+    $repoUrl = "<repo-url>"
+    try { $originUrl = (& git -C $repoPath remote get-url origin 2>$null); if ($LASTEXITCODE -eq 0 -and $originUrl) { $repoUrl = [string]$originUrl } } catch { }
     $linksContent = Get-Content -LiteralPath (Join-Path $sourceTemplates "LINKS.template.md") -Raw
     $linksContent = $linksContent.Replace("<Project>", $projectName)
     $linksContent = $linksContent.Replace("<project>", $projectName)
@@ -259,7 +260,13 @@ try {
     $linksContent = $linksContent.Replace("<source>", $sourceRoot)
     $linksContent = $linksContent.Replace("<latest-release-url>", "https://github.com/NohchiyBors/StatusProject/releases/latest")
     $linksContent = $linksContent.Replace("<os-default-global-source-path>", (Get-DefaultGlobalSourcePath))
-    Set-Content -LiteralPath (Join-Path $stageDeploy "LINKS.md") -Value $linksContent -Encoding UTF8
+    $linksContent = $linksContent.Replace("<repo-url>", $repoUrl)
+    if ($DeployFolderName -ne "StatusProject") {
+        $linksContent = [regex]::Replace($linksContent, '(?<!/)StatusProject/', ($DeployFolderName + "/"))
+        $sourceContent = [regex]::Replace($sourceContent, '(?<!/)StatusProject/', ($DeployFolderName + "/"))
+    }
+    [System.IO.File]::WriteAllText((Join-Path $stageDeploy "SOURCE.md"), $sourceContent, [System.Text.UTF8Encoding]::new($false))
+    [System.IO.File]::WriteAllText((Join-Path $stageDeploy "LINKS.md"), $linksContent, [System.Text.UTF8Encoding]::new($false))
     Set-OwnerWritableRecursive $stageDeploy
     Set-OwnerWritableRecursive $stageEntries
 
@@ -303,6 +310,17 @@ try {
         }
     }
 
+    $gitignorePath = Join-Path $repoPath ".gitignore"
+    $gitignoreResult = "kept existing"
+    if (-not (Test-Path -LiteralPath $gitignorePath)) {
+        $applied.Add([pscustomobject]@{ Path = $gitignorePath; Backup = $null; HadOriginal = $false; Directory = $false })
+        Copy-Item -LiteralPath (Join-Path $sourceTemplates "GITIGNORE.template") -Destination $gitignorePath
+        Set-OwnerWritableRecursive $gitignorePath
+        $gitignoreResult = "created from templates/GITIGNORE.template"
+    } elseif (-not ((Get-Content -LiteralPath $gitignorePath -Raw) -like "*USER-SETTINGS.local.md*")) {
+        $gitignoreResult = "kept existing; add StatusProject/USER-SETTINGS.local.md to it"
+    }
+
     foreach ($entry in $effectiveEntries) {
         $dest = Join-Path $repoPath $entry
         $backup = Join-Path $backupBase "root\$entry"
@@ -329,5 +347,6 @@ try {
 }
 
 Write-Host "Installed StatusProject $version to $deployPath"
+Write-Host ".gitignore: $gitignoreResult"
 if ($backupRoot) { Write-Host "Backup created at $backupRoot" }
 if ($effectiveEntries.Count -gt 0) { Write-Host "AI entry selection: $($effectiveEntries -join ', ')" }

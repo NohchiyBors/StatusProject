@@ -3,7 +3,7 @@
 What to change in a project's state files to follow a newer StatusProject version.
 
 - `StatusProject/VERSION` is the version of the deployed rules; `State version:` in `PROJECT-RESUME.md` is the version the state files follow. A missing `State version` means the state predates v1.0.0: start at v0.9.0.
-- After an update, and at the start of every `PM` command (PM Preflight), apply every section newer than the project's `State version`, oldest first, inside an approved Post-Update Migration (`PROMPT-DEPLOY.md#post-update-migration`). Then set `State version` to `StatusProject/VERSION`.
+- After an update, and once per session in the PM Preflight, apply every section newer than the project's `State version`, oldest first (a release without a section here, such as v1.0.1, changes no state files), inside an approved Post-Update Migration (`PROMPT-DEPLOY.md#post-update-migration`). Then set `State version` to `StatusProject/VERSION`.
 - Every step is idempotent: skip it when already true. Steps move facts, never delete them; under `lite` there is no `STATE-HISTORY` / `STATUS-LOG`, so completed or superseded items are removed and git history is the archive.
 - `scripts/post-update-report` and `scripts/verify-state` detect most items; `scripts/list-projects` shows which projects lag.
 

@@ -69,7 +69,7 @@ PEER_INDENT="$(
         BEGIN { in_open=0; min=-1 }
         {
             line=clean($0)
-            if (line ~ /^[[:space:]]*##[[:space:]]+Open[[:space:]]*$/) { in_open=1; next }
+            if (line ~ /^[[:space:]]*##[[:space:]]+Open([[:space:]].*)?$/) { in_open=1; next }
             if (in_open && line ~ /^[[:space:]]*##[[:space:]]+/) { in_open=0 }
             if (in_open && line ~ /^[[:space:]]*-[[:space:]]*\[[ xX]\]/) {
                 match(line, /^[[:space:]]*/)
@@ -95,7 +95,7 @@ awk -v peer="$PEER_INDENT" -v kept="$ANALYSIS_TODO" -v moved="$MOVED_BLOCKS" -v 
     {
         original=$0
         line=clean($0)
-        if (line ~ /^[[:space:]]*##[[:space:]]+Open[[:space:]]*$/) {
+        if (line ~ /^[[:space:]]*##[[:space:]]+Open([[:space:]].*)?$/) {
             in_open=1
             removing=0
             emit(original)

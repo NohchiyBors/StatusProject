@@ -34,7 +34,7 @@ REPO_PATH="$(cd "$TARGET_PATH" && pwd -P)"
 ENTRY_KEYS=(AGENTS.md CLAUDE.md GEMINI.md COPILOT_INSTRUCTIONS.md)
 COPY_FILES=(PROMPT.md PROMPT-PLANNING.md PROMPT-DEV-TEST.md PROMPT-PROD.md PROMPT-DEPLOY.md PROMPT-CONTEXT.md PROMPT-WORKSPACE.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MIGRATIONS.md)
 MANAGED_FILES=("${COPY_FILES[@]}" VERSION SOURCE.md LINKS.md)
-STATE_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md MCP.md)
+STATE_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md)
 
 ask_choice() {
   local prompt="$1" answer c
@@ -83,7 +83,7 @@ resolve_ai_entries() {
     matched=0
     for allowed in "${ENTRY_KEYS[@]}"; do [[ "$item" == "$allowed" ]] && matched=1; done
     [[ $matched -eq 1 ]] || { echo "Invalid AI entry: $item" >&2; return 1; }
-    case "\n$output\n" in *"\n$item\n"*) ;; *) output="${output}${output:+$'\n'}$item" ;; esac
+    case $'\n'"$output"$'\n' in *$'\n'"$item"$'\n'*) ;; *) output="${output}${output:+$'\n'}$item" ;; esac
   done
   [[ -n "$output" ]] || return 1
   printf '%s\n' "$output"
@@ -140,7 +140,7 @@ fi
 SELECTED_ENTRIES="$(resolve_ai_entries "$AI_ENTRIES")"
 missing=()
 for f in "${COPY_FILES[@]}"; do source_file="$(source_for_file "$f")"; [[ -f "$source_file" ]] || missing+=("$source_file"); done
-for required in "$VERSION_FILE" "$SOURCE_TEMPLATES/SOURCE.template.md" "$SOURCE_TEMPLATES/LINKS.template.md" "$SOURCE_TEMPLATES/TODO.template.md" "$SOURCE_TEMPLATES/MEMORY.template.md" "$SOURCE_TEMPLATES/PROJECT-RESUME.template.md" "$SOURCE_TEMPLATES/MCP.template.md"; do [[ -f "$required" ]] || missing+=("$required"); done
+for required in "$VERSION_FILE" "$SOURCE_TEMPLATES/SOURCE.template.md" "$SOURCE_TEMPLATES/LINKS.template.md" "$SOURCE_TEMPLATES/TODO.template.md" "$SOURCE_TEMPLATES/MEMORY.template.md" "$SOURCE_TEMPLATES/PROJECT-RESUME.template.md" "$SOURCE_TEMPLATES/GITIGNORE.template"; do [[ -f "$required" ]] || missing+=("$required"); done
 [[ -d "$SOURCE_TEMPLATES" ]] || missing+=("$SOURCE_TEMPLATES")
 while IFS= read -r entry; do [[ -z "$entry" ]] || { source_file="$(entry_source "$entry")"; [[ -f "$source_file" ]] || missing+=("$source_file"); }; done <<< "$SELECTED_ENTRIES"
 [[ ${#missing[@]} -eq 0 ]] || { printf 'Source preflight failed. Missing: %s\n' "${missing[*]}" >&2; exit 1; }
@@ -201,6 +201,8 @@ sed -e "s|<vX.Y.Z or manual>|$(sed_replacement "$VERSION")|g" \
   -e "s|<optional release url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
   "$SOURCE_TEMPLATES/SOURCE.template.md" > "$STAGE_DEPLOY/SOURCE.md"
 PROJECT_NAME="$(basename "$REPO_PATH")"
+REPO_URL="$(git -C "$REPO_PATH" remote get-url origin 2>/dev/null || true)"
+[[ -n "$REPO_URL" ]] || REPO_URL="<repo-url>"
 sed -e "s|<Project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<local-project-path>|$(sed_replacement "$REPO_PATH")|g" \
@@ -208,7 +210,11 @@ sed -e "s|<Project>|$(sed_replacement "$PROJECT_NAME")|g" \
   -e "s|<source>|$(sed_replacement "$SOURCE_ROOT")|g" \
   -e "s|<latest-release-url>|https://github.com/NohchiyBors/StatusProject/releases/latest|g" \
   -e "s|<os-default-global-source-path>|$(sed_replacement "$HOME/.statusproject/source/StatusProject")|g" \
+  -e "s|<repo-url>|$(sed_replacement "$REPO_URL")|g" \
   "$SOURCE_TEMPLATES/LINKS.template.md" > "$STAGE_DEPLOY/LINKS.md"
+if [[ "$DEPLOY_FOLDER_NAME" != StatusProject ]]; then
+  sed -i.bak -e "s|\([^/]\)StatusProject/|\1$(sed_replacement "$DEPLOY_FOLDER_NAME")/|g" "$STAGE_DEPLOY/LINKS.md" "$STAGE_DEPLOY/SOURCE.md" && rm -f "$STAGE_DEPLOY"/*.bak
+fi
 chmod -R u+rwX "$STAGE_DEPLOY" "$STAGE_ENTRIES"
 for f in "${MANAGED_FILES[@]}"; do [[ -f "$STAGE_DEPLOY/$f" ]] || { echo "Staging validation failed: $f" >&2; false; }; done
 [[ -d "$STAGE_DEPLOY/templates" ]] || { echo "Staging validation failed: templates" >&2; false; }
@@ -244,6 +250,14 @@ for state in "${STATE_FILES[@]}"; do
     chmod u+rw "$dest"
   fi
 done
+GITIGNORE_RESULT="kept existing"
+if [[ ! -e "$REPO_PATH/.gitignore" ]]; then
+  APPLIED_PATHS+=("$REPO_PATH/.gitignore"); APPLIED_BACKUPS+=(""); APPLIED_HAD+=(0); APPLIED_DIR+=(0)
+  cp -- "$SOURCE_TEMPLATES/GITIGNORE.template" "$REPO_PATH/.gitignore"; chmod u+rw "$REPO_PATH/.gitignore"
+  GITIGNORE_RESULT="created from templates/GITIGNORE.template"
+elif ! grep -Fq 'USER-SETTINGS.local.md' "$REPO_PATH/.gitignore"; then
+  GITIGNORE_RESULT="kept existing; add StatusProject/USER-SETTINGS.local.md to it"
+fi
 while IFS= read -r entry; do
   [[ -n "$entry" ]] || continue
   dest="$REPO_PATH/$entry"; backup="$BACKUP_BASE/root/$entry"
@@ -257,5 +271,6 @@ done <<< "$EFFECTIVE_ENTRIES"
 trap - ERR INT TERM
 cleanup_stage
 echo "Installed StatusProject $VERSION to $DEPLOY_PATH"
+echo ".gitignore: $GITIGNORE_RESULT"
 [[ -z "$BACKUP_ROOT" ]] || echo "Backup created at $BACKUP_ROOT"
 [[ -z "$EFFECTIVE_ENTRIES" ]] || echo "AI entry selection: $(printf '%s' "$EFFECTIVE_ENTRIES" | tr '\n' ' ')"

@@ -17,7 +17,7 @@ Templates in `templates/` are English by design for compact, consistent agent-fa
 - `StatusProject/`: operating docs, `templates/`, state files.
 
 Operating docs:
-`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md` with on-demand modules `PROMPT-PLANNING.md`, `PROMPT-DEV-TEST.md`, `PROMPT-PROD.md`, `PROMPT-DEPLOY.md`, `PROMPT-CONTEXT.md`, `PROMPT-WORKSPACE.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MCP.md`, `SOURCE.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
+`AI-INSTRUCTION.md`, `AI-SETTINGS-INSTRUCTION.md`, `PROMPT.md` with on-demand modules `PROMPT-PLANNING.md`, `PROMPT-DEV-TEST.md`, `PROMPT-PROD.md`, `PROMPT-DEPLOY.md`, `PROMPT-CONTEXT.md`, `PROMPT-WORKSPACE.md`, `INSTALL.md`, `START-HERE.md`, `README.md`, `VERSIONING.md`, `MIGRATIONS.md`, `SOURCE.md`, `LINKS.md`, root-entry templates `templates/GEMINI.template.md` and `templates/COPILOT_INSTRUCTIONS.template.md`.
 
 Core state files:
 `PLAN.md`, `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`; optional `CONTEXT-INDEX.md`, `STATUS-LOG.md`, `STATE-HISTORY.md`, `REQUIREMENTS.md`, `ARCHITECTURE.md`, `PROJECT-TREE.md`, `INFRASTRUCTURE.md`, `SOFTWARE.md`, `DEVELOPMENT-STATUS.md`, `TESTING.md`, `MCP.md`.
@@ -58,8 +58,8 @@ Context Integrity v1 keeps the always-read restart set compact while preserving 
 1. Install with `scripts/install-statusproject.ps1`, `scripts/install-statusproject.sh`, or manual copy; see [`INSTALL.md`](INSTALL.md).
 2. Put `AI-SETTINGS-INSTRUCTION.md` into AI tool settings when needed.
 3. Keep root `AGENTS.md` / `CLAUDE.md` short and link to `StatusProject/`.
-4. Create project state files from `templates/`.
-5. Check or create `.gitignore` using `templates/GITIGNORE.template`.
+4. The installer creates `TODO.md`, `MEMORY.md`, `PROJECT-RESUME.md`, and a missing `.gitignore` from `templates/`; add optional state files (`PLAN.md`, `MCP.md`, …) from `templates/` only when their trigger in `PROMPT.md` applies.
+5. Keep `StatusProject/USER-SETTINGS.local.md` in `.gitignore` if the file predates the installer.
 6. Create `LICENSE` from `templates/LICENSE.template` before publishing to GitHub.
 7. Each session: read `PROJECT-RESUME` → `TODO` → `MEMORY`, then `PLAN` and optional files as needed.
 
@@ -73,4 +73,4 @@ Every user keeps personal paths, hosts, connection names, reply language, and Gi
 - The installer writes `StatusProject/SOURCE.md` with source type, version, and update path.
 
 ## License
-Personal non-commercial use only. See [`LICENSE`](LICENSE).
+Personal non-commercial use only. See [`LICENSE`](../LICENSE).

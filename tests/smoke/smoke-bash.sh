@@ -7,7 +7,7 @@ DEPLOY_PATH="$TARGET_PATH/StatusProject"
 VERSION="$(tr -d '\r\n' < "$SOURCE_ROOT/StatusProject/VERSION")"
 STATE_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md)
 PRESERVED_FILES=(TODO.md MEMORY.md PROJECT-RESUME.md MCP.md USER-SETTINGS.local.md)
-REQUIRED_DOCS=(PROMPT.md PROMPT-PLANNING.md PROMPT-DEV-TEST.md PROMPT-PROD.md PROMPT-DEPLOY.md PROMPT-CONTEXT.md PROMPT-WORKSPACE.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MIGRATIONS.md MCP.md LINKS.md SOURCE.md VERSION)
+REQUIRED_DOCS=(PROMPT.md PROMPT-PLANNING.md PROMPT-DEV-TEST.md PROMPT-PROD.md PROMPT-DEPLOY.md PROMPT-CONTEXT.md PROMPT-WORKSPACE.md INSTALL.md START-HERE.md README.md AI-INSTRUCTION.md AI-SETTINGS-INSTRUCTION.md CHANGELOG.md VERSIONING.md MIGRATIONS.md LINKS.md SOURCE.md VERSION)
 
 fail() {
   printf 'FAIL [bash]: %s\n' "$*" >&2
@@ -101,7 +101,10 @@ run_verifiers
 
 grep -Fq "State version: \`$VERSION\`" "$DEPLOY_PATH/PROJECT-RESUME.md" || fail "install did not stamp State version $VERSION"
 printf '\nBASH_STATE_SENTINEL\n' >> "$DEPLOY_PATH/TODO.md"
-printf '\nBASH_MCP_SENTINEL\n' >> "$DEPLOY_PATH/MCP.md"
+[ ! -e "$DEPLOY_PATH/MCP.md" ] || fail "install created optional MCP.md"
+[ -f "$TARGET_PATH/.gitignore" ] || fail "install did not create .gitignore from the template"
+grep -Fq 'USER-SETTINGS.local.md' "$TARGET_PATH/.gitignore" || fail "created .gitignore lacks USER-SETTINGS.local.md"
+printf '\nBASH_MCP_SENTINEL\n' > "$DEPLOY_PATH/MCP.md"
 printf 'BASH_PROJECT_SETTINGS_SENTINEL\n' > "$DEPLOY_PATH/USER-SETTINGS.local.md"
 printf -- '- Last StatusProject update check: 2026-01-01\n' >> "$DEPLOY_PATH/MEMORY.md"
 printf '# CLAUDE.md\n\n- Always respond in Russian.\n' > "$TARGET_PATH/CLAUDE.md"

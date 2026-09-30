@@ -2,11 +2,11 @@
 
 ## Canonical Source
 
-- Source version: `v0.9.2`
+- Source version: `v1.0.1`
 - Source type: `repository`
 - Source repo: `https://github.com/NohchiyBors/StatusProject`
 - Release URL: `https://github.com/NohchiyBors/StatusProject/releases/latest`
-- Maintainer local fallback on this machine only: `D:\Data\OneDrive\source\StatusProject`
+- Local source fallback: *Local StatusProject source* in User Settings (`~/.statusproject/USER-SETTINGS.md`), else `~/.statusproject/source/StatusProject`
 
 ## Deployment Metadata
 
@@ -18,7 +18,7 @@
 - Compare a deployed `StatusProject/` with its recorded source first.
 - If that source is unavailable or outdated, compare against the latest GitHub release.
 - Run updater scripts from `<source>/scripts/`; they are not copied into target projects.
-- Check updates at most once per 7 days per target project.
+- Update check: daily per user on every project open (`scripts/check-update`, cache `~/.statusproject/UPDATE-CHECK.md`, interval in User Settings); `PM update-statusproject` forces it.
 
 ## Notes
 

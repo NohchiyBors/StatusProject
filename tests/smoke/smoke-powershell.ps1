@@ -14,7 +14,7 @@ $requiredDocs = @(
     "PROMPT-PLANNING.md", "PROMPT-DEV-TEST.md", "PROMPT-PROD.md",
     "PROMPT-DEPLOY.md", "PROMPT-CONTEXT.md", "PROMPT-WORKSPACE.md",
     "AI-INSTRUCTION.md", "AI-SETTINGS-INSTRUCTION.md", "CHANGELOG.md",
-    "VERSIONING.md", "MIGRATIONS.md", "MCP.md", "LINKS.md", "SOURCE.md", "VERSION"
+    "VERSIONING.md", "MIGRATIONS.md", "LINKS.md", "SOURCE.md", "VERSION"
 )
 
 function Fail([string]$Message) {
@@ -107,7 +107,10 @@ Invoke-Verifiers
 
 if (-not (Get-Content -LiteralPath (Join-Path $deployPath "PROJECT-RESUME.md") -Raw).Contains("State version: ``$version``")) { Fail "install did not stamp State version $version" }
 Add-Content -LiteralPath (Join-Path $deployPath "TODO.md") -Value "POWERSHELL_STATE_SENTINEL"
-Add-Content -LiteralPath (Join-Path $deployPath "MCP.md") -Value "POWERSHELL_MCP_SENTINEL"
+if (Test-Path -LiteralPath (Join-Path $deployPath "MCP.md")) { Fail "install created optional MCP.md" }
+if (-not (Test-Path -LiteralPath (Join-Path $targetPath ".gitignore") -PathType Leaf)) { Fail "install did not create .gitignore from the template" }
+if (-not ((Get-Content -LiteralPath (Join-Path $targetPath ".gitignore") -Raw) -like "*USER-SETTINGS.local.md*")) { Fail "created .gitignore lacks USER-SETTINGS.local.md" }
+Set-Content -LiteralPath (Join-Path $deployPath "MCP.md") -Value "POWERSHELL_MCP_SENTINEL"
 Set-Content -LiteralPath (Join-Path $deployPath "USER-SETTINGS.local.md") -Value "POWERSHELL_PROJECT_SETTINGS_SENTINEL"
 Add-Content -LiteralPath (Join-Path $deployPath "MEMORY.md") -Value "- Last StatusProject update check: 2026-01-01"
 Set-Content -LiteralPath (Join-Path $TargetPath "CLAUDE.md") -Value "# CLAUDE.md`n`n- Always respond in Russian."

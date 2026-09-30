@@ -55,7 +55,8 @@ Installer behavior:
 - does not replace existing root AI entry files unless explicitly selected
 - creates missing `TODO.md`, `MEMORY.md`, and `PROJECT-RESUME.md` from templates only inside `<repo>/StatusProject/`
 - never overwrites existing state files
-- checks or creates `.gitignore` from `StatusProject/templates/GITIGNORE.template`; an existing `.gitignore` is never silently overwritten
+- creates a missing `.gitignore` from `StatusProject/templates/GITIGNORE.template`; an existing `.gitignore` is kept and only reported when it lacks `StatusProject/USER-SETTINGS.local.md`
+- optional state files (`MCP.md`, `PLAN.md`, …) are never created by the installer; agents add them when their trigger in `PROMPT.md` applies
 - replacement preserves state and user files and backs up shipped files before changing them
 
 ## User Settings

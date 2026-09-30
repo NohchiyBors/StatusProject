@@ -196,7 +196,7 @@ For `PM update-statusproject <goal> [target]`:
 
 `PM update-statusproject` authorizes a forced StatusProject docs/templates update from GitHub and the approved state migration only.
 
-Every other `PM` command starts with the PM Preflight from `StatusProject/PROMPT.md#pm-preflight`: compare latest release, deployed `VERSION`, and state `State version`; report a stale deployment; migrate lagging state on approval (or automatically when User Settings allow it) before doing the command's own work.
+The PM Preflight from `StatusProject/PROMPT.md#pm-preflight` runs once per session, before the first `PM` command (or at project open) and again only when the daily update cache expires: compare latest release, deployed `VERSION`, and state `State version`; report a stale deployment; migrate lagging state on approval (or automatically when User Settings allow it) before doing the command's own work.
 
 ## PM Rollback Contract
 
