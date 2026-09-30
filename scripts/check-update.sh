@@ -24,7 +24,8 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-SETTINGS_HOME="${STATUSPROJECT_HOME:-$HOME/.statusproject}"
+. "$SCRIPT_DIR/statusproject-env.sh"
+SETTINGS_HOME="$(sp_settings_home)"
 CACHE="$SETTINGS_HOME/UPDATE-CHECK.md"
 STATUS_DIR="$TARGET_PATH/StatusProject"
 

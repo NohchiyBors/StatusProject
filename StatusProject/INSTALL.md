@@ -62,6 +62,8 @@ Installer behavior:
 ## User Settings
 Paths, hosts, connection names, reply language, and GitHub defaults are per user, not per project. Once per user and machine, run `scripts/init-user-settings.ps1`, `.sh`, or double-click `.bat` from the source repository: it creates `~/.statusproject/USER-SETTINGS.md` (Windows: `%USERPROFILE%\.statusproject\USER-SETTINGS.md`) from `templates/USER-SETTINGS.template.md` and never overwrites an existing file. Pass `--from FILE` / `-From FILE` (or drag a filled file onto the `.bat`) to seed it from an existing settings file. A project can override single keys in the Git-ignored `StatusProject/USER-SETTINGS.local.md`. Rules: `PROMPT.md#user-settings`.
 
+WSL (for example Codex running in WSL on a Windows machine): the Bash scripts (`scripts/statusproject-env.sh`, sourced by `check-update`, `list-projects`, `post-update-report`, `init-user-settings`) detect WSL, use the Windows user's `%USERPROFILE%\.statusproject` through the drive mount, and translate `D:\...` paths from the settings to `/mnt/d/...` (*Windows drive mount prefix*). `STATUSPROJECT_HOME` overrides the location; `STATUSPROJECT_WSL=0|1` forces detection off or on. Windows and PowerShell usage is unchanged.
+
 Updates never touch settings (covered by the Bash and PowerShell smoke tests):
 - `~/.statusproject/USER-SETTINGS.md` lives outside every project and outside the global source folder `~/.statusproject/source/`, so install, update, `PM update-statusproject`, or re-cloning the source leave it alone.
 - `StatusProject/USER-SETTINGS.local.md` is not a shipped file: install/update replace only the shipped docs, modules, `VERSION`, `SOURCE.md`, `LINKS.md`, and the `templates/` folder.

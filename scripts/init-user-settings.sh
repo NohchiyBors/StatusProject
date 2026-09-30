@@ -4,7 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 SOURCE_ROOT="$(dirname "$SCRIPT_DIR")"
 FROM="$SOURCE_ROOT/StatusProject/templates/USER-SETTINGS.template.md"
-TARGET="${STATUSPROJECT_HOME:-$HOME/.statusproject}/USER-SETTINGS.md"
+. "$SCRIPT_DIR/statusproject-env.sh"
+TARGET="$(sp_settings_home)/USER-SETTINGS.md"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in

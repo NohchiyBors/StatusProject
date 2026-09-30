@@ -15,6 +15,7 @@ Per-user, per-machine values for StatusProject: paths, hosts, connection names, 
 - Clone root (ordinary clones without cloud sync): `<absolute path|unset>`
 - Metadata root (Git metadata for sync-root working trees; required when a sync root is set): `<absolute path|unset>`
 - Local StatusProject source: `<absolute path to the StatusProject source repository|unset>`
+- Windows drive mount prefix (WSL only): `/mnt`
 
 ## Runtime
 - Default development environment: `<remote Docker|local Docker|other: ...>`

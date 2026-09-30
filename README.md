@@ -19,6 +19,6 @@ During substantial work, the agent reports an evidence-based text progress displ
 Bootstrap scripts are run from this source repository:
 
 - Windows: `scripts/install-statusproject.ps1`, `scripts/update-statusproject.ps1`
-- Linux/macOS: `scripts/install-statusproject.sh`, `scripts/update-statusproject.sh`
+- Linux/macOS/WSL: `scripts/install-statusproject.sh`, `scripts/update-statusproject.sh` (under WSL the Bash scripts share the Windows user's settings; see `StatusProject/INSTALL.md#user-settings`)
 
 English documents and templates are canonical. Russian files, when present, are optional translations.

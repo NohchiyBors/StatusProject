@@ -210,6 +210,8 @@ Machine- and user-specific values live in one settings file per user, never in `
 
 The first file that defines a key wins. Create the user file from `templates/USER-SETTINGS.template.md` with `scripts/init-user-settings` (`.ps1` / `.sh` / `.bat`), which never overwrites an existing file. Rules below refer to settings by key name (for example *Sync root*, *Remote Docker host*). When a needed key is unset, ask the user once, suggest recording the answer in the settings file, and never guess. Settings hold no secrets — only where credentials live.
 
+WSL agents share the Windows user's settings: with `STATUSPROJECT_HOME` unset, the Bash scripts resolve `~/.statusproject` to `%USERPROFILE%\.statusproject` through the drive mount, so `USER-SETTINGS.md`, the update cache, and the project registry are one set of files for Windows and WSL agents. Windows paths in settings (`D:\...`) stay in Windows form; under WSL read them as `<Windows drive mount prefix>/d/...` (default `/mnt`), and write any path back in Windows form. Windows and PowerShell behavior is unchanged.
+
 ## Workspace and Storage Policy
 Storage roles are set in User Settings: *Sync root* (working trees that need cloud sync), *Clone root* (ordinary clones), *Metadata root* (physical Git metadata of sync-root working trees; mirrored paths; never a working copy).
 

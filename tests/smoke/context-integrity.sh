@@ -376,4 +376,23 @@ for runtime in bash ps; do
 done
 printf 'PASS: state version checks and list-projects Bash/PowerShell registry checks.\n'
 
+# WSL mode: a fake drive mount stands in for /mnt; settings hold Windows paths, the registry keeps Windows spelling.
+wsl_root="$WORK_ROOT/wsl mount"
+mkdir -p "$wsl_root/d/Projects" "$wsl_root/c/Users/tester/.statusproject"
+cp -R -- "$versions_root/current" "$wsl_root/d/Projects/current"
+wsl_home="$wsl_root/c/Users/tester/.statusproject"
+printf -- '- Sync root (working trees that need cloud sync, e.g. OneDrive): `D:\\Projects`\n- Windows drive mount prefix (WSL only): `%s`\n' "$wsl_root" > "$wsl_home/USER-SETTINGS.md"
+printf -- '- Latest release: `v0.10.0`\n' > "$wsl_home/UPDATE-CHECK.md"
+STATUSPROJECT_WSL=1 STATUSPROJECT_HOME="$wsl_home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --scan > /dev/null
+grep -Fq '| `D:\Projects\current` |' "$wsl_home/PROJECTS.md" || fail "WSL scan did not register the project in Windows spelling"
+STATUSPROJECT_WSL=1 STATUSPROJECT_HOME="$wsl_home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --register 'D:\Projects\current' > /dev/null
+[[ "$(grep -c '^| `' "$wsl_home/PROJECTS.md")" -eq 1 ]] || fail "WSL re-register by Windows path duplicated the registry row"
+out="$(STATUSPROJECT_WSL=1 STATUSPROJECT_HOME="$wsl_home" bash "$SOURCE_ROOT/scripts/list-projects.sh")"
+grep -q 'D:\\Projects\\current .* ok$' <<< "$out" || fail "WSL list-projects did not report the project as ok"
+out="$(STATUSPROJECT_WSL=1 STATUSPROJECT_HOME="$wsl_home" bash "$SOURCE_ROOT/scripts/check-update.sh" --target "$wsl_root/d/Projects/current" --release-json "$update_root/newer.json" 2>/dev/null || true)"
+grep -q "^CACHE: $wsl_home/UPDATE-CHECK.md" <<< "$out" || fail "WSL check-update did not use the shared settings home"
+STATUSPROJECT_WSL=0 STATUSPROJECT_HOME="$wsl_home" bash "$SOURCE_ROOT/scripts/list-projects.sh" --register "$wsl_root/d/Projects/current" > /dev/null
+[[ "$(grep -c '^| `' "$wsl_home/PROJECTS.md")" -eq 2 ]] || fail "non-WSL registration unexpectedly translated the path"
+printf 'PASS: WSL shared settings home, path translation, and registry spelling checks.\n'
+
 printf 'PASS: Context Integrity validator and compactor parity smoke checks.\n'

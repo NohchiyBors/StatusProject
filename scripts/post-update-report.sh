@@ -7,7 +7,8 @@ TARGET_PATH="${1:-.}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 REPO_PATH="$(cd "$TARGET_PATH" && pwd -P)"
 SP="$REPO_PATH/StatusProject"
-SETTINGS_HOME="${STATUSPROJECT_HOME:-$HOME/.statusproject}"
+. "$SCRIPT_DIR/statusproject-env.sh"
+SETTINGS_HOME="$(sp_settings_home)"
 ISSUES=0
 item() { printf -- '- %s\n' "$*"; ISSUES=$((ISSUES + 1)); }
 

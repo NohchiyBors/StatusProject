@@ -3,7 +3,9 @@
 # state version each project is on. Registry: ~/.statusproject/PROJECTS.md (never inside a project).
 set -uo pipefail
 
-SETTINGS_HOME="${STATUSPROJECT_HOME:-$HOME/.statusproject}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+. "$SCRIPT_DIR/statusproject-env.sh"
+SETTINGS_HOME="$(sp_settings_home)"
 REGISTRY="$SETTINGS_HOME/PROJECTS.md"
 CACHE="$SETTINGS_HOME/UPDATE-CHECK.md"
 MODE="list"
@@ -39,15 +41,16 @@ older() { [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "${1#v}" "${2#v}" | sort -V
 
 register() {
   local path row tmp
-  path="$(cd "$1" 2>/dev/null && pwd -P)" || return 0
+  path="$(cd "$(sp_to_native "$1")" 2>/dev/null && pwd -P)" || return 0
   [ -f "$path/StatusProject/PROMPT.md" ] || return 0
-  row="| \`$path\` | \`$(docs_version "$path")\` | \`$(state_version "$path")\` | \`$(date -u +%Y-%m-%dT%H:%M:%SZ)\` |"
+  local shown; shown="$(sp_to_windows "$path")"
+  row="| \`$shown\` | \`$(docs_version "$path")\` | \`$(state_version "$path")\` | \`$(date -u +%Y-%m-%dT%H:%M:%SZ)\` |"
   mkdir -p "$SETTINGS_HOME"
   tmp="$REGISTRY.tmp"
   {
     printf '# StatusProject projects\n\nWritten by scripts/list-projects and scripts/check-update. Do not edit by hand.\n\n'
     printf '| Project | StatusProject | State version | Last seen (UTC) |\n| --- | --- | --- | --- |\n'
-    { [ -f "$REGISTRY" ] && grep -E '^\| `' "$REGISTRY" | grep -vF "| \`$path\` |"; printf '%s\n' "$row"; } | sort
+    { [ -f "$REGISTRY" ] && grep -E '^\| `' "$REGISTRY" | grep -vF "| \`$shown\` |"; printf '%s\n' "$row"; } | sort
   } > "$tmp" && mv -f -- "$tmp" "$REGISTRY"
 }
 
@@ -55,7 +58,7 @@ case "$MODE" in
   register) for t in "${TARGETS[@]}"; do register "$t"; done; exit 0 ;;
   scan)
     for key in 'Sync root (working trees that need cloud sync, e.g. OneDrive)' 'Clone root (ordinary clones without cloud sync)'; do
-      root="$(setting "$key" || true)"
+      root="$(sp_to_native "$(setting "$key" || true)")"
       [ -n "$root" ] && [ -d "$root" ] || continue
       while IFS= read -r v; do register "$(dirname "$(dirname "$v")")"; done < <(
         find "$root" -maxdepth 5 \( -name node_modules -o -name .git -o -name .statusproject-archive -o -name .backup \) -prune -o -path '*/StatusProject/VERSION' -print 2>/dev/null)
@@ -67,7 +70,7 @@ latest="$([ -f "$CACHE" ] && grep -m1 -F -- '- Latest release:' "$CACHE" | value
 printf 'Latest release: %s\n\n' "${latest:-unknown (run check-update)}"
 printf '%-60s %-14s %-14s %s\n' PROJECT STATUSPROJECT STATE STATUS
 grep -E '^\| `' "$REGISTRY" | while IFS='|' read -r _ p d s _; do
-  p="$(printf '%s' "$p" | value_of | tr -d '`' | sed 's/^ *//')"; d="$(printf '%s' "$d" | tr -d '` ')"; s="$(printf '%s' "$s" | tr -d '` ')"
+  p="$(printf '%s' "$p" | tr -d '`' | sed 's/^ *//; s/ *$//')"; d="$(printf '%s' "$d" | tr -d '` ')"; s="$(printf '%s' "$s" | tr -d '` ')"
   status=()
   [ -n "$latest" ] && [ "$d" != unknown ] && [ "$d" != unreadable ] && older "$d" "$latest" && status+=("update available -> $latest")
   if [ "$d" = unreadable ] || [ "$s" = unreadable ]; then status+=("files unreadable (cloud-only OneDrive?): make the project available offline")

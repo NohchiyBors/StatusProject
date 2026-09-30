@@ -29,4 +29,6 @@ After clone, init, submodule, worktree, IDE, or agent Git operations under the s
 2. Its `gitdir:` target is absolute, exists, and is under the metadata root.
 3. `git -C <worktree> rev-parse --git-dir`, `rev-parse --show-toplevel`, and `status --short --branch` succeed.
 
+From WSL, a sync-root worktree is read-only for Git: its `.git` file points to a Windows metadata path, so plain `git` commands fail there. Inspect with `GIT_DIR=<metadata root as /mnt/...> GIT_WORK_TREE=<worktree>` (status, log, diff); commit, tag, and push from Windows. Never rewrite the `gitdir:` pointer to a `/mnt/...` path — that breaks the Windows side.
+
 A physical `.git` directory under the sync root is a violation. Preserve `HEAD`, index, staged state, and working-tree changes; never use `reset`, `clean`, destructive checkout/restore, or blind replacement. Inspect each repository, submodule, and worktree separately; move metadata only when the user authorized the correction, and verify status before and after. For an audit-only request, report the violation without moving or deleting anything.

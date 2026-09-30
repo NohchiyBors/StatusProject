@@ -27,3 +27,6 @@ What to change in a project's state files to follow a newer StatusProject versio
 8. **User Settings.** Machine paths, hosts/IPs, connection names, reply language, and GitHub defaults found in state files or AI entries → User Settings (`~/.statusproject/USER-SETTINGS.md`, or `StatusProject/USER-SETTINGS.local.md` for a project override); shared files name the setting's key instead. Add `USER-SETTINGS.local.md` to `.gitignore`.
 9. **AI entries.** Root adapters and `StatusProject/AI-*.md` that predate the prompt modules → current versions (the updater with entry selection backs them up); move project-specific lines to `MEMORY` first.
 10. **Finish.** Record `Last state compaction: YYYY-MM-DD` in `MEMORY`, then set `State version: v1.0.0`.
+
+## v1.1.0 — WSL
+1. State files: nothing to change. Optional, only when agents run in WSL: add the line `- Windows drive mount prefix (WSL only): /mnt` to `~/.statusproject/USER-SETTINGS.md` (`init-user-settings` never edits an existing file), and set `STATUSPROJECT_HOME` in WSL only if the Windows profile is not reachable through the drive mount.

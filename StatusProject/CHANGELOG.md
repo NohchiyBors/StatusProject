@@ -8,6 +8,13 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v1.1.0 - 2026-09-30
+
+WSL support next to Windows: one settings home and one project registry for Windows and WSL agents. State files are unchanged; `MIGRATIONS.md#v110` has one optional settings step.
+
+### Added
+- WSL support alongside Windows: `scripts/statusproject-env.sh` (sourced by the Bash `check-update`, `list-projects`, `post-update-report`, `init-user-settings`) detects WSL, resolves the settings home to the Windows user's `%USERPROFILE%\.statusproject` through the drive mount, translates `D:\...` settings paths to `/mnt/d/...`, and writes registry paths back in Windows form so Windows and WSL agents share one `USER-SETTINGS.md`, `UPDATE-CHECK.md`, and `PROJECTS.md`. New settings key *Windows drive mount prefix* (default `/mnt`); overrides `STATUSPROJECT_HOME`, `STATUSPROJECT_WSL`, `STATUSPROJECT_WSL_ROOT`. Rules in `PROMPT.md#user-settings`; WSL Git on sync-root worktrees is read-only per `PROMPT-WORKSPACE.md#git-metadata-placement`. Windows and PowerShell behavior is unchanged; covered by the container smoke test.
+
 ## v1.0.1 - 2026-09-30
 
 Maintenance release: installer/updater fixes and a lighter PM Preflight cadence. No state-file changes; `MIGRATIONS.md` has no section for it, so Post-Update Migration only sets `State version`.
