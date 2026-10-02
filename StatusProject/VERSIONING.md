@@ -12,7 +12,7 @@ The single source of the current version is [`VERSION`](VERSION). Do not infer t
 ## PM Commit Workflow
 - `PM commit` selects the SemVer increment from actual compatibility impact, updates `VERSION` and `CHANGELOG.md`, creates a detailed commit, and pushes it to the configured GitHub repository.
 - `PM commit patch|minor|major|vX.Y.Z` explicitly selects the version increment or target version.
-- If no GitHub repository is configured, request repository name, personal/organization ownership, organization name when applicable, and private/public visibility before creation.
+- If no GitHub repository is configured, resolve repository name, owner, and visibility per `PROMPT-WORKSPACE.md#github-repository-default` (project policy, then User Settings) and ask only for unresolved values before creation.
 - Commit details cover summary, functions, behavior, compatibility/migration, verification, known gaps, and version.
 - `PM commit` does not create a tag or GitHub Release; use the release checklist separately.
 

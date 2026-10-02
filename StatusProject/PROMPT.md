@@ -10,7 +10,7 @@ Modules sit next to this file in `StatusProject/`. Read the whole matching modul
 
 | Module | Read before |
 | --- | --- |
-| `PROMPT-PLANNING.md` | `PM plan`, `PM start` / `PM start all` / `PM all`, `PM multiagent`, `PM status`, launching an internal worker, choosing a worker model |
+| `PROMPT-PLANNING.md` | `PM plan`, `PM start` / `PM start all` / `PM all`, `PM resume`, `PM multiagent`, `PM status`, launching an internal worker, choosing a worker model |
 | `PROMPT-DEV-TEST.md` | `PM env`, `PM dev`, `PM test` |
 | `PROMPT-PROD.md` | `PM prod`, `PM rollback`, `PM commit`, `PM release`, any production change, tag, or GitHub Release |
 | `PROMPT-DEPLOY.md` | `StatusProject` / `PM init`, `PM doctor`, `PM update-statusproject`, install/update, post-update migration (with `MIGRATIONS.md`), `.gitignore` setup |
@@ -129,7 +129,7 @@ Version reconciliation that keeps a project's `StatusProject/` folder aligned wi
 5. Under `Profile: lite`, the plan is usually a few edits; still show it in one line before applying.
 
 ## Development Planning
-PM commands are AI instructions, not shell executables. Read the command's module first; the PM Preflight above must have run once in this session. A working command without a usable `<goal>` asks one concise goal question and stops before any worker, edit, build, deployment, or state update. Reusable launch prompt: `templates/CODEX-MULTI-AGENT-PROMPT.template.md`.
+PM commands are AI instructions, not shell executables. Read the command's module first; the PM Preflight above must have run once in this session. A working command without a usable `<goal>` asks one concise goal question and stops before any worker, edit, build, deployment, or state update; `PM resume` takes its goal from the Restart Capsule and asks only when the capsule has none. Reusable launch prompt: `templates/CODEX-MULTI-AGENT-PROMPT.template.md`.
 
 | Command | Purpose | Module |
 | --- | --- | --- |
@@ -137,6 +137,7 @@ PM commands are AI instructions, not shell executables. Read the command's modul
 | `PM status [goal]` | evidence-backed progress audit and state reconciliation | `PROMPT-PLANNING.md` |
 | `PM plan <goal>` (alias `PM <goal>`) | one synthesized plan; never implements; stops for approval | `PROMPT-PLANNING.md` |
 | `PM start <goal>` / `PM start all <goal>` / `PM all <goal>` | full cycle to a verified Definition of Done or an exact blocker | `PROMPT-PLANNING.md` |
+| `PM resume [goal]` | continue the interrupted `PM start` cycle from the Restart Capsule | `PROMPT-PLANNING.md` |
 | `PM multiagent <goal>` | prepare multi-agent readiness; launches no workers | `PROMPT-PLANNING.md` |
 | `PM doctor [goal]` | StatusProject health audit and safe scaffolding | `PROMPT-DEPLOY.md` |
 | `PM update-statusproject <goal> [target]` | forced update from GitHub, local state preserved | `PROMPT-DEPLOY.md` |
@@ -149,7 +150,15 @@ PM commands are AI instructions, not shell executables. Read the command's modul
 | `PM release <goal>` | tag and GitHub Release from a committed version | `PROMPT-PROD.md` |
 
 ### Authorization Boundary
-Each module ends every contract with an `Authorizes:` line — the complete list of what that command may do. Everything else needs its own command or explicit user confirmation, in particular: commit, push, force push, tag, GitHub Release, production deployment, rollback, destructive operations (data deletion, destructive migrations, destructive cleanup), secret changes or publication, DNS/TLS changes, dependency installation outside containers, creation of user-visible tasks/chats, and scope expansion.
+Each module ends every contract with an `Authorizes:` line — the complete list of what that command may do. Everything else needs its own command or explicit user confirmation, in particular: commit, push, force push, tag, GitHub Release, production deployment, rollback, destructive operations (data deletion, destructive migrations, destructive cleanup), secret changes or publication, DNS/TLS changes, dependency installation outside containers, creation of user-visible tasks/chats, and scope expansion. Exception: Development Pre-Authorization below.
+
+### Development Pre-Authorization
+While a project is under development, these actions need no separate confirmation unless User Settings set *Development pre-authorization* to `no`. Scope: `PM start` / `PM start all` / `PM all` / `PM resume`, `PM dev`, and ordinary development tasks outside `PM` commands, always against `local` / `dev` targets. It extends those commands' `Authorizes:` lines (modules included); it never widens read-only or verification-only commands (`PM help`, `status`, `plan`, `env`, `test`, `multiagent`, `doctor`) or production commands (`PM prod`, `rollback`).
+- **Dev transfer:** sync code, builds, configuration, and development/test data to the `dev` environment and deploy there (the *Default development environment* / *Remote Docker host*).
+- **Git:** commit verified work at every meaningful checkpoint (block, wave, fix, final result) with a scoped message, and push it to the configured remote.
+- **GitHub, fully:** create and push branches, open, update, and merge pull requests into non-production branches, create and update issues and labels, run and re-run Actions workflows, read checks and logs, and create the project repository when the project has no remote yet (owner and visibility from project policy or User Settings; ask when unset or `ask`; never public by assumption).
+
+Still outside, each with its own command or explicit confirmation: force push or rewriting published history; pushes or merges that deploy to staging/production; the `VERSION`/`CHANGELOG` release bump (`PM commit`); tags and GitHub Releases (`PM release`); deleting repositories, branches others use, or remote data; changing repository visibility, protection, or secrets; production data. Before each commit, run the staged secret and Git scope review (no secrets, no Git-ignored local state, no OneDrive conflict or machine-suffixed copies, no unrelated files). A rejected push is integrated only by a fast-forward or a merge onto local unpushed commits; otherwise it is a blocker. Pre-authorization never changes where Git runs: from WSL, commits and pushes of sync-root worktrees run on the Windows side (`PROMPT-WORKSPACE.md#git-metadata-placement`).
 
 ### Command Pattern
 Operational commands (`PM doctor`, `env`, `update-statusproject`, `dev`, `test`, `prod`, `rollback`, `release`) share this pattern; their modules state only the specifics.
@@ -224,7 +233,7 @@ Storage roles are set in User Settings: *Sync root* (working trees that need clo
 Every new file or folder name under the sync root must avoid `"`, `*`, `:`, `<`, `>`, `?`, `/`, `\`, `|`, control characters, leading/trailing spaces, a trailing period, the reserved names `.lock`, `CON`, `PRN`, `AUX`, `NUL`, `COM0`-`COM9`, `LPT0`-`LPT9`, `desktop.ini` (case-insensitive, even with an extension), any name containing `_vti_`, and a file name beginning with `~$`. Never overwrite on a collision. Normalization, collision, user-supplied-name, and bulk-rename rules: `PROMPT-WORKSPACE.md#onedrive-safe-file-and-folder-names`.
 
 ### GitHub Repository Default
-New projects/repositories default to a GitHub-hosted repository (owner and visibility from User Settings, else ask) plus a connected local working copy placed per the storage roles above; creation is an external change that needs an authorizing goal. Contract and post-clone checks: `PROMPT-WORKSPACE.md#github-repository-default`.
+New projects/repositories default to a GitHub-hosted repository (owner and visibility from User Settings, else ask) plus a connected local working copy placed per the storage roles above; creation is an external change that needs an authorizing goal or Development Pre-Authorization. Contract and post-clone checks: `PROMPT-WORKSPACE.md#github-repository-default`.
 
 ## Finish Check
 Before responding: the required state files exist in `StatusProject/`; `TODO` names the next step; `MEMORY` reflects any new durable rule or decision (nothing is added when there is none); `PROJECT-RESUME` holds one current capsule that can restart the work; `STATUS-LOG` is current for long processes (`standard` / `strict`); `scripts/verify-state` reports no failure when the scripts are available.

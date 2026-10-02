@@ -19,7 +19,7 @@ When the user asks for a new project or repository, create it on GitHub as the d
 - "GitHub repository" means a source-code repository, not a GitHub Projects board, unless the board is requested too.
 - Resolve owner or organization, repository name, and visibility before creation from documented project policy, then User Settings (*Default repository owner*, *Default visibility for new repositories*), else ask. Never make a repository public by assumption.
 - Prefer creating an empty GitHub repository and cloning it so `origin` exists from the start. For an existing non-empty directory, create the GitHub repository, initialize locally with the required metadata placement, add `origin`, and verify the intended first push scope.
-- Creation is an external state change: perform it only when the goal authorizes repository/project creation — never for a planning, audit, or documentation-only request. GitHub never replaces local Git metadata rules or commit/push/visibility/publication safety.
+- Creation is an external state change: perform it only when the goal authorizes repository/project creation or `PROMPT.md#development-pre-authorization` covers it — never for a planning, audit, or documentation-only request. GitHub never replaces local Git metadata rules or commit/push/visibility/publication safety.
 
 ## Git Metadata Placement
 Before `git clone` or `git init`, resolve the absolute destination. Outside OneDrive, use the clone root. Under the sync root, compute the mirrored metadata path under the metadata root first and use `--separate-git-dir`; the working tree may contain only a `.git` file with an absolute `gitdir:` pointer.

@@ -31,6 +31,7 @@ Per-user, per-machine values for StatusProject: paths, hosts, connection names, 
 ## GitHub
 - Default repository owner: `<user or organization|ask>`
 - Default visibility for new repositories: `<private|public|ask>`
+- Development pre-authorization: `yes` (yes = during development, dev transfer, commit, push, and GitHub branches/PRs/issues/Actions need no confirmation; `PROMPT.md#development-pre-authorization`)
 
 ## Notes
 - `<other machine-specific facts agents need>`

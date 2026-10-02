@@ -8,6 +8,17 @@ This project uses semantic version tags for public releases.
 
 No unreleased changes yet.
 
+## v1.2.0 - 2026-10-02
+
+Development Pre-Authorization and `PM resume`. State files are unchanged; `MIGRATIONS.md#v120` has one optional settings step.
+
+### Added
+- Development Pre-Authorization (`PROMPT.md#development-pre-authorization`): while a project is under development (`local` / `dev` targets), dev transfer and deploy, commit and push of verified work at every checkpoint, and full GitHub use (branches, pull requests into non-production branches, issues, Actions, repository creation with the User Settings defaults) need no separate confirmation. Force push, history rewrites, staging/production pushes or merges, the release bump, tags, GitHub Releases, deletions, visibility/protection/secret changes, and production data stay outside. New User Settings key *Development pre-authorization* (default `yes`).
+- `PM resume [goal]`: continues the interrupted `PM start` cycle from the Restart Capsule with the same authorization; finished, verified blocks are not redone. It takes its goal from the capsule and asks only when there is none.
+
+### Fixed
+- Contradictions around the Development Pre-Authorization: its scope is explicit (`PM start`/`all`/`resume`, `PM dev`, ordinary development tasks; never read-only, verification, or production commands) and it extends module `Authorizes:` lines, which are otherwise canonical; `PM dev` (module and Codex template) no longer forbids commit/push; the Orchestration approval stop no longer covers dev deployment; repository creation in the core, `PROMPT-WORKSPACE.md`, `PM commit`, and `VERSIONING.md` follows one rule (project policy, then User Settings, ask only for unresolved values); WSL Git placement is unchanged by pre-authorization; the AI-entry safety floor and `README.md` reflect `PM resume`.
+
 ## v1.1.0 - 2026-09-30
 
 WSL support next to Windows: one settings home and one project registry for Windows and WSL agents. State files are unchanged; `MIGRATIONS.md#v110` has one optional settings step.

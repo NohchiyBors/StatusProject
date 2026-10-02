@@ -19,7 +19,7 @@ For `PM dev <goal> [target]`:
 - Install, build, migrate non-destructively, and run strictly inside the selected containers; then run health/smoke checks and verify ports/URLs.
 - Record the dev location, Docker context, services, ports/URLs, evidence, and stop/restart commands in `INFRASTRUCTURE`, `SOFTWARE`, `TESTING`, `TODO`, `PROJECT-RESUME`. The report adds containers/services, health, URLs, logs command, and stop/restart command.
 
-Authorizes: development-only Docker configuration, build, start, and verification at the resolved target.
+Authorizes: development-only Docker configuration, build, start, and verification at the resolved target, plus `PROMPT.md#development-pre-authorization` (dev transfer, commit and push, GitHub).
 
 ## PM Test Contract
 For `PM test <goal> [target]`:

@@ -12,13 +12,14 @@ These are AI instruction commands, not shell executables. Summary:
 - `PM release <goal>` verifies an already committed version, creates or verifies the tag, and publishes a GitHub Release.
 - `PM plan <goal>` plans the supplied goal and stops for approval; `PM <goal>` is its backward-compatible alias.
 - `PM start <goal>`, `PM start all <goal>`, and `PM all <goal>` run the complete local cycle for the supplied goal.
+- `PM resume [goal]` continues the interrupted `PM start` cycle from the Restart Capsule.
 - `PM test <goal> [target]` runs verification only for the supplied goal and target; it may update evidence/state but must not implement, deploy, or mutate runtime data.
 - `PM dev <goal> [target]` prepares, starts, and verifies the Docker development environment for the goal; if the target location is not known, it asks the user before making changes.
 - `PM prod <goal> [target]` prepares, executes, and verifies an explicit production deployment or operations goal; if the production target, artifact/version, credentials path, rollback plan, or approval boundary is unclear, it asks before making changes.
 - `PM rollback <goal> [target]` executes an explicit rollback through a documented rollback procedure and verifies the restored service state.
 - `PM update-statusproject <goal> [target]` force-checks GitHub for the StatusProject project and updates the selected target from the latest release/source while preserving local state.
 
-If a working command has no explicit goal, ask the user for it before spawning subagents or taking actions. `PM start <goal>`, `PM start all <goal>`, and `PM all <goal>` authorize planning, implementation waves, integration, verification, StatusProject state updates, and the final report for that goal. They do not implicitly authorize scope expansion, destructive actions, production changes, deployment, commit, push, tag, or release. `PM env`, `PM multiagent`, and `PM test` authorize inspection/setup/verification only. `PM prod`, `PM rollback`, and `PM update-statusproject` authorize only actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM release` authorizes tag and GitHub Release publication only for an already committed version.
+If a working command has no explicit goal, ask the user for it before spawning subagents or taking actions. `PM start <goal>`, `PM start all <goal>`, and `PM all <goal>` authorize planning, implementation waves, integration, verification, StatusProject state updates, and the final report for that goal. During development they also carry the Development Pre-Authorization (`PROMPT.md#development-pre-authorization`): dev transfer and deploy, commit and push of verified work, and full GitHub use (branches, pull requests into non-production branches, issues, Actions); never force push. They do not implicitly authorize scope expansion, destructive actions, production changes or deployment, the `VERSION`/`CHANGELOG` release bump, tag, or release. `PM resume [goal]` continues the interrupted `PM start` cycle from the Restart Capsule with the same authorization. `PM env`, `PM multiagent`, and `PM test` authorize inspection/setup/verification only. `PM prod`, `PM rollback`, and `PM update-statusproject` authorize only actions explicitly described by the goal and still require separate confirmation for destructive operations, secret changes, DNS/TLS changes, data deletion, force pushes, tags, releases, or scope expansion. `PM release` authorizes tag and GitHub Release publication only for an already committed version.
 
 ## PM Help Contract
 
@@ -28,11 +29,11 @@ For `PM help`, respond in the user's language and show:
 3. Planning agents with each role's goal and when it is selected: System Architect, Business Analyst, Technical Lead, Security Reviewer, QA Strategist.
 4. Build roles: one bounded internal development worker per atomic block when available, plus the Architect / PM as integration owner.
 5. Workflow: parallel planning -> synthesis -> block graph -> execution waves -> integration -> verification -> StatusProject update -> final report.
-6. Safety boundaries: Docker-only dependency execution; no implicit scope expansion, destructive action, production change, rollback, deployment, commit, push, tag, or release.
+6. Safety boundaries: Docker-only dependency execution; no implicit scope expansion, destructive action, production change, rollback, production deployment, tag, or release; dev transfer, commit, push, and GitHub use per `PROMPT.md#development-pre-authorization`.
 
 Do not spawn subagents, edit files, run project commands, or update state in response to `PM help`.
 
-Help must list `PM doctor [goal]`, `PM env [goal]`, `PM multiagent <goal>`, `PM status [goal]`, `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM update-statusproject <goal> [target]`, `PM commit`, and `PM release <goal>` as canonical commands and identify `PM <goal>` and `PM all <goal>` as backward-compatible forms.
+Help must list `PM doctor [goal]`, `PM env [goal]`, `PM multiagent <goal>`, `PM status [goal]`, `PM plan <goal>`, `PM start <goal>`, `PM start all <goal>`, `PM resume [goal]`, `PM test <goal> [target]`, `PM dev <goal> [target]`, `PM prod <goal> [target]`, `PM rollback <goal> [target]`, `PM update-statusproject <goal> [target]`, `PM commit`, and `PM release <goal>` as canonical commands and identify `PM <goal>` and `PM all <goal>` as backward-compatible forms.
 
 ## PM Doctor Contract
 
@@ -72,7 +73,7 @@ For `PM multiagent <goal>`:
 3. Do not silently reduce the goal, skip difficult blocks, or treat labels and percentages as completion evidence.
 4. `PM start all <goal>` must execute every necessary block, integration step, verification gate, and state update.
 5. Continue until the Definition of Done is `verified complete` or the work is genuinely `blocked`. A blocked report names the exact unmet criterion, cause, completed work, and smallest unblocking action.
-6. Do not expand into unrelated work. Dedicated authorization remains required for test-only verification, commit/push, production deployment outside `PM prod`, rollback outside `PM rollback`, destructive operations, tag, and release.
+6. Do not expand into unrelated work. Dedicated authorization remains required for test-only verification, Git/GitHub actions beyond `PROMPT.md#development-pre-authorization`, production deployment outside `PM prod`, rollback outside `PM rollback`, destructive operations, tag, and release.
 
 ## PM Plan Contract
 
@@ -151,7 +152,7 @@ For `PM dev <goal> [target]`:
 9. Update infrastructure, software, testing, and active state with target facts and evidence, excluding secret values.
 10. Report target, services, health, URLs, logs, stop/restart commands, elapsed time, and blockers.
 
-`PM dev` does not authorize staging/production deployment, external DNS/TLS changes, destructive migration, data deletion, commit, push, tag, release, or secret publication.
+`PM dev` also carries the Development Pre-Authorization (`PROMPT.md#development-pre-authorization`: dev transfer, commit and push of verified work, GitHub branches/pull requests/issues/Actions). It does not authorize staging/production deployment, external DNS/TLS changes, destructive migration, data deletion, force push, the release bump, tag, release, or secret publication.
 
 ## PM Test Contract
 

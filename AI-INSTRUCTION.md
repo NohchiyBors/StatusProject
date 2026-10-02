@@ -7,7 +7,7 @@ Point AI tool settings at this file instead of pasting rules. Links: `StatusProj
 - Restart context: `StatusProject/PROJECT-RESUME.md` → `StatusProject/TODO.md` → `StatusProject/MEMORY.md`.
 - Once per session — at project open or before the first `PM` command — run the version reconciliation (`StatusProject/PROMPT.md#pm-preflight`: `scripts/check-update` from the source in `StatusProject/SOURCE.md`; GitHub is queried at most once a day; lagging state files get the migration plan from `StatusProject/MIGRATIONS.md`).
 - Safety floor, valid even before the core is read:
-  - `PM …` commands need a `<goal>`; ask for a missing one before acting.
+  - Working `PM …` commands need a `<goal>` (`PM resume` takes it from the Restart Capsule); ask for a missing one before acting.
   - Project dependencies run only inside Docker: no host package managers, no host `node_modules`, `venv`, or `vendor`.
   - Never overwrite local state files without approval.
   - Never hard-code paths, hosts, or connection names in rules or shared files; they belong in User Settings.

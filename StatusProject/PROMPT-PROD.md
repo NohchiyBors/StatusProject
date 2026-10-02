@@ -29,7 +29,7 @@ Authorizes: only the requested rollback and its verification.
 ## PM Commit Contract
 For `PM commit [patch|minor|major|vX.Y.Z]`:
 - Run a `PM status` preflight, then update canonical `StatusProject/VERSION` and `CHANGELOG.md` per SemVer (an explicit argument overrides automatic selection), create a detailed scoped commit, and push to the configured GitHub repository.
-- If no repository exists, ask for its name, personal or organization owner (and organization name), and visibility before creating it.
+- If no repository exists, resolve its name, owner, and visibility per `PROMPT-WORKSPACE.md#github-repository-default` (project policy, then User Settings) and ask only for unresolved values before creating it.
 
 Authorizes: the version/changelog update, that commit, and its push.
 

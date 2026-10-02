@@ -30,3 +30,6 @@ What to change in a project's state files to follow a newer StatusProject versio
 
 ## v1.1.0 — WSL
 1. State files: nothing to change. Optional, only when agents run in WSL: add the line `- Windows drive mount prefix (WSL only): /mnt` to `~/.statusproject/USER-SETTINGS.md` (`init-user-settings` never edits an existing file), and set `STATUSPROJECT_HOME` in WSL only if the Windows profile is not reachable through the drive mount.
+
+## v1.2.0 — Development Pre-Authorization
+1. State files: nothing to change. Optional: add the line `- Development pre-authorization: yes` (or `no` to opt out) under `## GitHub` in `~/.statusproject/USER-SETTINGS.md`; a missing key means `yes` (`PROMPT.md#development-pre-authorization`).
